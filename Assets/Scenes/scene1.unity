@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3a08c66b0d884a7f867b1f935a29b0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TilePrefab: {fileID: 100000, guid: 9d70a4cf056281b4da5c280701638893, type: 3}
+  TilePrefab: {fileID: 173578, guid: 82fbd950d28f19f4f8f6afd1547bcc2f, type: 2}
   maxNumberTile: 500
   tilesToRemove: 201
 --- !u!1 &990045059
