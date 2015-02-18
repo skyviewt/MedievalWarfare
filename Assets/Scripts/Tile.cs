@@ -14,7 +14,7 @@ public class Tile
 		this.point = new Vector2();
 		neighbours = new List<Tile>();
 	}
-	
+
 	public Tile(Vector2 pt)
 	{
 		this.point = pt;
