@@ -6,13 +6,21 @@ using System.Linq;
 
 public class MapGenerator : MonoBehaviour {
 	
-	public GameObject TilePrefab;
+	public GameObject GrassPrefab;
+	public GameObject MeadowPrefab;
+	public GameObject TreePrefab;
 	public int maxNumberTile;
 	public int tilesToRemove;
 	
 	private Graph map;
 	private List<Tile> unvisited_vertices;
 	private System.Random rand = new System.Random();
+
+	public Graph getMap()
+	{
+		return this.map;
+	}
+
 	// Use this for initialization
 	void Start () {
 		
@@ -127,7 +135,20 @@ public class MapGenerator : MonoBehaviour {
 		
 		foreach(Tile n in map.vertices)
 		{
-			Instantiate(TilePrefab, new Vector3(n.point.x, 0, n.point.y), TilePrefab.transform.rotation);
+			int probability = rand.Next(0,100);
+			if( probability > 0 && probability <= 20)
+			{
+				Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation);
+			}
+			else if( probability > 20 && probability <=30)
+			{
+				Instantiate(MeadowPrefab, new Vector3(n.point.x, 0, n.point.y), MeadowPrefab.transform.rotation);
+			}
+			else
+			{
+				Instantiate(GrassPrefab, new Vector3(n.point.x, 0, n.point.y), GrassPrefab.transform.rotation);
+			}
+
 		}
 		
 	}

@@ -3,16 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+public enum LandType
+{
+	Grass,
+	Tree,
+	Meadow
+}
+
 //Tile Data Structure for building Graphs
 public class Tile
 {
 	public Vector2 point;
 	public List<Tile> neighbours;
-	
+	public LandType myType;
+	public Unit occupyingStructure;
+	public bool visited;
+	public int color;
+
+
 	public Tile()
 	{
 		this.point = new Vector2();
 		neighbours = new List<Tile>();
+		visited = false;
 	}
 
 	public Tile(Vector2 pt)
