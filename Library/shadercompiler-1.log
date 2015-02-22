@@ -39,3 +39,13 @@ Cmd: compileSnippet
   api=0 type=0 insize=2803 outsize=564 kw=DIRECTIONAL ok=1
 Cmd: compileSnippet
   api=0 type=1 insize=2803 outsize=372 kw=DIRECTIONAL ok=1
+Cmd: compileSnippet
+  api=0 type=0 insize=4598 outsize=1034 kw=DIRECTIONAL SHADOWS_SCREEN LIGHTMAP_OFF DIRLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=0 type=1 insize=4598 outsize=517 kw=DIRECTIONAL SHADOWS_SCREEN LIGHTMAP_OFF DIRLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=0 type=0 insize=2574 outsize=854 kw=SPOT ok=1
+Cmd: compileSnippet
+  api=0 type=1 insize=2574 outsize=822 kw=SPOT ok=1
+Cmd: preprocess
+  insize=859 outsize=1289 ok=1

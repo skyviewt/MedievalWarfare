@@ -15,10 +15,10 @@ public class Tile
 {
 	public Vector2 point;
 	public List<Tile> neighbours;
-	public LandType myType;
-	public Unit occupyingStructure;
-	public bool visited;
-	public int color;
+	private LandType myType;
+	private Unit occupyingStructure;
+	private bool visited;
+	private int color;
 
 
 	public Tile()
@@ -41,5 +41,10 @@ public class Tile
 		{
 			this.neighbours.Add(t);
 		}
+	}
+
+	public void setLandType(LandType type)
+	{
+		this.myType = type;
 	}
 }

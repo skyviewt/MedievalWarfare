@@ -139,14 +139,17 @@ public class MapGenerator : MonoBehaviour {
 			if( probability > 0 && probability <= 20)
 			{
 				Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation);
+				n.setLandType( LandType.Tree );
 			}
 			else if( probability > 20 && probability <=30)
 			{
 				Instantiate(MeadowPrefab, new Vector3(n.point.x, 0, n.point.y), MeadowPrefab.transform.rotation);
+				n.setLandType( LandType.Meadow );
 			}
 			else
 			{
 				Instantiate(GrassPrefab, new Vector3(n.point.x, 0, n.point.y), GrassPrefab.transform.rotation);
+				n.setLandType( LandType.Grass );
 			}
 
 		}
