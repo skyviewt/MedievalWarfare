@@ -24,10 +24,10 @@ public class Game : MonoBehaviour
 		this.mapSize = Random.Range(300,401); //max is excluded in Unity C#
 		this.colorDictionary = new Dictionary<Tile, int>();
 		this.visitedDictionary = new Dictionary<Tile, bool>();
+		this.probability = Random.Range (1, 101); //max is excluded in Unity C#
 
 		foreach (Tile tile in this.gameMap.vertices)
 		{
-			this.probability = Random.Range (1, 101); //max is excluded in Unity C#
 			if (this.probability > 0 && this.probability <= 20)
 			{
 				tile.setLandType(LandType.Tree);
