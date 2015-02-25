@@ -1,14 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum UnitType
-{
-	Peasant,
-	Infantry,
-	Soldier,
-	Knight
-};
-
 public class Structure : MonoBehaviour {
 
 	private UnitType myType;

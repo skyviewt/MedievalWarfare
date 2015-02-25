@@ -6,7 +6,7 @@ using System.Linq;
 public enum LandType
 {
 	Grass,
-	Tree,
+	Trees,
 	Meadow
 }
 
@@ -16,9 +16,10 @@ public class Tile
 	public Vector2 point;
 	public List<Tile> neighbours;
 	private LandType myType;
-	private Unit occupyingStructure;
+	private Unit occupyingUnit;
 	private bool visited;
 	private int color;
+	private Village myVillage;
 
 
 	public Tile()
@@ -47,4 +48,25 @@ public class Tile
 	{
 		this.myType = type;
 	}
+
+	public Unit getOccupyingUnit()
+	{
+		return this.occupyingUnit;
+	}
+
+	public void setOccupyingUnit(Unit u)
+	{
+		this.occupyingUnit = u;
+	}
+
+	public Village getVillage()
+	{
+		return myVillage;
+	}
+
+	public void setVillage(Village v)
+	{
+		this.myVillage = v;
+	}
+
 }

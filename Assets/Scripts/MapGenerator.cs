@@ -139,7 +139,7 @@ public class MapGenerator : MonoBehaviour {
 			if( probability > 0 && probability <= 20)
 			{
 				Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation);
-				n.setLandType( LandType.Tree );
+				n.setLandType( LandType.Trees );
 			}
 			else if( probability > 20 && probability <=30)
 			{

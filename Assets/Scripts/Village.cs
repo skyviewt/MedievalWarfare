@@ -76,9 +76,9 @@ public class Village : MonoBehaviour {
 		return myType;
 	}
 
-	public ActionType getAction()
+	public VillageActionType getAction()
 	{
-		return myAction;
+		return this.myAction;
 	}
 
 	public Player getPlayer()

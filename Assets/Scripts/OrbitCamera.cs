@@ -7,9 +7,9 @@ public class OrbitCamera : MonoBehaviour
 	public Transform TargetLookAt;
  
 	// Camera distance variables
-	public float Distance = 10.0f;
+	public float Distance = 15.0f;
 	public float DistanceMin = 0.5f;
-	public float DistanceMax = 12.0f;  
+	public float DistanceMax = 15.0f;  
 	float startingDistance = 0.0f;
 	float desiredDistance = 0.0f;
 
@@ -46,7 +46,7 @@ public class OrbitCamera : MonoBehaviour
 		Distance = Vector3.Distance(TargetLookAt.transform.position, gameObject.transform.position);
 		if (Distance > DistanceMax)
 		  DistanceMax = Distance;
-		startingDistance = Distance;
+		startingDistance = DistanceMax;
 		Reset();
 	}
 

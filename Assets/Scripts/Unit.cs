@@ -29,6 +29,7 @@ public class Unit : MonoBehaviour {
 	public Tile locatedAt;
 	public ActionType myAction;
 	public UnitType myType;
+	private Village myVillage;
 
 
 
@@ -41,4 +42,15 @@ public class Unit : MonoBehaviour {
 	void Update () {
 	
 	}
+
+	public void setVillage(Village v)
+	{
+		this.myVillage = v;
+	}
+
+	public Tile getLocation()
+	{
+		return this.locatedAt;
+	}
+
 }
