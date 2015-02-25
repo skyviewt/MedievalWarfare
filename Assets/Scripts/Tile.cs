@@ -11,7 +11,7 @@ public enum LandType
 }
 
 //Tile Data Structure for building Graphs
-public class Tile
+public class Tile : MonoBehaviour
 {
 	public Vector2 point;
 	public List<Tile> neighbours;
@@ -20,6 +20,7 @@ public class Tile
 	private bool visited;
 	private int color;
 	private Village myVillage;
+	public Shader outline;
 
 
 	public Tile()
@@ -27,6 +28,13 @@ public class Tile
 		this.point = new Vector2();
 		neighbours = new List<Tile>();
 		visited = false;
+	}
+
+	public static Tile CreateComponent (Vector2 pt, GameObject g) {
+		Tile myTile = g.AddComponent<Tile>();
+		myTile.point = pt;
+		myTile.visited = false;
+		return myTile;
 	}
 
 	public Tile(Vector2 pt)
@@ -42,6 +50,21 @@ public class Tile
 		{
 			this.neighbours.Add(t);
 		}
+	}
+
+	void Start()
+	{
+		outline = Shader.Find("Glow");
+	}
+
+	void OnMouseEnter()
+	{
+		this.renderer.material.shader = outline;
+	}
+
+	void OnMouseExit()
+	{
+		this.renderer.material.shader = Shader.Find("Transparent/Diffuse");;
 	}
 
 	public void setLandType(LandType type)

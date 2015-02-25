@@ -17,12 +17,31 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 2800000, guid: aca5d8579bfc144a292a98544ef8ae14, type: 3}
+          m_Texture: {fileID: 2800000, guid: f10a83dd0a52b4b4d854e61253e8a0f9, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-    m_Floats: {}
+      data:
+        first:
+          name: _BumpMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _RimPower
+        second: 1
     m_Colors:
       data:
         first:
           name: _Color
         second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _RimColor
+        second: {r: .96450305, g: 1, b: .742647052, a: 1}
+      data:
+        first:
+          name: _ColorTint
+        second: {r: .987018228, g: 1, b: .764705896, a: 1}

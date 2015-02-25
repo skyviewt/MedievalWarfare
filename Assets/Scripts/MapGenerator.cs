@@ -23,8 +23,13 @@ public class MapGenerator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
-		Tile firstTile = new Tile (new Vector2 (0, 0));
+
+		// add tag for selection
+		TreePrefab.tag = "Trees";
+		MeadowPrefab.tag = "Meadow";
+		GrassPrefab.tag = "Grass";
+
+		Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), gameObject);
 		map = new Graph (firstTile, null);
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
@@ -32,13 +37,13 @@ public class MapGenerator : MonoBehaviour {
 		while(map.vertices.Count < maxNumberTile)
 		{
 			Tile curr = unvisited_vertices[0];
-			
-			Tile up = new Tile(new Vector2(curr.point.x + 1, curr.point.y));
-			Tile down = new Tile(new Vector2(curr.point.x-1, curr.point.y));
-			Tile leftup = new Tile(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f));
-			Tile rightup = new Tile(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f));
-			Tile leftdown = new Tile(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f));
-			Tile rightdown = new Tile(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f));
+
+			Tile up = Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), gameObject);
+			Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), gameObject);
+			Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), gameObject);
+			Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), gameObject);
+			Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), gameObject);
+			Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), gameObject);
 			
 			unvisited_vertices.RemoveAt(0);
 			
@@ -138,17 +143,20 @@ public class MapGenerator : MonoBehaviour {
 			int probability = rand.Next(0,100);
 			if( probability > 0 && probability <= 20)
 			{
-				Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation);
+				GameObject trees = Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation) as GameObject;
+				trees.AddComponent("Tile");
 				n.setLandType( LandType.Trees );
 			}
 			else if( probability > 20 && probability <=30)
 			{
-				Instantiate(MeadowPrefab, new Vector3(n.point.x, 0, n.point.y), MeadowPrefab.transform.rotation);
+				GameObject meadow = Instantiate(MeadowPrefab, new Vector3(n.point.x, 0, n.point.y), MeadowPrefab.transform.rotation) as GameObject;
+				meadow.AddComponent("Tile");
 				n.setLandType( LandType.Meadow );
 			}
 			else
 			{
-				Instantiate(GrassPrefab, new Vector3(n.point.x, 0, n.point.y), GrassPrefab.transform.rotation);
+				GameObject grass = Instantiate(GrassPrefab, new Vector3(n.point.x, 0, n.point.y), GrassPrefab.transform.rotation) as GameObject;
+				grass.AddComponent("Tile");
 				n.setLandType( LandType.Grass );
 			}
 

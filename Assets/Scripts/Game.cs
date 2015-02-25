@@ -9,7 +9,6 @@ public class Game : MonoBehaviour
 	private List<Player> Players;
 	private int colorIndex;
 	private int mapSize;	//randomly generated, between 300 and 400
-	private int probability; //This is the probability of tiles, randomly generated between 1 and 100
 	private Player turnOf;
 
 
@@ -17,8 +16,6 @@ public class Game : MonoBehaviour
 	{
 		this.Players = Participants;
 		this.colorIndex = Participants.Count - 1; //used to generate color later
-		this.mapSize = Random.Range(300,401); //max is excluded in Unity C#
-		this.probability = Random.Range (1, 101); //max is excluded in Unity C#
 	}
 
 
