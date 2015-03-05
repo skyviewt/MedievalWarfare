@@ -92,4 +92,14 @@ public class Tile : MonoBehaviour
 		this.myVillage = v;
 	}
 
+	public int getColor()
+	{
+		return color;
+	}
+	
+	public void setColor(int i)
+	{
+		this.color = i;
+	}
+
 }
