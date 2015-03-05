@@ -40,17 +40,19 @@ public class Village : MonoBehaviour {
 	}
 
 	//constructor
-	public Village(Player p, List<Tile> regions)
+	public static Village CreateComponent ( Player p,List<Tile> regions, Tile locatedAt, GameObject g ) 
 	{
-		controlledRegion = regions;
-		controlledBy = p;
-		//LocatedAt needs to spawn a new Hovel
-		myType = VillageType.Hovel;
-		supportedUnits = new List<Unit>();
-		myAction = VillageActionType.ReadyForOrders;
-		gold = 0;
-		wood = 0;
+		Village myVillage = g.AddComponent<Village>();
+		myVillage.controlledRegion = regions;
+		myVillage.controlledBy = p;
+		myVillage.myType = VillageType.Hovel;
+		myVillage.supportedUnits = new List<Unit> ();
+		myVillage.locatedAt = locatedAt;
+		myVillage.myAction = VillageActionType.ReadyForOrders;
+		myVillage.gold = 0;
+		myVillage.wood = 0;
 
+		return myVillage;
 	}
 	
 	//setters and getters

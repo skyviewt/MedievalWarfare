@@ -7,17 +7,16 @@ public class Game : MonoBehaviour
 {
 	private Graph gameMap;
 	private List<Player> Players;
-	private int colorIndex;
-	private int mapSize;	//randomly generated, between 300 and 400
 	private Player turnOf;
-
-
-	public Game(List<Player> Participants)
+	
+	//constructor
+	public static Game CreateComponent ( List<Player> Participants, GameObject g ) 
 	{
-		this.Players = Participants;
-		this.colorIndex = Participants.Count - 1; //used to generate color later
+		Game theGame = g.AddComponent<Game>();
+		theGame.Players = Participants;
+		theGame.turnOf = Participants [0];
+		return theGame;
 	}
-
 
 	/********* GETTERS ****************/
 	public List<Player> getPlayers()

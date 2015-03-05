@@ -21,6 +21,7 @@ public class Tile : MonoBehaviour
 	private int color;
 	private Village myVillage;
 	public Shader outline;
+	private System.Random rand = new System.Random();
 
 
 	public Tile()
@@ -34,6 +35,8 @@ public class Tile : MonoBehaviour
 		Tile myTile = g.AddComponent<Tile>();
 		myTile.point = pt;
 		myTile.visited = false;
+		myTile.color = myTile.rand.Next (0, 2);
+
 		return myTile;
 	}
 
@@ -102,4 +105,13 @@ public class Tile : MonoBehaviour
 		this.color = i;
 	}
 
+	public bool getVisited()
+	{
+		return this.visited;
+	}
+	
+	public void setVisited(bool isVisited)
+	{
+		this.visited = isVisited;
+	}
 }

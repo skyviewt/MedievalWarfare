@@ -32,7 +32,19 @@ public class Unit : MonoBehaviour {
 	private Village myVillage;
 
 
+	//constructor
+	public static Unit CreateComponent ( UnitType unitType, Tile location, Village v, GameObject prefab, GameObject g ) 
+	{
+		Unit theUnit = g.AddComponent<Unit>();
+		theUnit.locatedAt = location;
+		theUnit.myType = unitType;
+		theUnit.myVillage = v;
+		theUnit.myAction = ActionType.ReadyForOrders;
 
+		theUnit.unitPrefab = Instantiate(prefab) as GameObject;
+
+		return theUnit;
+	}
 	// Use this for initialization
 	void Start () {
 	

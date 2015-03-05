@@ -147,6 +147,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 197624456}
   - 114: {fileID: 197624457}
+  - 114: {fileID: 197624458}
   m_Layer: 0
   m_Name: attachingMap
   m_TagString: Untagged
@@ -180,8 +181,18 @@ MonoBehaviour:
   GrassPrefab: {fileID: 161544, guid: a05b14bb6a6914215b6cb6c9cd8d797d, type: 2}
   MeadowPrefab: {fileID: 153796, guid: cd598069bad7a4df7a6bf4de35dde49b, type: 2}
   TreePrefab: {fileID: 140178, guid: f20f229f4cc1c4607ab8827f093b53a9, type: 2}
-  maxNumberTile: 500
-  tilesToRemove: 100
+--- !u!114 &197624458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 197624455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef408c563b2e404cb976c3fa162e82e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pp: {fileID: 100206, guid: e9c5981fbaf261f4f976333c279b3ffc, type: 3}
 --- !u!1 &426345802
 GameObject:
   m_ObjectHideFlags: 0

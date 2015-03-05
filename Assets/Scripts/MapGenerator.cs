@@ -9,8 +9,6 @@ public class MapGenerator : MonoBehaviour {
 	public GameObject GrassPrefab;
 	public GameObject MeadowPrefab;
 	public GameObject TreePrefab;
-	public int maxNumberTile;
-	public int tilesToRemove;
 	
 	private Graph map;
 	private List<Tile> unvisited_vertices;
@@ -22,7 +20,8 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 
 		// add tag for selection
 		TreePrefab.tag = "Trees";
@@ -33,6 +32,8 @@ public class MapGenerator : MonoBehaviour {
 		map = new Graph (firstTile, null);
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
+
+		int maxNumberTile = rand.Next (500, 600);
 		
 		while(map.vertices.Count < maxNumberTile)
 		{
@@ -105,7 +106,8 @@ public class MapGenerator : MonoBehaviour {
 		}
 		int tileRemoved = 0;
 		int index = 0, count = 0;
-		
+
+		int tilesToRemove = rand.Next (100, 150);
 		while(tileRemoved < tilesToRemove)
 		{
 			if(count > 10000)
@@ -146,20 +148,43 @@ public class MapGenerator : MonoBehaviour {
 				GameObject trees = Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation) as GameObject;
 				trees.AddComponent("Tile");
 				n.setLandType( LandType.Trees );
+				if(n.getColor() == 0 )
+				{
+					trees.renderer.material.color = Color.yellow;
+				}
+				else if ( n.getColor() == 1 )
+				{
+					trees.renderer.material.color = Color.blue;
+				}
 			}
 			else if( probability > 20 && probability <=30)
 			{
 				GameObject meadow = Instantiate(MeadowPrefab, new Vector3(n.point.x, 0, n.point.y), MeadowPrefab.transform.rotation) as GameObject;
 				meadow.AddComponent("Tile");
 				n.setLandType( LandType.Meadow );
+				if(n.getColor() == 0 )
+				{
+					meadow.renderer.material.color = Color.yellow;
+				}
+				else if ( n.getColor() == 1 )
+				{
+					meadow.renderer.material.color = Color.blue;
+				}
 			}
 			else
 			{
 				GameObject grass = Instantiate(GrassPrefab, new Vector3(n.point.x, 0, n.point.y), GrassPrefab.transform.rotation) as GameObject;
 				grass.AddComponent("Tile");
 				n.setLandType( LandType.Grass );
+				if(n.getColor() == 0 )
+				{
+					grass.renderer.material.color = Color.yellow;
+				}
+				else if ( n.getColor() == 1 )
+				{
+					grass.renderer.material.color = Color.blue;
+				}
 			}
-
 		}
 		
 	}
@@ -168,7 +193,45 @@ public class MapGenerator : MonoBehaviour {
 	void Update () {
 		
 	}
-	
+
+	public void initializeVillagesOnMap(Game game)
+	{
+		List<Player> participants = game.getPlayers();
+		foreach ( Tile t in map.vertices )
+		{
+			if ( t.getVisited() == false )
+			{
+				List<Tile> TilesToReturn = new List<Tile>();
+				BFS( t, TilesToReturn, t.getColor() );
+				if( TilesToReturn.Count >= 3 )
+				{
+
+					Player p = participants[t.getColor()];
+					int num = rand.Next(0, TilesToReturn.Count - 1);
+					Tile location = TilesToReturn[num];
+					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, gameObject);
+					newVillage.addGold( 7 );
+					p.addVillage( newVillage );
+
+				} 
+			}
+		}
+	}
+
+	public void BFS(Tile toSearch, List<Tile> TilesToReturn, int color )
+	{
+		foreach( Tile n in toSearch.neighbours )
+		{
+			int tileColor = n.getColor();
+			if(tileColor == color)
+			{
+				n.setVisited( true );
+				TilesToReturn.Add(n);
+			} 
+			BFS(n, TilesToReturn, color);
+		}
+	}
+
 	private void insertTile(Tile curr, Tile t)
 	{
 		if(map.addTileUnique(t))
