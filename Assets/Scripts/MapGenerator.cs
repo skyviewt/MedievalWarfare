@@ -150,11 +150,13 @@ public class MapGenerator : MonoBehaviour {
 				n.setLandType( LandType.Trees );
 				if(n.getColor() == 0 )
 				{
-					trees.renderer.material.color = Color.yellow;
+					Transform child = trees.transform.Find("Grass");
+					child.renderer.material.color = Color.red;
 				}
 				else if ( n.getColor() == 1 )
 				{
-					trees.renderer.material.color = Color.blue;
+					Transform child = trees.transform.Find("Grass");
+					child.renderer.material.color = Color.blue;
 				}
 			}
 			else if( probability > 20 && probability <=30)
@@ -164,11 +166,13 @@ public class MapGenerator : MonoBehaviour {
 				n.setLandType( LandType.Meadow );
 				if(n.getColor() == 0 )
 				{
-					meadow.renderer.material.color = Color.yellow;
+					Transform child = meadow.transform.Find("Grass");
+					child.renderer.material.color = Color.red;
 				}
 				else if ( n.getColor() == 1 )
 				{
-					meadow.renderer.material.color = Color.blue;
+					Transform child = meadow.transform.Find("Grass");
+					child.renderer.material.color = Color.blue;
 				}
 			}
 			else
@@ -178,7 +182,7 @@ public class MapGenerator : MonoBehaviour {
 				n.setLandType( LandType.Grass );
 				if(n.getColor() == 0 )
 				{
-					grass.renderer.material.color = Color.yellow;
+					grass.renderer.material.color = Color.red;
 				}
 				else if ( n.getColor() == 1 )
 				{
