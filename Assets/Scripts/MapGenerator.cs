@@ -9,6 +9,9 @@ public class MapGenerator : MonoBehaviour {
 	public GameObject GrassPrefab;
 	public GameObject MeadowPrefab;
 	public GameObject TreePrefab;
+	public string ipAddress;
+	public int port = 25000;
+	public bool isServer = true;
 	
 	private Graph map;
 	private List<Tile> unvisited_vertices;
@@ -19,10 +22,26 @@ public class MapGenerator : MonoBehaviour {
 		return this.map;
 	}
 
-	// Use this for initialization
-	void Start () 
+	
+	void Start()
 	{
+		if (isServer) {
+			Network.InitializeServer (32, port);
+		} else {
+			Network.Connect("ipAddress", port);
+		}
 
+	}
+
+	void OnServerInitialized()
+	{
+		GenerateMap ();
+	}
+
+	// Use this for initialization
+	void GenerateMap () 
+	{
+		Debug.Log ("Mapgenerator Start()");
 		// add tag for selection
 		TreePrefab.tag = "Trees";
 		MeadowPrefab.tag = "Meadow";
@@ -145,8 +164,9 @@ public class MapGenerator : MonoBehaviour {
 			int probability = rand.Next(0,100);
 			if( probability > 0 && probability <= 20)
 			{
-				GameObject trees = Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation) as GameObject;
-				trees.AddComponent("Tile");
+				GameObject trees = Network.Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation, 0) as GameObject;
+				//Tile and NetworkView alreadu attached in the scene
+				//trees.AddComponent("Tile");
 				n.setLandType( LandType.Trees );
 				if(n.getColor() == 0 )
 				{
@@ -161,8 +181,8 @@ public class MapGenerator : MonoBehaviour {
 			}
 			else if( probability > 20 && probability <=30)
 			{
-				GameObject meadow = Instantiate(MeadowPrefab, new Vector3(n.point.x, 0, n.point.y), MeadowPrefab.transform.rotation) as GameObject;
-				meadow.AddComponent("Tile");
+				GameObject meadow = Network.Instantiate(MeadowPrefab, new Vector3(n.point.x, 0, n.point.y), MeadowPrefab.transform.rotation, 0) as GameObject;
+				//meadow.AddComponent("Tile");
 				n.setLandType( LandType.Meadow );
 				if(n.getColor() == 0 )
 				{
@@ -177,12 +197,13 @@ public class MapGenerator : MonoBehaviour {
 			}
 			else
 			{
-				GameObject grass = Instantiate(GrassPrefab, new Vector3(n.point.x, 0, n.point.y), GrassPrefab.transform.rotation) as GameObject;
-				grass.AddComponent("Tile");
+				GameObject grass = Network.Instantiate(GrassPrefab, new Vector3(n.point.x, 0, n.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
+				//grass.AddComponent("Tile");
 				n.setLandType( LandType.Grass );
 				if(n.getColor() == 0 )
 				{
 					grass.renderer.material.color = Color.red;
+					//this.gameObject.networkView.RPC ("printText", RPCMode.AllBuffered, "NetworkMessage: red grass");
 				}
 				else if ( n.getColor() == 1 )
 				{
@@ -190,9 +211,30 @@ public class MapGenerator : MonoBehaviour {
 				}
 			}
 		}
+
+		Debug.Log ("Mapgenerator Start() Ended");
 		
 	}
-	
+
+	[RPC]
+	void printText(string msg){
+		Debug.Log (msg);
+	}
+
+	void OnConnectedToServer(){
+		Debug.Log ("Connected to server");
+	}
+
+	void listGameObject(){
+		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+		foreach (GameObject gob in allObjects) {
+			if (gob.activeInHierarchy){
+				Debug.Log(gob + " is an active object");
+			}
+		}
+	}
+
+
 	// Update is called once per frame
 	void Update () {
 		

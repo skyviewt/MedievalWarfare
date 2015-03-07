@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		Debug.Log ("GameManager Start()");
 		Player p1 = Player.CreateComponent ("Sky", "123", gameObject);
 		Player p2 = Player.CreateComponent ("Joerg", "456", gameObject);
 		List<Player> participants = new List<Player>();
