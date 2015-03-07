@@ -28,7 +28,7 @@ public class MapGenerator : MonoBehaviour {
 		if (isServer) {
 			Network.InitializeServer (32, port);
 		} else {
-			Network.Connect("ipAddress", port);
+			Network.Connect(ipAddress, port);
 		}
 
 	}
