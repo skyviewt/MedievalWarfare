@@ -66,6 +66,11 @@ public class Player : MonoBehaviour{
 	{
 		return myVillages [i];
 	}
+
+	public List<Village> getVillages()
+	{
+		return myVillages;
+	}
 	/*
 	 * This function will be to update the database.
 	 * Should be called by the controller after a player has finished with a game.

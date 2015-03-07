@@ -180,32 +180,31 @@ public class Village : MonoBehaviour {
 	}
 
 	//needs getWage in Units
-/*
+
 	public int getTotalWages()
 	{
 		int totalWage = 0;
 		foreach (Unit u in supportedUnits) {
 			int tempWage = u.getWage();
 			totalWage += tempWage;
-				}
+		}
 		return totalWage;
 	}
-*/
+
 
 	//needs setLocation and setVillage and setOccupyingUnit in Tile
-	/*
-	public void reireAllUnits()
+
+	public void retireAllUnits()
 	{
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.setOccupyingUnit(null);
-			unitLocation.setLandType(LandType.Tombstone);
+			unitLocation.setLandType(LandType.TombStone);
 			u.setLocation(null);
 			u.setVillage(null);
 			supportedUnits.Remove(u);
-				}
+		}
 	}
-	*/
 
 
 	public void upgrade(VillageType newType)
