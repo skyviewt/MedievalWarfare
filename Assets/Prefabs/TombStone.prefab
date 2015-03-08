@@ -64,7 +64,6 @@ GameObject:
   - 4: {fileID: 468766}
   - 23: {fileID: 2377064}
   - 65: {fileID: 6549314}
-  - 114: {fileID: 11496432}
   m_Layer: 0
   m_Name: TombStone
   m_TagString: Untagged
@@ -274,21 +273,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: .954511285, y: .332214266, z: .622319937}
   m_Center: {x: -.0176909864, y: .166107133, z: -.01249744}
---- !u!114 &11496432
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 168766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0be98c5c038624640976d80f0070fc86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  point: {x: 0, y: 0}
-  neighbours: []
-  outline: {fileID: 0}
-  prefab: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
