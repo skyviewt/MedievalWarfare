@@ -87,7 +87,7 @@ public class Tile : MonoBehaviour
 			break;
 		}
 	}
-
+	[RPC]
 	public void setLandType(LandType type)
 	{
 		this.myType = type;

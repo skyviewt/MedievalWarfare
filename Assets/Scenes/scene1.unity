@@ -148,6 +148,7 @@ GameObject:
   - 4: {fileID: 197624456}
   - 114: {fileID: 197624457}
   - 114: {fileID: 197624458}
+  - 148: {fileID: 197624459}
   m_Layer: 0
   m_Name: attachingMap
   m_TagString: Untagged
@@ -181,6 +182,9 @@ MonoBehaviour:
   GrassPrefab: {fileID: 161544, guid: a05b14bb6a6914215b6cb6c9cd8d797d, type: 2}
   MeadowPrefab: {fileID: 153796, guid: cd598069bad7a4df7a6bf4de35dde49b, type: 2}
   TreePrefab: {fileID: 140178, guid: f20f229f4cc1c4607ab8827f093b53a9, type: 2}
+  ipAddress: 142.157.113.19
+  port: 25000
+  isServer: 0
 --- !u!114 &197624458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +197,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pp: {fileID: 100206, guid: e9c5981fbaf261f4f976333c279b3ffc, type: 3}
+--- !u!148 &197624459
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 197624455}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 197624456}
+  m_ViewID:
+    m_ID: 1
+    m_Type: 1
 --- !u!1 &426345802
 GameObject:
   m_ObjectHideFlags: 0

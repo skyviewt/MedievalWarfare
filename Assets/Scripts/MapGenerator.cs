@@ -244,6 +244,7 @@ public class MapGenerator : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		updateTileColor ();
 	}
 
 	public void initializeVillagesOnMap(Game game)
