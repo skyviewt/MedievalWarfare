@@ -15,12 +15,18 @@ public class GameManager : MonoBehaviour {
 		List<Player> participants = new List<Player>();
 		participants.Add (p1);
 		participants.Add (p2);
-//		Game g = Game.CreateComponent (participants, gameObject);
-//		MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
-//
-//		gen.initializeVillagesOnMap (g);
-//		
-//		// added just for testing
+
+//		MapGenerator gen = Object.FindObjectOfType<MapGenerator>();
+//		if(gen != null)
+
+		MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
+
+//		print (gen.getMap().vertices.Count);
+//		print (participants.Count);
+
+		gen.initializeVillagesOnMap (participants);
+		
+		// added just for testing
 //		Graph m = gen.getMap ();
 //		Tile t = m.vertices [3];
 //		Village vila = p1.getVillage(0);

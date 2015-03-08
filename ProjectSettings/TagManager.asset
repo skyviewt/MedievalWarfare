@@ -6,6 +6,9 @@ TagManager:
   - Trees
   - Meadow
   - Grass
+  - Hovel
+  - Town
+  - Fort
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

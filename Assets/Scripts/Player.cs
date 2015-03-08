@@ -25,6 +25,7 @@ public class Player : MonoBehaviour{
 		return thePlayer;
 	}
 
+
 	public static Player CreateComponent ( string pName, string pPass, GameObject g ) 
 	{
 		Player thePlayer = g.AddComponent<Player>();
@@ -57,6 +58,10 @@ public class Player : MonoBehaviour{
 	public void setGame(Game pGame)
 	{
 		this.aGame = pGame;
+	}
+	public string getName()
+	{
+		return username;
 	}
 	public void addVillage(Village v)
 	{

@@ -40,14 +40,16 @@ public class Village : MonoBehaviour {
 	}
 
 	//constructor
-	public static Village CreateComponent ( Player p,List<Tile> regions, Tile locatedAt, GameObject g ) 
+	public static Village CreateComponent ( Player p, List<Tile> regions, Tile locatedAt, GameObject locationPrefab, GameObject g ) 
 	{
 		Village myVillage = g.AddComponent<Village>();
 		myVillage.controlledRegion = regions;
 		myVillage.controlledBy = p;
 		myVillage.myType = VillageType.Hovel;
 		myVillage.supportedUnits = new List<Unit> ();
+		locatedAt.replace (locationPrefab);
 		myVillage.locatedAt = locatedAt;
+
 		myVillage.myAction = VillageActionType.ReadyForOrders;
 		myVillage.gold = 0;
 		myVillage.wood = 0;

@@ -22,6 +22,7 @@ public class Tile : MonoBehaviour
 	private Village myVillage;
 	public Shader outline;
 	private System.Random rand = new System.Random();
+	public GameObject prefab;
 
 
 	public Tile()
@@ -35,7 +36,7 @@ public class Tile : MonoBehaviour
 		Tile myTile = g.AddComponent<Tile>();
 		myTile.point = pt;
 		myTile.visited = false;
-		myTile.color = myTile.rand.Next (0, 2);
+		myTile.color = myTile.rand.Next (0, 3);
 
 		return myTile;
 	}
@@ -55,11 +56,71 @@ public class Tile : MonoBehaviour
 		}
 	}
 
+	public void InstantiateTree( GameObject TreePrefab)
+	{
+		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0, this.point.y), TreePrefab.transform.rotation) as GameObject;
+		this.setLandType( LandType.Trees );
+		this.colorTile(prefab);
+	}
+
+	public void InstantiateMeadow( GameObject MeadowPrefab )
+	{
+		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
+		this.setLandType( LandType.Meadow );
+		this.colorTile( prefab );
+	}
+
+	public void InstantiateGrass( GameObject GrassPrefab )
+	{
+		prefab = Instantiate(GrassPrefab, new Vector3(this.point.x, 0, this.point.y), GrassPrefab.transform.rotation) as GameObject;
+		this.setLandType( LandType.Grass );
+		this.colorTile( prefab );
+	}
+
 	void Start()
 	{
 		outline = Shader.Find("Glow");
 	}
 
+	public void replace(GameObject pref)
+	{
+		Destroy (this.prefab);
+		GameObject newPref = Instantiate(pref, new Vector3(this.point.x, 0, this.point.y), pref.transform.rotation) as GameObject;
+		newPref.AddComponent("Tile");
+		this.colorTile ( newPref );
+		this.prefab = newPref;
+	}
+
+	public void colorTile(GameObject pref)
+	{
+
+		if( this.getLandType() != LandType.Grass )
+		{
+			Transform child = pref.transform.Find("Grass");
+			print (child);
+			if( this.color == 0 )
+			{
+				child.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
+			}
+			else if ( this.color == 1 )
+			{
+				child.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+			}
+			return;
+		}
+		else if (this.getLandType() == LandType.Grass )
+		{
+			if(this.color == 0 )
+			{
+				pref.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
+			}
+			else if ( this.color == 1 )
+			{
+				pref.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+			}
+		}
+	}
+	
 	void OnMouseEnter()
 	{
 		switch (this.tag) {
@@ -68,6 +129,7 @@ public class Tile : MonoBehaviour
 			break;
 		case "Trees":
 		case "Meadow":
+		case "Hovel":
 			Transform child = transform.Find("Grass");
 			child.renderer.material.shader = outline;
 			break;
@@ -78,19 +140,27 @@ public class Tile : MonoBehaviour
 	{
 		switch (this.tag) {
 		case "Grass":
-			this.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+			this.renderer.material.shader = Shader.Find("Diffuse");
+			print (this.color);
 			break;
 		case "Trees":
 		case "Meadow":
+		case "Hovel":
 			Transform child = transform.Find("Grass");
-			child.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+			child.renderer.material.shader = Shader.Find("Diffuse");
+			print (this.color);
 			break;
 		}
 	}
 
+
 	public void setLandType(LandType type)
 	{
 		this.myType = type;
+	}
+	public LandType getLandType()
+	{
+		return this.myType;
 	}
 
 	public Unit getOccupyingUnit()
