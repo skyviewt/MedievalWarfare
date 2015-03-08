@@ -164,12 +164,7 @@ public class Tile : MonoBehaviour
 	{
 		return this.myType;
 	}
-
-	public LandType getLandType()
-	{
-		return this.myType;
-	}
-
+	
 	public Unit getOccupyingUnit()
 	{
 		return this.occupyingUnit;

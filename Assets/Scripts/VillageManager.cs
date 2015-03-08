@@ -9,14 +9,14 @@ public class VillageManager : MonoBehaviour {
 		
 	}
 
-	public void upgradeVillage(Village v)
-	{
-		int vWood = v.getWood ();
-		VillageType vType = v.getMyType ();
-		VillageActionType vAction = v.getAction ();
-		if ((vType != VillageType.Fort) && (wood >= EIGHT) && (vAction == VillageActionType.ReadyForOrders)) 
-		{
-			v.upgrade ();
-		}
-	}
+//	public void upgradeVillage(Village v)
+//	{
+//		int vWood = v.getWood ();
+//		VillageType vType = v.getMyType ();
+//		VillageActionType vAction = v.getAction ();
+//		if ((vType != VillageType.Fort) && (wood >= EIGHT) && (vAction == VillageActionType.ReadyForOrders)) 
+//		{
+//			v.upgrade ();
+//		}
+//	}
 }
