@@ -216,7 +216,7 @@ public class Tile : MonoBehaviour
 		this.isRoad = true;
 	}
 
-	public boolean canUnitMove(UnitType type)
+	public bool canUnitMove(UnitType type)
 	{
 		if(occupyingStructure == null || myType != LandType.Trees)
 		{
