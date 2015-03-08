@@ -11,6 +11,6 @@ public class Structure : MonoBehaviour {
 
 	// awake called on script instantiation
 	void Awake () {
-		myType = UnitType.Soldier; //assuming tower is of soldier level
+		myType = UnitType.SOLDIER; //assuming tower is of soldier level
 	}
 }

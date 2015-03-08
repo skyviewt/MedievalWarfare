@@ -7,7 +7,8 @@ public enum LandType
 {
 	Grass,
 	Trees,
-	Meadow
+	Meadow,
+	TombStone
 }
 
 //Tile Data Structure for building Graphs
@@ -19,6 +20,7 @@ public class Tile : MonoBehaviour
 	private Unit occupyingUnit;
 	private bool visited;
 	private int color;
+	private bool isRoad;
 	private Village myVillage;
 	public Shader outline;
 	private System.Random rand = new System.Random();
@@ -163,6 +165,11 @@ public class Tile : MonoBehaviour
 		return this.myType;
 	}
 
+	public LandType getLandType()
+	{
+		return this.myType;
+	}
+
 	public Unit getOccupyingUnit()
 	{
 		return this.occupyingUnit;
@@ -201,5 +208,10 @@ public class Tile : MonoBehaviour
 	public void setVisited(bool isVisited)
 	{
 		this.visited = isVisited;
+	}
+
+	public void buildRoad()
+	{
+		this.isRoad = true;
 	}
 }
