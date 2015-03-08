@@ -14,7 +14,7 @@ public class VillageManager : MonoBehaviour {
 		int vWood = v.getWood ();
 		VillageType vType = v.getMyType ();
 		VillageActionType vAction = v.getAction ();
-		if ((pVillageType != VillageType.Fort) && (wood >= EIGHT) && (vAction == VillageActionType.ReadyForOrders)) 
+		if ((vType != VillageType.Fort) && (wood >= EIGHT) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
 			v.upgrade ();
 		}
