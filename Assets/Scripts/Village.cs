@@ -154,12 +154,12 @@ public class Village : MonoBehaviour {
 */
 
 	//Needs setVillage in Tile. Remove comment once setVillage is implemented
-/*	public void addTile(Tile t)
+	public void addTile(Tile t)
 	{
 		controlledRegion.Add (t);
 		t.setVillage (this);
 	}
-*/
+
 	public void removeTile(Tile t)
 	{
 		controlledRegion.Remove (t);
