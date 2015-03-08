@@ -209,7 +209,7 @@ public class Village : MonoBehaviour {
 	}
 
 
-	public void upgrade(VillageType newType)
+	public void upgrade()
 	{
 		//assuming gamemanager (or any manager) is doing all the heavy lifting in upgradeVillage
 		//only increments the villageType
