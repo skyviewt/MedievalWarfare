@@ -186,7 +186,7 @@ public class Tile : MonoBehaviour
 		this.myVillage = v;
 	}
 
-	public List<Tile> getNeighbours(Tile t)
+	public List<Tile> getNeighbours()
 	{
 		return neighbours;
 	}
@@ -222,7 +222,7 @@ public class Tile : MonoBehaviour
 		{
 			return true;
 		}
-		else if(occupyingStructure != null || (type == UnitType.KNIGHT && myType == LandType.Trees) || occupyingUnit != null)
+		else //if(occupyingStructure != null || (type == UnitType.KNIGHT && myType == LandType.Trees) || occupyingUnit != null)
 		{
 			return false;
 		}

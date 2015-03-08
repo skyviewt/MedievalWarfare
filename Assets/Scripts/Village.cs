@@ -230,9 +230,4 @@ public class Village : MonoBehaviour {
 		wood = 0;
 		return previousWoodValue;
 	}
-
-	public void addTile(Tile t)
-	{
-		this.controlledRegion.Add(t);
-	}
 }
