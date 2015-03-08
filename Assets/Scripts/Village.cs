@@ -2,13 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Village {
+public class Village : MonoBehaviour {
 	
 	public List<GameObject> region;
+	public GameObject owner;
+	public int myColor;
 
-	void Start()
+	public void setOwner(GameObject p)
 	{
-		region = new List<GameObject> ();
+		owner = p;
 	}
 
 }

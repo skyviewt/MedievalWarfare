@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Player {
+public class Player : MonoBehaviour{
 
-	public string name;
-	public List<Village> myVillages;
+	public string myName;
+	public List<GameObject> myVillages;
+	public int myColor;
 
 }
