@@ -200,6 +200,8 @@ public class MapGenerator : MonoBehaviour {
 				GameObject grass = Network.Instantiate(GrassPrefab, new Vector3(n.point.x, 0, n.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
 				//grass.AddComponent("Tile");
 				n.setLandType( LandType.Grass );
+				//grass.GetComponent<Tile>().setColor(n.getColor());
+				grass.networkView.RPC("setColor", RPCMode.AllBuffered, n.getColor());
 				if(n.getColor() == 0 )
 				{
 					grass.renderer.material.color = Color.red;
@@ -213,6 +215,7 @@ public class MapGenerator : MonoBehaviour {
 		}
 
 		Debug.Log ("Mapgenerator Start() Ended");
+		updateTileColor ();
 		
 	}
 
@@ -225,19 +228,22 @@ public class MapGenerator : MonoBehaviour {
 		Debug.Log ("Connected to server");
 	}
 
-	void listGameObject(){
-		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+	void updateTileColor(){
+		GameObject[] allObjects = GameObject.FindGameObjectsWithTag("Grass"); 
 		foreach (GameObject gob in allObjects) {
-			if (gob.activeInHierarchy){
-				Debug.Log(gob + " is an active object");
-			}
+			Tile grassTile =gob.GetComponent<Tile>();
+			Debug.Log("Color: " + gob.GetComponent<Tile>().getColor () + " (Grass Tile) ");
+			if (grassTile.getColor() == 0)
+				gob.renderer.material.color = Color.red;
+			else if (grassTile.getColor()==1)
+				gob.renderer.material.color = Color.blue;
+
 		}
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-		
 	}
 
 	public void initializeVillagesOnMap(Game game)

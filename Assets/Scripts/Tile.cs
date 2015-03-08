@@ -117,7 +117,8 @@ public class Tile : MonoBehaviour
 	{
 		return color;
 	}
-	
+
+	[RPC]
 	public void setColor(int i)
 	{
 		this.color = i;
