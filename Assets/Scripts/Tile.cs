@@ -25,6 +25,7 @@ public class Tile : MonoBehaviour
 	public Shader outline;
 	private System.Random rand = new System.Random();
 	public GameObject prefab;
+	private Structure occupyingStructure;
 
 
 	public Tile()
@@ -185,7 +186,7 @@ public class Tile : MonoBehaviour
 		this.myVillage = v;
 	}
 
-	public List<Tile> getNeighbours()
+	public List<Tile> getNeighbours(Tile t)
 	{
 		return neighbours;
 	}
@@ -213,5 +214,17 @@ public class Tile : MonoBehaviour
 	public void buildRoad()
 	{
 		this.isRoad = true;
+	}
+
+	public boolean canUnitMove(UnitType type)
+	{
+		if(occupyingStructure == null || myType != LandType.Trees)
+		{
+			return true;
+		}
+		else if(occupyingStructure != null || (type == UnitType.KNIGHT && myType == LandType.Trees) || occupyingUnit != null)
+		{
+			return false;
+		}
 	}
 }
