@@ -185,6 +185,11 @@ public class Tile : MonoBehaviour
 		this.myVillage = v;
 	}
 
+	public List<Tile> getNeighbours()
+	{
+		return neighbours;
+	}
+
 	public int getColor()
 	{
 		return color;
