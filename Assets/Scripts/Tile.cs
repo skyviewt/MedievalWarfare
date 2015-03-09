@@ -63,6 +63,7 @@ public class Tile : MonoBehaviour
 	{
 		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0, this.point.y), TreePrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Trees );
+		prefab.AddComponent<Tile> ();
 		this.colorTile(prefab);
 	}
 
@@ -70,6 +71,7 @@ public class Tile : MonoBehaviour
 	{
 		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Meadow );
+		prefab.AddComponent<Tile> ();
 		this.colorTile( prefab );
 	}
 
@@ -77,6 +79,7 @@ public class Tile : MonoBehaviour
 	{
 		prefab = Instantiate(GrassPrefab, new Vector3(this.point.x, 0, this.point.y), GrassPrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Grass );
+		prefab.AddComponent<Tile> ();
 		this.colorTile( prefab );
 	}
 
@@ -89,7 +92,7 @@ public class Tile : MonoBehaviour
 	{
 		Destroy (this.prefab);
 		GameObject newPref = Instantiate(pref, new Vector3(this.point.x, 0, this.point.y), pref.transform.rotation) as GameObject;
-		newPref.AddComponent("Tile");
+		newPref.AddComponent<Tile> ();
 		this.colorTile ( newPref );
 		this.prefab = newPref;
 	}
@@ -144,14 +147,12 @@ public class Tile : MonoBehaviour
 		switch (this.tag) {
 		case "Grass":
 			this.renderer.material.shader = Shader.Find("Diffuse");
-			print (this.color);
 			break;
 		case "Trees":
 		case "Meadow":
 		case "Hovel":
 			Transform child = transform.Find("Grass");
 			child.renderer.material.shader = Shader.Find("Diffuse");
-			print (this.color);
 			break;
 		}
 	}

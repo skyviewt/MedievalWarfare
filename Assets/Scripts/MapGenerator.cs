@@ -188,10 +188,9 @@ public class MapGenerator : MonoBehaviour {
 					int num = rand.Next(0, TilesToReturn.Count - 1);
 					Tile location = TilesToReturn[num];
 
-					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, HovelPrefab, villages);
+					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, HovelPrefab );
 					newVillage.addGold( 7 );
 					p.addVillage( newVillage );
-
 				} 
 			}
 		}

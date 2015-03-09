@@ -9,6 +9,10 @@ TagManager:
   - Hovel
   - Town
   - Fort
+  - Soldier
+  - Knight
+  - Infantry
+  - Peasant
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

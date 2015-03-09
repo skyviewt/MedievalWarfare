@@ -44,12 +44,13 @@ public class Unit : MonoBehaviour {
 	{
 		Unit theUnit = g.AddComponent<Unit>();
 		theUnit.locatedAt = location;
+
 		theUnit.myType = unitType;
 		theUnit.myVillage = v;
 		theUnit.myAction = ActionType.ReadyForOrders;
 		
-		theUnit.unitPrefab = Instantiate(prefab) as GameObject;
-		
+		theUnit.unitPrefab = Instantiate(prefab, new Vector3(location.point.x, 1, location.point.y), prefab.transform.rotation) as GameObject;
+		location.setOccupyingUnit (theUnit);
 		return theUnit;
 	}
 	// Use this for initialization
