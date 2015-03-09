@@ -7,12 +7,12 @@ public class VillageManager : MonoBehaviour {
 	public readonly int ZERO = 0;
 	public readonly int ONE = 1;
 	public readonly int EIGHT = 8;
-
+	
 	// Use this for initialization
 	void Start () {
 		
 	}
-
+	
 	public void upgradeVillage(Village v)
 	{
 		int vWood = v.getWood ();
@@ -23,7 +23,7 @@ public class VillageManager : MonoBehaviour {
 			v.upgrade ();
 		}
 	}
-
+	
 	public void MergeAlliedRegions(Tile newTile)
 	{
 		Village myVillage = newTile.getVillage ();
@@ -79,9 +79,9 @@ public class VillageManager : MonoBehaviour {
 			biggestVillage.addRegion(totalRegion);
 		}
 	}
-
+	
 	public void takeoverTile(Tile Destination)
 	{
-
+		
 	}
 }

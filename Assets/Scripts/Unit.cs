@@ -20,7 +20,10 @@ public enum ActionType
 	ClearingTombstone, 
 	UpgradingCombining, 
 	StartCultivating, 
-	FinishCultivating
+	FinishCultivating,
+	CapturingNeutral,
+	CapturingEnemy
+	
 };
 
 public class Unit : MonoBehaviour {
@@ -64,11 +67,21 @@ public class Unit : MonoBehaviour {
 		this.myVillage = v;
 	}
 	
+	public Village getVillage()
+	{
+		return this.myVillage;
+	}
+	
 	public Tile getLocation()
 	{
 		return this.locatedAt;
 	}
-
+	
+	public UnitType getUnitType()
+	{
+		return this.myType;
+	}
+	
 	public void setLocation(Tile t)
 	{
 		this.locatedAt = t;
