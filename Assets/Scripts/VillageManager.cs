@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class VillageManager : MonoBehaviour {
+
+	static VillageManager _instance;
+	
+
 	public readonly int ZERO = 0;
 	public readonly int ONE = 1;
 	public readonly int EIGHT = 8;
@@ -12,6 +16,37 @@ public class VillageManager : MonoBehaviour {
 	void Start () {
 		
 	}
+
+	public static bool isActive
+	{
+		get
+		{
+			return _instance != null;
+		}
+	}
+	
+	public static VillageManager instance
+	{
+		get
+		{
+			if (_instance == null)
+			{
+				_instance = Object.FindObjectOfType(typeof(VillageManager)) as VillageManager;
+				
+				if (_instance == null)
+				{
+					GameObject go = new GameObject("_villageManager");
+					go.AddComponent(typeof(NetworkView));
+					NetworkViewID viewID = Network.AllocateViewID();
+					go.networkView.viewID = viewID;
+					DontDestroyOnLoad(go);
+					_instance = go.AddComponent<VillageManager>();
+				}
+			}
+			return _instance;
+		}
+	}
+
 	
 	public void upgradeVillage(Village v)
 	{
@@ -22,7 +57,7 @@ public class VillageManager : MonoBehaviour {
 		{
 			v.upgrade ();
 		}
-	}
+	}	
 	
 	public void MergeAlliedRegions(Tile newTile)
 	{

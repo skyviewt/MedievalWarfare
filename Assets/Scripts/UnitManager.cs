@@ -5,7 +5,7 @@ using System.Linq;
 
 public class UnitManager : MonoBehaviour {
 
-	public VillageManager villageManager = new VillageManager();
+	VillageManager villageManager = VillageManager.instance;
 
 	public void moveUnit(Unit unit, Tile dest)
 	{
