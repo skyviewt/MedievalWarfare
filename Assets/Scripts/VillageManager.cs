@@ -94,5 +94,6 @@ public class VillageManager : MonoBehaviour {
 		//{
 		Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, peasantPrefab);
 		//}
+		v.addUnit (p);
 	}
 }

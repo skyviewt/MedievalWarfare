@@ -54,7 +54,7 @@ public class Unit : MonoBehaviour {
 		{
 			toplace = location;
 		}
-		GameObject o = Instantiate(PeasantPrefab, new Vector3(toplace.point.x, 0, toplace.point.y), PeasantPrefab.transform.rotation) as GameObject;
+		GameObject o = Instantiate(PeasantPrefab, new Vector3(toplace.point.x, 0.15f, toplace.point.y), toplace.transform.rotation) as GameObject;
 		Unit theUnit = o.AddComponent<Unit>();
 		theUnit.locatedAt = location;
 
@@ -70,7 +70,17 @@ public class Unit : MonoBehaviour {
 	{
 		outline = Shader.Find("Glow");
 	}
+
+	void OnMouseEnter()
+	{
+		this.renderer.material.shader = outline;
+	}
 	
+	void OnMouseExit()
+	{
+		this.renderer.material.shader = Shader.Find("Diffuse");
+	}
+
 	// Update is called once per frame
 	void Update () {
 		

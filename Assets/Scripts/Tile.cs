@@ -23,7 +23,7 @@ public class Tile : MonoBehaviour
 	private bool isRoad;
 	private Village myVillage;
 	public Shader outline;
-	private System.Random rand = new System.Random();
+	public System.Random rand = new System.Random();
 	public GameObject prefab;
 	private Structure occupyingStructure;
 
@@ -49,13 +49,13 @@ public class Tile : MonoBehaviour
 
 	public void InstantiateTree( GameObject TreePrefab)
 	{
-		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0, this.point.y), TreePrefab.transform.rotation) as GameObject;
+		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0.2f, this.point.y), TreePrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Trees );
 	}
 
 	public void InstantiateMeadow( GameObject MeadowPrefab )
 	{
-		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
+		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0.2f, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Meadow );
 	}
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-class MoveAnimation : MonoBehaviour {
+class MoveAnimated : MonoBehaviour {
 	private float moveSpeed = 3f;
 	private float gridSize = 1f;
 	private enum Orientation {
