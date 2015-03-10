@@ -5,14 +5,8 @@ using System.Linq;
 
 public class VillageManager : MonoBehaviour {
 
-	protected VillageManager() {
-		GameObject go = new GameObject("_villageManager");
-		go.AddComponent(typeof(NetworkView));
-		NetworkViewID viewID = Network.AllocateViewID();
-		go.networkView.viewID = viewID;
-	}
+	static VillageManager _instance;
 	
-	private static VillageManager _instance = null;	
 
 	public readonly int ZERO = 0;
 	public readonly int ONE = 1;
@@ -23,17 +17,36 @@ public class VillageManager : MonoBehaviour {
 		
 	}
 
+	public static bool isActive
+	{
+		get
+		{
+			return _instance != null;
+		}
+	}
+	
 	public static VillageManager instance
 	{
 		get
 		{
-			if (VillageManager._instance == null)
+			if (_instance == null)
 			{
-				VillageManager._instance = new VillageManager();
+				_instance = Object.FindObjectOfType(typeof(VillageManager)) as VillageManager;
+				
+				if (_instance == null)
+				{
+					GameObject go = new GameObject("_villageManager");
+					go.AddComponent(typeof(NetworkView));
+					NetworkViewID viewID = Network.AllocateViewID();
+					go.networkView.viewID = viewID;
+					DontDestroyOnLoad(go);
+					_instance = go.AddComponent<VillageManager>();
+				}
 			}
-			return VillageManager._instance;
+			return _instance;
 		}
 	}
+
 	
 	public void upgradeVillage(Village v)
 	{
