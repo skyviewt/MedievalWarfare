@@ -4,6 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class VillageManager : MonoBehaviour {
+
+	protected VillageManager() {
+		GameObject go = new GameObject("_villageManager");
+		go.AddComponent(typeof(NetworkView));
+		NetworkViewID viewID = Network.AllocateViewID();
+		go.networkView.viewID = viewID;
+	}
+	
+	private static VillageManager _instance = null;	
+
 	public readonly int ZERO = 0;
 	public readonly int ONE = 1;
 	public readonly int EIGHT = 8;
@@ -11,6 +21,18 @@ public class VillageManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		
+	}
+
+	public static VillageManager instance
+	{
+		get
+		{
+			if (VillageManager._instance == null)
+			{
+				VillageManager._instance = new VillageManager();
+			}
+			return VillageManager._instance;
+		}
 	}
 	
 	public void upgradeVillage(Village v)
@@ -22,7 +44,7 @@ public class VillageManager : MonoBehaviour {
 		{
 			v.upgrade ();
 		}
-	}
+	}	
 	
 	public void MergeAlliedRegions(Tile newTile)
 	{
