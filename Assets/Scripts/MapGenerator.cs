@@ -206,7 +206,7 @@ public class MapGenerator : MonoBehaviour {
 			
 					Tile location = TilesToReturn[0];
 
-					GameObject hovel = Instantiate(HovelPrefab, new Vector3(location.point.x, 0, location.point.y), HovelPrefab.transform.rotation) as GameObject;
+					GameObject hovel = Network.Instantiate(HovelPrefab, new Vector3(location.point.x, 0, location.point.y), HovelPrefab.transform.rotation, 0) as GameObject;
 					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
 					newVillage.addGold( 7 );
 					p.addVillage( newVillage );

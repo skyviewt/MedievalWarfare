@@ -148,6 +148,7 @@ GameObject:
   - 4: {fileID: 197624456}
   - 114: {fileID: 197624457}
   - 114: {fileID: 197624458}
+  - 148: {fileID: 197624459}
   m_Layer: 0
   m_Name: attachingMap
   m_TagString: Untagged
@@ -195,6 +196,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pp: {fileID: 100206, guid: e9c5981fbaf261f4f976333c279b3ffc, type: 3}
+  ipAddress: 
+  port: 25000
+  isServer: 1
+--- !u!148 &197624459
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 197624455}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 197624456}
+  m_ViewID:
+    m_ID: 2
+    m_Type: 1
 --- !u!1 &426345802
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,6 +263,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 584207833}
+  - 148: {fileID: 584207834}
   m_Layer: 0
   m_Name: Villages
   m_TagString: Untagged
@@ -266,6 +283,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
+--- !u!148 &584207834
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 584207832}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 584207833}
+  m_ViewID:
+    m_ID: 3
+    m_Type: 1
 --- !u!1 &584391100
 GameObject:
   m_ObjectHideFlags: 0
