@@ -22,8 +22,9 @@ public class MapGenerator : MonoBehaviour {
 		return this.map;
 	}
 	// Use this for initialization
-	void Awake () 
-	{
+	public void initMap () 
+	{	
+		Debug.Log ("Mapgenerator: initMap()");
 		// add tag for selection
 		TreePrefab.tag = "Trees";
 		MeadowPrefab.tag = "Meadow";

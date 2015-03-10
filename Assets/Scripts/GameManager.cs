@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour {
 			participants.Add (p2);
 
 			MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
+			gen.initMap();
 
 			gen.initializeVillagesOnMap (participants);
 		} else {
