@@ -13,21 +13,19 @@ public class InGameGUI : MonoBehaviour {
 	private GameObject _Village;
 	private GameObject _Unit;
 	private GameObject _Tile;
-	
+
+	public VillageManager villageManager;
 	// Use this for initialization
 	void Start () {
 		myCamera =  GameObject.FindGameObjectWithTag("MainCamera").camera;
+		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		VillageCanvas.enabled = false;
 	}
 
 	public void peasantPressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
-	
-		Tile tileAt = v.getLocatedAt ();
-	
-		Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, PeasantPrefab);
-	
+		villageManager.hirePeasant (v,PeasantPrefab);
 		VillageCanvas.enabled = false;
 	}
 	

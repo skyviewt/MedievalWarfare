@@ -226,6 +226,7 @@ MonoBehaviour:
   VillageCanvas: {fileID: 1107421449}
   UnitCanvas: {fileID: 0}
   PeasantPrefab: {fileID: 172150, guid: 93f30482dc03041d191ff939f3c21285, type: 2}
+  villageManager: {fileID: 0}
 --- !u!4 &426345804
 Transform:
   m_ObjectHideFlags: 0
@@ -377,6 +378,58 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SpeedU: .100000001
   m_SpeedV: -.100000001
+--- !u!1 &800187050
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 800187053}
+  - 114: {fileID: 800187052}
+  - 148: {fileID: 800187051}
+  m_Layer: 0
+  m_Name: VillageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!148 &800187051
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 800187050}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 800187053}
+  m_ViewID:
+    m_ID: 1
+    m_Type: 1
+--- !u!114 &800187052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 800187050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52b78ed05263e4d7ca16ce3e8840cba1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &800187053
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 800187050}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 253.5, y: 163.25, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
 --- !u!1 &879007385
 GameObject:
   m_ObjectHideFlags: 0
