@@ -42,8 +42,8 @@ public class MapGenerator : MonoBehaviour {
 		{
 			Tile curr = unvisited_vertices[0];
 
-			GameObject upPref = Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
-			Tile up = Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), upPref);
+			GameObject upPref = Instantiate(GrassPrefab, new Vector3(curr.point.x+1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
+			Tile up = Tile.CreateComponent(new Vector2(curr.point.x+1, curr.point.y), upPref);
 
 			GameObject downPref = Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
 			Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
@@ -197,8 +197,6 @@ public class MapGenerator : MonoBehaviour {
 				{
 
 					Player p = players[color];
-
-					//int num = (int)(TilesToReturn.Count / 2);
 			
 					Tile location = TilesToReturn[0];
 

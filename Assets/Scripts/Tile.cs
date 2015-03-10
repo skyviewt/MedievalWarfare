@@ -64,10 +64,9 @@ public class Tile : MonoBehaviour
 		outline = Shader.Find("Glow");
 	}
 
-	public void replace(GameObject pref)
+	public void replace(GameObject newPref)
 	{
 		Destroy (this.prefab);
-		GameObject newPref = Instantiate(pref, new Vector3(this.point.x, 0, this.point.y), pref.transform.rotation) as GameObject;
 		this.prefab = newPref;
 	}
 

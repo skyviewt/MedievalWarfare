@@ -224,10 +224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myCamera: {fileID: 2083084097}
   VillageCanvas: {fileID: 1107421449}
-  PeasantText: {fileID: 1459279473}
-  InfantryText: {fileID: 954512633}
-  SoldierText: {fileID: 879007389}
-  KnightText: {fileID: 943254770}
+  UnitCanvas: {fileID: 0}
   PeasantPrefab: {fileID: 172150, guid: 93f30482dc03041d191ff939f3c21285, type: 2}
 --- !u!4 &426345804
 Transform:
@@ -920,33 +917,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!1 &1225337842
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1225337843}
-  m_Layer: 0
-  m_Name: Units
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1225337843
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1225337842}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 426.37326, y: 148.49559, z: -26.9404602}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
 --- !u!1 &1233592094
 GameObject:
   m_ObjectHideFlags: 0

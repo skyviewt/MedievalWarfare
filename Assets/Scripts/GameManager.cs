@@ -16,21 +16,10 @@ public class GameManager : MonoBehaviour {
 		participants.Add (p1);
 		participants.Add (p2);
 
-//		MapGenerator gen = Object.FindObjectOfType<MapGenerator>();
-//		if(gen != null)
-
 		MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
 
-//		print (gen.getMap().vertices.Count);
-//		print (participants.Count);
-
 		gen.initializeVillagesOnMap (participants);
-		
-		// added just for testing
-//		Graph m = gen.getMap ();
-//		Tile t = m.vertices [3];
-//		Village vila = p1.getVillage(0);
-//		Unit newUnit = Unit.CreateComponent (UnitType.Peasant, t, vila, pp, gameObject);
+
 	}
 
 	// Update is called once per frame

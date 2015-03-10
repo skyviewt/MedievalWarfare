@@ -4,13 +4,15 @@ using System.Collections;
 public class InGameGUI : MonoBehaviour {
 	public Camera myCamera;
 	public Canvas VillageCanvas;
-	public Transform PeasantText;
-	public Transform InfantryText;
-	public Transform SoldierText;
-	public Transform KnightText;
+	public Canvas UnitCanvas;
 
+	// prefabs
 	public GameObject PeasantPrefab;
-	private GameObject selection;
+
+	//selections
+	private GameObject _Village;
+	private GameObject _Unit;
+	private GameObject _Tile;
 	
 	// Use this for initialization
 	void Start () {
@@ -20,7 +22,7 @@ public class InGameGUI : MonoBehaviour {
 
 	public void peasantPressed()
 	{
-		Village v = selection.GetComponent<Village> ();
+		Village v = _Village.GetComponent<Village> ();
 	
 		Tile tileAt = v.getLocatedAt ();
 	
@@ -40,28 +42,38 @@ public class InGameGUI : MonoBehaviour {
 
 			if (Physics.Raycast(ray, out hit)){
 
-				if(hit.collider.tag == "Meadow" )
+				switch(hit.collider.tag)
 				{
-					// hit.collider.gameObject
-					print("Meadow");
+					case "Hovel": case "Town": case "Fort":
+					{
+						VillageCanvas.enabled = true;
+						_Village = hit.collider.gameObject;
+						break;
+					}
+
+					case "Peasant": case "Infantry": case "Soldier": case "Knight":
+					{
+						_Unit = hit.collider.gameObject;
+						break;
+					}
 
 				}
-
-				else if(hit.collider.tag == "Trees" )
-				{
-					print("Trees");
-				}
-
-				else if(hit.collider.tag == "Grass" )
-				{
-					print("Grass");
-				}
-				if( hit.collider.tag == "Hovel" )
-				{
-					VillageCanvas.enabled = true;
-					selection = hit.collider.gameObject;
-					
-				}
+//				if(hit.collider.tag == "Meadow" )
+//				{
+//					// hit.collider.gameObject
+//					print("Meadow");
+//
+//				}
+//
+//				else if(hit.collider.tag == "Trees" )
+//				{
+//					print("Trees");
+//				}
+//
+//				else if(hit.collider.tag == "Grass" )
+//				{
+//					print("Grass");
+//				}
 
 			}
 		}
