@@ -28,7 +28,12 @@ public class InGameGUI : MonoBehaviour {
 		villageManager.hirePeasant (v,PeasantPrefab);
 		VillageCanvas.enabled = false;
 	}
-	
+	public void villageUpgradePressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.upgradeVillage (v);
+		VillageCanvas.enabled = false;
+	}
 	// Update is called once per frame
 	void Update(){
 
@@ -54,6 +59,7 @@ public class InGameGUI : MonoBehaviour {
 						_Unit = hit.collider.gameObject;
 						break;
 					}
+
 
 				}
 //				if(hit.collider.tag == "Meadow" )

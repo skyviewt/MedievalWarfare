@@ -26,9 +26,7 @@ public class Village : MonoBehaviour {
 	private VillageActionType myAction;
 	private int gold;
 	private int wood;
-
-
-
+	
 	// Use this for initialization
 	void Start () {
 	
@@ -36,7 +34,7 @@ public class Village : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 
 	//constructor
@@ -67,9 +65,11 @@ public class Village : MonoBehaviour {
 		gold = goldValue;
 	}
 
-	public int getGold(){
+	public int getGold()
+	{
 		return gold;
 	}
+
 	public void setWood(int woodValue)
 	{
 		wood = woodValue;
@@ -215,10 +215,20 @@ public class Village : MonoBehaviour {
 
 	public void upgrade()
 	{
-		//assuming gamemanager (or any manager) is doing all the heavy lifting in upgradeVillage
-		//only increments the villageType
 		myType += 1;
-
+		//TODO
+		// show the new wood value
+		wood -= 8;
+		if (myType == VillageType.Town) 
+		{
+			//TODO
+			//destroy hovel make town
+		}
+		else if (myType == VillageType.Fort) 
+		{
+			//TODO
+			//destroy town make fort
+		}
 	}
 	//sets gold to 0 and returns the previous gold value
 	public int pillageGold()
