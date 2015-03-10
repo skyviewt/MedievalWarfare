@@ -29,20 +29,20 @@ public class TurnManager : MonoBehaviour {
 			Unit unitOnTile = tile.getOccupyingUnit(); //grabs the occupying unit on tile
 			if (unitOnTile != null)
 			{
-				ActionType action = unitOnTile.getAction(); //get the action of the unit on tile
+				UnitActionType action = unitOnTile.getAction(); //get the action of the unit on tile
 
-				if (action == ActionType.StartCultivating)
+				if (action == UnitActionType.StartCultivating)
 				{
-					unitOnTile.setAction(ActionType.FinishCultivating);
+					unitOnTile.setAction(UnitActionType.FinishCultivating);
 				}
-				if (action == ActionType.FinishCultivating)
+				if (action == UnitActionType.FinishCultivating)
 				{
-					unitOnTile.setAction(ActionType.ReadyForOrders);
+					unitOnTile.setAction(UnitActionType.ReadyForOrders);
 					tile.setLandType(LandType.Meadow);
 				}
-				if (action == ActionType.BuildingRoad)
+				if (action == UnitActionType.BuildingRoad)
 				{
-					unitOnTile.setAction(ActionType.ReadyForOrders);
+					unitOnTile.setAction(UnitActionType.ReadyForOrders);
 					tile.buildRoad();
 				}
 			}

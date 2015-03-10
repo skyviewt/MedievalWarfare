@@ -216,6 +216,7 @@ public class Village : MonoBehaviour {
 	public void upgrade()
 	{
 		myType += 1;
+		myAction = VillageActionType.BuildStageOne;
 		//TODO
 		// show the new wood value
 		wood -= 8;
