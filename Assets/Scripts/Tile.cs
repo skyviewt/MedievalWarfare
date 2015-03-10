@@ -28,15 +28,21 @@ public class Tile : MonoBehaviour
 	private Structure occupyingStructure;
 
 
-
-	public static Tile CreateComponent (Vector2 pt, GameObject g) {
-		Tile myTile = g.AddComponent<Tile>();
+	//TODO point setters
+	//Changed static to public
+	public Tile CreateComponent (Vector2 pt, GameObject g) {
+		//Tile myTile = g.AddComponent<Tile>();
+		Tile myTile = this.gameObject.GetComponents<Tile> ()[0];
 		myTile.point = pt;
 		myTile.visited = false;
 		myTile.neighbours = new List<Tile>();
 		return myTile;
 	}
-	
+	public Tile (){
+		visited = false;
+		neighbours = new List<Tile>();
+	}
+
 
 	public void addNeighbour(Tile t)
 	{

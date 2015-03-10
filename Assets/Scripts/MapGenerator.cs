@@ -30,9 +30,11 @@ public class MapGenerator : MonoBehaviour {
 		MeadowPrefab.tag = "Meadow";
 		GrassPrefab.tag = "Grass";
 
-		GameObject firstPref = Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation) as GameObject;
-		
-		Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), firstPref);
+		GameObject firstPref = Network.Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation, 0) as GameObject;
+		//no longer static
+		//Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), firstPref);
+		Tile firstTile = firstPref.GetComponent<Tile> ();
+
 		map = new Graph (firstTile, null);
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
@@ -43,24 +45,35 @@ public class MapGenerator : MonoBehaviour {
 		{
 			Tile curr = unvisited_vertices[0];
 
-			GameObject upPref = Instantiate(GrassPrefab, new Vector3(curr.point.x+1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
-			Tile up = Tile.CreateComponent(new Vector2(curr.point.x+1, curr.point.y), upPref);
+			GameObject upPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x+1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
+			//Tile up = Tile.CreateComponent(new Vector2(curr.point.x+1, curr.point.y), upPref);
+			Tile up = upPref.GetComponent<Tile>();
+			up.point = new Vector2(curr.point.x+1, curr.point.y);
 
-			GameObject downPref = Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
-			Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
+			GameObject downPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
+			//Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
+			Tile down = downPref.GetComponent<Tile>();
+			down.point = new Vector2(curr.point.x-1, curr.point.y);
 
-			GameObject leftupPref = Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation) as GameObject;
-			Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
+			GameObject leftupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
+			//Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
+			Tile leftup = leftupPref.GetComponent<Tile>();
+			leftup.point =new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f);
 
-			GameObject rightupPref = Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation) as GameObject;
-			Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
+			GameObject rightupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
+			//Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
+			Tile rightup = rightupPref.GetComponent<Tile>();
+			rightup.point =new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f);
 
-			GameObject leftdownPref = Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation) as GameObject;
-			Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), leftdownPref);
+			GameObject leftdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
+			//Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), leftdownPref);
+			Tile leftdown = leftdownPref.GetComponent<Tile>();
+			leftdown.point =new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f);
 
-			GameObject rightdownPref = Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation) as GameObject;
-			Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), rightdownPref);
-
+			GameObject rightdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
+			//Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), rightdownPref);
+			Tile rightdown = rightdownPref.GetComponent<Tile>();
+			rightdown.point =new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f);
 
 			unvisited_vertices.RemoveAt(0);
 			
@@ -154,7 +167,7 @@ public class MapGenerator : MonoBehaviour {
 			}
 
 			map.vertices.Remove(curr);
-			Destroy (curr.gameObject);
+			Network.Destroy (curr.gameObject);
 			tileRemoved++;
 			
 			count++;
@@ -250,7 +263,7 @@ public class MapGenerator : MonoBehaviour {
 		{
 			Tile tmpTile = map.GetTile(t.point.x, t.point.y);
 			curr.addNeighbour(tmpTile);
-			Destroy(t.gameObject);
+			Network.Destroy(t.gameObject);
 		}
 	}
 	
