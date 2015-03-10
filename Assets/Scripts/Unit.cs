@@ -36,8 +36,9 @@ public class Unit : MonoBehaviour {
 	private readonly int SIX = 6;
 	private readonly int EIGHTEEN = 18;
 	private readonly int FIFTY_FOUR = 54;
-	
-	
+
+	private Shader outline;
+
 	//constructor
 	public static Unit CreateComponent ( UnitType unitType, Tile location, Village v, GameObject PeasantPrefab ) 
 	{
@@ -65,8 +66,9 @@ public class Unit : MonoBehaviour {
 		return theUnit;
 	}
 	// Use this for initialization
-	void Start () {
-		
+	void Start () 
+	{
+		outline = Shader.Find("Glow");
 	}
 	
 	// Update is called once per frame

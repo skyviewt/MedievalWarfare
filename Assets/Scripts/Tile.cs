@@ -84,33 +84,12 @@ public class Tile : MonoBehaviour
 	
 	void OnMouseEnter()
 	{
-		switch (this.tag) {
-		case "Grass":
-			this.renderer.material.shader = outline;
-			break;
-		case "Trees":
-		case "Meadow":
-		case "Hovel":
-			Transform child = transform.Find("Grass");
-			child.renderer.material.shader = outline;
-			break;
-		}
-//		print ("color of tile is " + this.color);
+		this.renderer.material.shader = outline;
 	}
 
 	void OnMouseExit()
 	{
-		switch (this.tag) {
-		case "Grass":
-			this.renderer.material.shader = Shader.Find("Diffuse");
-			break;
-		case "Trees":
-		case "Meadow":
-		case "Hovel":
-			Transform child = transform.Find("Grass");
-			child.renderer.material.shader = Shader.Find("Diffuse");
-			break;
-		}
+		this.renderer.material.shader = Shader.Find("Diffuse");
 	}
 
 	void Update()

@@ -32,7 +32,6 @@ public class Graph
 			this.vertices.Add(t);
 			return true;
 		}
-		
 		return false;
 	}
 

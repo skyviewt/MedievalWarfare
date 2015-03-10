@@ -36,7 +36,7 @@ public class MapGenerator : MonoBehaviour {
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
 
-		int maxNumberTile = rand.Next (100, 200);
+		int maxNumberTile = rand.Next (10, 20);
 		
 		while(map.vertices.Count < maxNumberTile)
 		{
@@ -59,7 +59,8 @@ public class MapGenerator : MonoBehaviour {
 
 			GameObject rightdownPref = Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation) as GameObject;
 			Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), rightdownPref);
-			
+
+
 			unvisited_vertices.RemoveAt(0);
 			
 			insertTile(curr, up);
@@ -121,10 +122,10 @@ public class MapGenerator : MonoBehaviour {
 		int tileRemoved = 0;
 		int index = 0, count = 0;
 
-		int tilesToRemove = rand.Next (10, 20);
+		int tilesToRemove = rand.Next (1, 2);
 		while(tileRemoved < tilesToRemove)
 		{
-			if(count > 10000)
+			if(count > tilesToRemove)
 			{
 				// avoid infinite loop
 				break;
@@ -145,10 +146,14 @@ public class MapGenerator : MonoBehaviour {
 			
 			foreach(Tile neighboor in curr.neighbours)
 			{
+
 				neighboor.neighbours.Remove(curr);
+
+
 			}
-			
+
 			map.vertices.Remove(curr);
+			Destroy (curr.gameObject);
 			tileRemoved++;
 			
 			count++;
@@ -156,8 +161,9 @@ public class MapGenerator : MonoBehaviour {
 		
 		foreach(Tile n in map.vertices)
 		{
+			//TODO: hardcoded to 2 players color
 			int color = rand.Next(0,3);
-			int probability = rand.Next(0,100);
+			int probability = rand.Next(0,101);
 			if( probability > 0 && probability <= 20)
 			{
 				n.InstantiateTree(TreePrefab);
@@ -243,6 +249,7 @@ public class MapGenerator : MonoBehaviour {
 		{
 			Tile tmpTile = map.GetTile(t.point.x, t.point.y);
 			curr.addNeighbour(tmpTile);
+			Destroy(t.gameObject);
 		}
 	}
 	
