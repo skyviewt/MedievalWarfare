@@ -35,8 +35,8 @@ public class MapGenerator : MonoBehaviour {
 		map = new Graph (firstTile, null);
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
-
-		int maxNumberTile = rand.Next (300, 400);
+		
+		int maxNumberTile = rand.Next (400, 450);
 		
 		while(map.vertices.Count < maxNumberTile)
 		{
@@ -122,7 +122,7 @@ public class MapGenerator : MonoBehaviour {
 		int tileRemoved = 0;
 		int index = 0, count = 0;
 
-		int tilesToRemove = rand.Next (1, 2);
+		int tilesToRemove = rand.Next (10, 40);
 		while(tileRemoved < tilesToRemove)
 		{
 			if(count > tilesToRemove)

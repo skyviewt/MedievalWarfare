@@ -26,15 +26,26 @@ public class Village : MonoBehaviour {
 	private VillageActionType myAction;
 	private int gold;
 	private int wood;
+	private Shader outline;
 	
 	// Use this for initialization
-	void Start () {
-	
+	void Start()
+	{
+		outline = Shader.Find("Glow");
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+	}
+	void OnMouseEnter()
+	{
+		this.renderer.material.shader = outline;
+	}
+	
+	void OnMouseExit()
+	{
+		this.renderer.material.shader = Shader.Find("Diffuse");
 	}
 
 	//constructor
@@ -140,9 +151,6 @@ public class Village : MonoBehaviour {
 	{
 		supportedUnits.Add (u);
 		u.setVillage (this);
-		//the following 2 lines may not be needed.
-		Tile t = u.getLocation ();
-		t.setOccupyingUnit (u);
 	}
 	//needs unit's setters and getters along with the Tombstone Landtype
 	/*
@@ -168,7 +176,8 @@ public class Village : MonoBehaviour {
 	{
 		controlledRegion.Remove (t);
 	}
-	
+
+
 	public void addRegion(List<Tile> regions)
 	{	
 		//doing exactly what the gameManager.addregion(List<Tile>, Village village) is doing

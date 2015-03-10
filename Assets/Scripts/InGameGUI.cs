@@ -34,6 +34,10 @@ public class InGameGUI : MonoBehaviour {
 		villageManager.upgradeVillage (v);
 		VillageCanvas.enabled = false;
 	}
+	public void closeVillgePressed()
+	{
+		VillageCanvas.enabled = false;
+	}
 	// Update is called once per frame
 	void Update(){
 
@@ -59,25 +63,19 @@ public class InGameGUI : MonoBehaviour {
 						_Unit = hit.collider.gameObject;
 						break;
 					}
-
-
 				}
-//				if(hit.collider.tag == "Meadow" )
-//				{
-//					// hit.collider.gameObject
-//					print("Meadow");
-//
-//				}
-//
-//				else if(hit.collider.tag == "Trees" )
-//				{
-//					print("Trees");
-//				}
-//
-//				else if(hit.collider.tag == "Grass" )
-//				{
-//					print("Grass");
-//				}
+
+			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Escape)) 
+		{
+			if(VillageCanvas.enabled = true)
+			{
+				VillageCanvas.enabled = false;
+			}
+			//TODO: bring up the esc menu
+			else{
 
 			}
 		}
