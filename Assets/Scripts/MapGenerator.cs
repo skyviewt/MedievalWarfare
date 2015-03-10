@@ -198,9 +198,9 @@ public class MapGenerator : MonoBehaviour {
 
 					Player p = players[color];
 
-					int num = (int)(TilesToReturn.Count / 2);
+					//int num = (int)(TilesToReturn.Count / 2);
 			
-					Tile location = TilesToReturn[num];
+					Tile location = TilesToReturn[0];
 
 					GameObject hovel = Instantiate(HovelPrefab, new Vector3(location.point.x, 0, location.point.y), HovelPrefab.transform.rotation) as GameObject;
 					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );

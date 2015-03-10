@@ -44,7 +44,7 @@ public class Unit : MonoBehaviour {
 		Tile toplace = null;
 		foreach (Tile a in location.neighbours) 
 		{
-			if(a.prefab == null && a.getOccupyingUnit() == null)
+			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
 			{
 				toplace = a;
 			}

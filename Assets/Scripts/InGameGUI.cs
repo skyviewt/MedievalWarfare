@@ -21,8 +21,9 @@ public class InGameGUI : MonoBehaviour {
 	public void peasantPressed()
 	{
 		Village v = selection.GetComponent<Village> ();
+	
 		Tile tileAt = v.getLocatedAt ();
-
+	
 		Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, PeasantPrefab);
 	
 		VillageCanvas.enabled = false;

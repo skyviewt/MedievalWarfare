@@ -34,7 +34,6 @@ public class Tile : MonoBehaviour
 		myTile.point = pt;
 		myTile.visited = false;
 		myTile.neighbours = new List<Tile>();
-		print ("initialised color is" + myTile.color);
 		return myTile;
 	}
 	
@@ -97,7 +96,7 @@ public class Tile : MonoBehaviour
 			child.renderer.material.shader = outline;
 			break;
 		}
-		print ("color of tile is " + this.color);
+//		print ("color of tile is " + this.color);
 	}
 
 	void OnMouseExit()
