@@ -29,23 +29,36 @@ public class MapGenerator : MonoBehaviour {
 		MeadowPrefab.tag = "Meadow";
 		GrassPrefab.tag = "Grass";
 
-		Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), gameObject);
+		GameObject firstPref = Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation) as GameObject;
+		
+		Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), firstPref);
 		map = new Graph (firstTile, null);
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
 
-		int maxNumberTile = rand.Next (500, 600);
+		int maxNumberTile = rand.Next (100, 200);
 		
 		while(map.vertices.Count < maxNumberTile)
 		{
 			Tile curr = unvisited_vertices[0];
 
-			Tile up = Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), gameObject);
-			Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), gameObject);
-			Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), gameObject);
-			Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), gameObject);
-			Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), gameObject);
-			Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), gameObject);
+			GameObject upPref = Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
+			Tile up = Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), upPref);
+
+			GameObject downPref = Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
+			Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
+
+			GameObject leftupPref = Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation) as GameObject;
+			Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
+
+			GameObject rightupPref = Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation) as GameObject;
+			Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
+
+			GameObject leftdownPref = Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation) as GameObject;
+			Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), leftdownPref);
+
+			GameObject rightdownPref = Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation) as GameObject;
+			Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), rightdownPref);
 			
 			unvisited_vertices.RemoveAt(0);
 			
@@ -108,7 +121,7 @@ public class MapGenerator : MonoBehaviour {
 		int tileRemoved = 0;
 		int index = 0, count = 0;
 
-		int tilesToRemove = rand.Next (100, 150);
+		int tilesToRemove = rand.Next (10, 20);
 		while(tileRemoved < tilesToRemove)
 		{
 			if(count > 10000)
@@ -143,19 +156,19 @@ public class MapGenerator : MonoBehaviour {
 		
 		foreach(Tile n in map.vertices)
 		{
+			int color = rand.Next(0,3);
 			int probability = rand.Next(0,100);
 			if( probability > 0 && probability <= 20)
 			{
 				n.InstantiateTree(TreePrefab);
+	
 			}
 			else if( probability > 20 && probability <=30)
 			{
 				n.InstantiateMeadow(MeadowPrefab);
 			}
-			else
-			{
-				n.InstantiateGrass(GrassPrefab);
-			}
+			n.setColor(color);
+			n.colorTile();
 		}
 		
 	}
@@ -168,7 +181,7 @@ public class MapGenerator : MonoBehaviour {
 	public void initializeVillagesOnMap(List<Player> players)
 	{
 
-		foreach ( Tile t in map.vertices )
+		foreach ( Tile t in this.map.vertices )
 		{
 			// player.count is the neutral color.
 			if ( t.getVisited() == false  && t.getColor() != players.Count )
@@ -185,10 +198,12 @@ public class MapGenerator : MonoBehaviour {
 
 					Player p = players[color];
 
-					int num = rand.Next(0, TilesToReturn.Count - 1);
+					int num = (int)(TilesToReturn.Count / 2);
+			
 					Tile location = TilesToReturn[num];
 
-					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, HovelPrefab );
+					GameObject hovel = Instantiate(HovelPrefab, new Vector3(location.point.x, 0, location.point.y), HovelPrefab.transform.rotation) as GameObject;
+					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
 					newVillage.addGold( 7 );
 					p.addVillage( newVillage );
 				} 

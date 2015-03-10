@@ -11,8 +11,6 @@ public class InGameGUI : MonoBehaviour {
 
 	public GameObject PeasantPrefab;
 	private GameObject selection;
-
-	public GameObject units;
 	
 	// Use this for initialization
 	void Start () {
@@ -22,12 +20,11 @@ public class InGameGUI : MonoBehaviour {
 
 	public void peasantPressed()
 	{
-		Tile t = selection.GetComponent<Tile>();
-		print (t != null);
+		Village v = selection.GetComponent<Village> ();
+		Tile tileAt = v.getLocatedAt ();
 
-
-		Unit p = Unit.CreateComponent (UnitType.PEASANT, t, t.getVillage(), PeasantPrefab, units);
-
+		Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, PeasantPrefab);
+	
 		VillageCanvas.enabled = false;
 	}
 	

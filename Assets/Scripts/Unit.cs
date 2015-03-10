@@ -27,8 +27,7 @@ public enum ActionType
 };
 
 public class Unit : MonoBehaviour {
-	
-	public GameObject unitPrefab;
+
 	public Tile locatedAt;
 	public ActionType myAction;
 	public UnitType myType;
@@ -40,16 +39,28 @@ public class Unit : MonoBehaviour {
 	
 	
 	//constructor
-	public static Unit CreateComponent ( UnitType unitType, Tile location, Village v, GameObject prefab, GameObject g ) 
+	public static Unit CreateComponent ( UnitType unitType, Tile location, Village v, GameObject PeasantPrefab ) 
 	{
-		Unit theUnit = g.AddComponent<Unit>();
+		Tile toplace = null;
+		foreach (Tile a in location.neighbours) 
+		{
+			if(a.prefab == null && a.getOccupyingUnit() == null)
+			{
+				toplace = a;
+			}
+		}
+		if(toplace == null)
+		{
+			toplace = location;
+		}
+		GameObject o = Instantiate(PeasantPrefab, new Vector3(toplace.point.x, 0, toplace.point.y), PeasantPrefab.transform.rotation) as GameObject;
+		Unit theUnit = o.AddComponent<Unit>();
 		theUnit.locatedAt = location;
 
 		theUnit.myType = unitType;
 		theUnit.myVillage = v;
 		theUnit.myAction = ActionType.ReadyForOrders;
-		
-		theUnit.unitPrefab = Instantiate(prefab, new Vector3(location.point.x, 1, location.point.y), prefab.transform.rotation) as GameObject;
+
 		location.setOccupyingUnit (theUnit);
 		return theUnit;
 	}

@@ -42,15 +42,14 @@ public class Village : MonoBehaviour {
 	//constructor
 	public static Village CreateComponent ( Player p, List<Tile> regions, Tile locatedAt, GameObject locationPrefab ) 
 	{
-		Village myVillage = locatedAt.gameObject.AddComponent<Village>();
+		Village myVillage = locationPrefab.AddComponent<Village>();
 		myVillage.controlledRegion = regions;
 		myVillage.controlledBy = p;
 		myVillage.myType = VillageType.Hovel;
 		myVillage.supportedUnits = new List<Unit> ();
 		locatedAt.replace (locationPrefab);
-		locatedAt.gameObject.AddComponent<Village> ();
 		myVillage.locatedAt = locatedAt;
-
+		locatedAt.setVillage (myVillage);
 		myVillage.myAction = VillageActionType.ReadyForOrders;
 		myVillage.gold = 0;
 		myVillage.wood = 0;
@@ -58,7 +57,6 @@ public class Village : MonoBehaviour {
 		foreach (Tile t in myVillage.controlledRegion) 
 		{
 			t.setVillage(myVillage);
-			print (t.getVillage());
 		}
 		return myVillage;
 	}

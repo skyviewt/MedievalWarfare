@@ -28,28 +28,17 @@ public class Tile : MonoBehaviour
 	private Structure occupyingStructure;
 
 
-	public Tile()
-	{
-		this.point = new Vector2();
-		neighbours = new List<Tile>();
-		visited = false;
-	}
 
 	public static Tile CreateComponent (Vector2 pt, GameObject g) {
 		Tile myTile = g.AddComponent<Tile>();
 		myTile.point = pt;
 		myTile.visited = false;
-		myTile.color = myTile.rand.Next (0, 3);
-
+		myTile.neighbours = new List<Tile>();
+		print ("initialised color is" + myTile.color);
 		return myTile;
 	}
-
-	public Tile(Vector2 pt)
-	{
-		this.point = pt;
-		neighbours = new List<Tile>();
-	}
 	
+
 	public void addNeighbour(Tile t)
 	{
 		if(this.neighbours.Where(
@@ -63,24 +52,12 @@ public class Tile : MonoBehaviour
 	{
 		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0, this.point.y), TreePrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Trees );
-		prefab.AddComponent<Tile> ();
-		this.colorTile(prefab);
 	}
 
 	public void InstantiateMeadow( GameObject MeadowPrefab )
 	{
 		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Meadow );
-		prefab.AddComponent<Tile> ();
-		this.colorTile( prefab );
-	}
-
-	public void InstantiateGrass( GameObject GrassPrefab )
-	{
-		prefab = Instantiate(GrassPrefab, new Vector3(this.point.x, 0, this.point.y), GrassPrefab.transform.rotation) as GameObject;
-		this.setLandType( LandType.Grass );
-		prefab.AddComponent<Tile> ();
-		this.colorTile( prefab );
 	}
 
 	void Start()
@@ -92,38 +69,18 @@ public class Tile : MonoBehaviour
 	{
 		Destroy (this.prefab);
 		GameObject newPref = Instantiate(pref, new Vector3(this.point.x, 0, this.point.y), pref.transform.rotation) as GameObject;
-		newPref.AddComponent<Tile> ();
-		this.colorTile ( newPref );
 		this.prefab = newPref;
 	}
 
-	public void colorTile(GameObject pref)
+	public void colorTile()
 	{
-
-		if( this.getLandType() != LandType.Grass )
+		if( this.color == 0 )
 		{
-			Transform child = pref.transform.Find("Grass");
-			print (child);
-			if( this.color == 0 )
-			{
-				child.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
-			}
-			else if ( this.color == 1 )
-			{
-				child.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
-			}
-			return;
+			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
 		}
-		else if (this.getLandType() == LandType.Grass )
+		else if ( this.color == 1 )
 		{
-			if(this.color == 0 )
-			{
-				pref.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
-			}
-			else if ( this.color == 1 )
-			{
-				pref.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
-			}
+			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
 		}
 	}
 	
@@ -140,6 +97,7 @@ public class Tile : MonoBehaviour
 			child.renderer.material.shader = outline;
 			break;
 		}
+		print ("color of tile is " + this.color);
 	}
 
 	void OnMouseExit()
@@ -157,6 +115,10 @@ public class Tile : MonoBehaviour
 		}
 	}
 
+	void Update()
+	{
+		colorTile ();
+	}
 
 	public void setLandType(LandType type)
 	{

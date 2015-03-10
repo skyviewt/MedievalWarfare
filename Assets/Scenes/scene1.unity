@@ -179,10 +179,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GrassPrefab: {fileID: 161544, guid: a05b14bb6a6914215b6cb6c9cd8d797d, type: 2}
-  MeadowPrefab: {fileID: 153796, guid: cd598069bad7a4df7a6bf4de35dde49b, type: 2}
-  TreePrefab: {fileID: 140178, guid: f20f229f4cc1c4607ab8827f093b53a9, type: 2}
+  MeadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
+  TreePrefab: {fileID: 126030, guid: bd74097a43dd548b0ae6323a66bb8952, type: 2}
   villages: {fileID: 584207832}
-  HovelPrefab: {fileID: 169916, guid: 451437d03c7e44c34976ea068a9a3404, type: 2}
+  HovelPrefab: {fileID: 107634, guid: f5c2c1845db0d49f288a3b96f33cdc0f, type: 2}
 --- !u!114 &197624458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,7 +229,6 @@ MonoBehaviour:
   SoldierText: {fileID: 879007389}
   KnightText: {fileID: 943254770}
   PeasantPrefab: {fileID: 172150, guid: 93f30482dc03041d191ff939f3c21285, type: 2}
-  units: {fileID: 1225337842}
 --- !u!4 &426345804
 Transform:
   m_ObjectHideFlags: 0
