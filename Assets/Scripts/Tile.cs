@@ -192,4 +192,16 @@ public class Tile : MonoBehaviour
 	void setPrefab (NetworkViewID prefID ){
 		prefab = NetworkView.Find (prefID).gameObject;
 	}
+	[RPC]
+	void setAndColor(int newColor){
+		color = newColor;
+		if( color == 0 )
+		{
+			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
+		}
+		else if ( color == 1 )
+		{
+			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+		}
+	}
 }

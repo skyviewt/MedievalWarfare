@@ -200,8 +200,9 @@ public class MapGenerator : MonoBehaviour {
 				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Meadow);
 
 			}
-			n.setColor(color);
-			n.colorTile();
+			//n.setColor(color);
+			//n.colorTile();
+			n.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
 		}
 
 	}
