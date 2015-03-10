@@ -13,24 +13,27 @@ public class InGameGUI : MonoBehaviour {
 	private GameObject _Village;
 	private GameObject _Unit;
 	private GameObject _Tile;
-	
+
+	public VillageManager villageManager;
 	// Use this for initialization
 	void Start () {
 		myCamera =  GameObject.FindGameObjectWithTag("MainCamera").camera;
+		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		VillageCanvas.enabled = false;
 	}
 
 	public void peasantPressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
-	
-		Tile tileAt = v.getLocatedAt ();
-	
-		Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, PeasantPrefab);
-	
+		villageManager.hirePeasant (v,PeasantPrefab);
 		VillageCanvas.enabled = false;
 	}
-	
+	public void villageUpgradePressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.upgradeVillage (v);
+		VillageCanvas.enabled = false;
+	}
 	// Update is called once per frame
 	void Update(){
 
@@ -56,6 +59,7 @@ public class InGameGUI : MonoBehaviour {
 						_Unit = hit.collider.gameObject;
 						break;
 					}
+
 
 				}
 //				if(hit.collider.tag == "Meadow" )
