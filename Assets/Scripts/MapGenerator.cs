@@ -167,12 +167,17 @@ public class MapGenerator : MonoBehaviour {
 			}
 
 			map.vertices.Remove(curr);
-			Network.Destroy (curr.gameObject);
+			gameObject.networkView.RPC("logMsg", RPCMode.AllBuffered, "Removed 1 tile");
+
+			//Network.destroy calls are not buffered!! use RPC
+			//Destroy (curr.gameObject);
+
+			curr.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, curr.gameObject.networkView.viewID);
 			tileRemoved++;
 			
 			count++;
 		}
-		
+		//colors
 		foreach(Tile n in map.vertices)
 		{
 			//TODO: hardcoded to 2 players color
@@ -180,18 +185,32 @@ public class MapGenerator : MonoBehaviour {
 			int probability = rand.Next(0,101);
 			if( probability > 0 && probability <= 20)
 			{
-				n.InstantiateTree(TreePrefab);
-	
+				//n.InstantiateTree(TreePrefab);
+
+				GameObject tpref = Network.Instantiate(TreePrefab, new Vector3(n.point.x, 0.2f, n.point.y), TreePrefab.transform.rotation, 0) as GameObject;
+				n.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tpref.networkView.viewID);
+				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Trees);
 			}
 			else if( probability > 20 && probability <=30)
 			{
-				n.InstantiateMeadow(MeadowPrefab);
+				//n.InstantiateMeadow(MeadowPrefab);
+
+				GameObject mpref = Network.Instantiate(MeadowPrefab, new Vector3(n.point.x, 0.2f, n.point.y), TreePrefab.transform.rotation, 0) as GameObject;
+				n.networkView.RPC ("setPrefab", RPCMode.AllBuffered, mpref.networkView.viewID);
+				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Meadow);
+
 			}
 			n.setColor(color);
 			n.colorTile();
 		}
-		
+
 	}
+
+	[RPC]
+	void logMsg(string text){
+		Debug.Log (text);
+	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -263,7 +282,8 @@ public class MapGenerator : MonoBehaviour {
 		{
 			Tile tmpTile = map.GetTile(t.point.x, t.point.y);
 			curr.addNeighbour(tmpTile);
-			Network.Destroy(t.gameObject);
+			//Destroy(t.gameObject);
+			t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
 	}
 	

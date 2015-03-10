@@ -107,6 +107,11 @@ public class Tile : MonoBehaviour
 	{
 		this.myType = type;
 	}
+	[RPC]
+	public void setLandTypeNet(int type)
+	{
+		this.myType = (LandType)type;
+	}
 	public LandType getLandType()
 	{
 		return this.myType;
@@ -177,5 +182,14 @@ public class Tile : MonoBehaviour
 		{
 			return false;
 		}
+	}
+
+	[RPC]
+	void destroyTile(NetworkViewID tileid){
+		Destroy (NetworkView.Find (tileid).gameObject);
+	}
+	[RPC]
+	void setPrefab (NetworkViewID prefID ){
+		prefab = NetworkView.Find (prefID).gameObject;
 	}
 }
