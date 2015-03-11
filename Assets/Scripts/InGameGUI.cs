@@ -23,11 +23,12 @@ public class InGameGUI : MonoBehaviour {
 	private GameObject _WoodValue;
 	private GameObject _GoldValue;
 
+	private bool _isAUnitSelected;
+
 	public Text _WoodText;
 	public Text _GoldText;
 
 	private Tile _move;
-	private List<Tile> _moves;
 
 	public VillageManager villageManager;
 	public UnitManager unitManager;
@@ -70,8 +71,8 @@ public class InGameGUI : MonoBehaviour {
 	{
 		_Unit = null;
 		_move = null;
-		_moves = null;
 		_Tile = null;
+		_isAUnitSelected = false;
 	}
 
 	public void cancelUnitMovePressed()
@@ -82,15 +83,19 @@ public class InGameGUI : MonoBehaviour {
 
 	void validateMove(RaycastHit hit)
 	{
-		if(_Unit != null && _moves != null && _Unit.GetComponent<Unit>().myAction == UnitActionType.ReadyForOrders)
+		print ("in validateMove");
+		if(_isAUnitSelected && (_Unit.GetComponent<Unit>().myAction == UnitActionType.ReadyForOrders || 
+		                        _Unit.GetComponent<Unit>().myAction == UnitActionType.Moved) )
 		{
 			_Tile = hit.collider.gameObject;
 			Tile selection = _Tile.GetComponent<Tile>();
-			Debug.LogWarning (_move);
-			if(_moves.Contains( selection ))
+			print (selection != null);
+			Debug.Log(_Unit.GetComponent<Unit>().getLocation().neighbours);
+			if(_Unit.GetComponent<Unit>().getLocation().neighbours.Contains( selection ))
 			{
 				_move = selection;
 			}
+			Debug.LogWarning (_move);
 			if( _move != null )
 			{
 				UnitCanvas.enabled = false;
@@ -100,7 +105,7 @@ public class InGameGUI : MonoBehaviour {
 				{
 					print ("doing the move now");
 					u.movePrefab(new Vector3(_move.point.x, 0.15f, _move.point.y));
-					unitManager.performMove(u, _move);
+					unitManager.moveUnit(u, _move);
 					print ("finished moving");
 				}
 				else
@@ -141,18 +146,14 @@ public class InGameGUI : MonoBehaviour {
 					case "Peasant": case "Infantry": case "Soldier": case "Knight":
 					{
 						_Unit = hit.collider.gameObject;
-						Tile onIt = _Unit.GetComponent<Unit>().getLocation();
-						_moves = onIt.neighbours;
-						foreach(Tile t in _moves)
-						{
-							t.gameObject.renderer.material.color = Color.white;
-						}
 						UnitCanvas.enabled = true;
 						print (hit.collider.tag);
+						_isAUnitSelected = true;
 						break;
 					}
-					case "Tile":
+					case "Grass":
 					{
+						print ("in tile");
 						validateMove(hit);
 						break;
 					}
@@ -177,11 +178,6 @@ public class InGameGUI : MonoBehaviour {
 			}
 		}
 
-		if (_Unit != null && _Unit.GetComponent<Unit>().myAction == UnitActionType.Moved ) 
-		{
-			UnitCanvas.enabled = false;
-			ErrorCanvas.enabled = true;
-		}
 	}
 
 }
