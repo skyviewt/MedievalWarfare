@@ -5,8 +5,8 @@ using System.Linq;
 
 public class UnitManager : MonoBehaviour {
 
-	public VillageManager villageManager;
-	public InGameGUI gameGUI;
+	private VillageManager villageManager;
+	private InGameGUI gameGUI;
 	public readonly int TEN = 10;
 	// Use this for initialization
 	void Start () {
