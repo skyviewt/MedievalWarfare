@@ -49,13 +49,13 @@ public class Tile : MonoBehaviour
 
 	public void InstantiateTree( GameObject TreePrefab)
 	{
-		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0.2f, this.point.y), TreePrefab.transform.rotation) as GameObject;
+		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0.15f, this.point.y), TreePrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Trees );
 	}
 
 	public void InstantiateMeadow( GameObject MeadowPrefab )
 	{
-		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0.2f, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
+		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0.15f, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Meadow );
 	}
 
@@ -162,9 +162,10 @@ public class Tile : MonoBehaviour
 		{
 			return true;
 		}
-		else //if(occupyingStructure != null || (type == UnitType.KNIGHT && myType == LandType.Trees) || occupyingUnit != null)
+		else if(occupyingStructure != null || (type == UnitType.KNIGHT && myType == LandType.Trees) || occupyingUnit != null)
 		{
 			return false;
 		}
+		return false;
 	}
 }

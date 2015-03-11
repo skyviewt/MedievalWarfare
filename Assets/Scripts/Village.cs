@@ -248,6 +248,10 @@ public class Village : MonoBehaviour {
 		// wood -= 8;
 		if (myType == VillageType.Hovel) 
 		{
+
+			//TODO
+			//destroy hovel make town
+
 			GameObject town = (GameObject)Instantiate (vm.townPrefab, gameObject.transform.position, Quaternion.identity);			
 			Village newVillage = Village.CreateComponent(controlledBy, controlledRegion, locatedAt, town);
 			town.transform.eulerAngles = new Vector3(-90,0,0); 
