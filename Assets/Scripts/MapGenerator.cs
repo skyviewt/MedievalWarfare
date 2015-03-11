@@ -48,32 +48,38 @@ public class MapGenerator : MonoBehaviour {
 			GameObject upPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x+1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile up = Tile.CreateComponent(new Vector2(curr.point.x+1, curr.point.y), upPref);
 			Tile up = upPref.GetComponent<Tile>();
-			up.point = new Vector2(curr.point.x+1, curr.point.y);
+			//Vector2 uPos = new Vector2(curr.point.x+1, curr.point.y);
+			upPref.networkView.RPC("setPointN", RPCMode.AllBuffered, new Vector3(curr.point.x+1, 0, curr.point.y));
 
 			GameObject downPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
 			Tile down = downPref.GetComponent<Tile>();
-			down.point = new Vector2(curr.point.x-1, curr.point.y);
+			//Vector2 dPos = new Vector2(curr.point.x-1, curr.point.y);
+			downPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x-1, 0, curr.point.y));
 
 			GameObject leftupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
 			Tile leftup = leftupPref.GetComponent<Tile>();
-			leftup.point =new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f);
+			//Vector2 luPos =new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f);
+			leftupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f));
 
 			GameObject rightupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
 			Tile rightup = rightupPref.GetComponent<Tile>();
-			rightup.point =new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f);
+			//Vector2 ruPos =new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f);
+			rightupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f));
 
 			GameObject leftdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), leftdownPref);
 			Tile leftdown = leftdownPref.GetComponent<Tile>();
-			leftdown.point =new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f);
+			//Vector2 ldPos =new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f);
+			leftdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f));
 
 			GameObject rightdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), rightdownPref);
 			Tile rightdown = rightdownPref.GetComponent<Tile>();
-			rightdown.point =new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f);
+			//Vector2 rdPos =new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f);
+			rightdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f));
 
 			unvisited_vertices.RemoveAt(0);
 			
@@ -94,42 +100,49 @@ public class MapGenerator : MonoBehaviour {
 			
 			if(tmp != null)
 			{
-				curr.addNeighbour(tmp);
+				//curr.addNeighbour(tmp);
+
+				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
 			}
 			
 			tmp = map.GetTile(curr.point.x-1, curr.point.y);
 			
 			if(tmp != null)
 			{
-				curr.addNeighbour(tmp);
+				//curr.addNeighbour(tmp);
+				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
 			}
 			
 			tmp = map.GetTile(curr.point.x + 0.5f, curr.point.y + 0.75f);
 			
 			if(tmp != null)
 			{
-				curr.addNeighbour(tmp);
+				//curr.addNeighbour(tmp);
+				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
 			}
 			
 			tmp = map.GetTile(curr.point.x + 0.5f, curr.point.y - 0.75f);
 			
 			if(tmp != null)
 			{
-				curr.addNeighbour(tmp);
+				//curr.addNeighbour(tmp);
+				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
 			}
 			
 			tmp = map.GetTile(curr.point.x - 0.5f, curr.point.y + 0.75f);
 			
 			if(tmp != null)
 			{
-				curr.addNeighbour(tmp);
+				//curr.addNeighbour(tmp);
+				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
 			}
 			
 			tmp = map.GetTile(curr.point.x - 0.5f, curr.point.y - 0.75f);
 			
 			if(tmp != null)
 			{
-				curr.addNeighbour(tmp);
+				//curr.addNeighbour(tmp);
+				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
 			}
 			
 		}
@@ -277,12 +290,14 @@ public class MapGenerator : MonoBehaviour {
 		if(map.addTileUnique(t))
 		{
 			unvisited_vertices.Add(t);
-			curr.addNeighbour(t);
+			//curr.addNeighbour(t);
+			curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
 		else
 		{
 			Tile tmpTile = map.GetTile(t.point.x, t.point.y);
-			curr.addNeighbour(tmpTile);
+			//curr.addNeighbour(tmpTile);
+			curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmpTile.gameObject.networkView.viewID);
 			//Destroy(t.gameObject);
 			t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}

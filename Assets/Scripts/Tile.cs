@@ -31,6 +31,7 @@ public class Tile : MonoBehaviour
 	//TODO point setters
 	//Changed static to public
 	public Tile CreateComponent (Vector2 pt, GameObject g) {
+		Debug.Log ("----------Tile.CreateComponent() ran--------------");
 		//Tile myTile = g.AddComponent<Tile>();
 		Tile myTile = this.gameObject.GetComponents<Tile> ()[0];
 		myTile.point = pt;
@@ -38,6 +39,7 @@ public class Tile : MonoBehaviour
 		myTile.neighbours = new List<Tile>();
 		return myTile;
 	}
+	//newly created constructor. This will be called whenever a gameobject containing Tile.cs gets instantiated
 	public Tile (){
 		visited = false;
 		neighbours = new List<Tile>();
@@ -202,6 +204,23 @@ public class Tile : MonoBehaviour
 		else if ( color == 1 )
 		{
 			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+		}
+	}
+
+	[RPC]
+	void setPointN(Vector3 pt){
+		this.point.x = pt.x;
+		this.point.y = pt.z;
+	}
+
+	[RPC]
+	public void addNeighbourN(NetworkViewID tileID)
+	{
+		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
+		if(this.neighbours.Where(
+			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
+		{
+			this.neighbours.Add(t);
 		}
 	}
 }
