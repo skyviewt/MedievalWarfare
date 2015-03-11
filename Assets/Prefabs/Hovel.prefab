@@ -11,6 +11,7 @@ GameObject:
   - 33: {fileID: 3307634}
   - 23: {fileID: 2307634}
   - 64: {fileID: 6407634}
+  - 148: {fileID: 14800892}
   m_Layer: 0
   m_Name: Hovel
   m_TagString: Hovel
@@ -70,6 +71,18 @@ MeshCollider:
   m_SmoothSphereCollisions: 0
   m_Convex: 0
   m_Mesh: {fileID: 4300000, guid: 8f0a0664e735acc458556266ea8c0bb8, type: 3}
+--- !u!148 &14800892
+NetworkView:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 107634}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 407634}
+  m_ViewID:
+    m_ID: 0
+    m_Type: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
