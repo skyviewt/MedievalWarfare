@@ -219,8 +219,8 @@ public class InGameGUI : MonoBehaviour {
 
 						int redrawWood = v.getWood();
 						_WoodText.text = redrawWood.ToString();
+
 					}
-					print ("finished moving");
 
 				}
 				else
@@ -270,7 +270,7 @@ public class InGameGUI : MonoBehaviour {
 						_UnitsText.text = redrawUnits.ToString();
 						break;
 					}
-					//TODO for jordan, he will understand (making gameObject to wrap all 4 unit prefabs to simplify upgrading, just like village)
+
 					case "Unit":
 					{
 						_Unit = hit.collider.gameObject;
@@ -295,7 +295,6 @@ public class InGameGUI : MonoBehaviour {
 					}
 					case "Grass":
 					{
-						print ("in tile");
 						ErrorCanvas.enabled = false;
 						validateMove(hit);
 						break;

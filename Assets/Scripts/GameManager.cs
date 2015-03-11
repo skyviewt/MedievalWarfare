@@ -18,7 +18,9 @@ public class GameManager : MonoBehaviour {
 			Network.InitializeServer (32, port);
 			
 			Player p1 = Player.CreateComponent ("Sky", "123", gameObject);
+			p1.setColor(0);
 			Player p2 = Player.CreateComponent ("Joerg", "456", gameObject);
+			p2.setColor(1)
 			List<Player> participants = new List<Player> ();
 			participants.Add (p1);
 			participants.Add (p2);
