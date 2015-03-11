@@ -80,8 +80,8 @@ public class Village : MonoBehaviour {
 		myVillage.locatedAt = locatedAt;
 		locatedAt.setVillage (myVillage);
 		myVillage.myAction = VillageActionType.ReadyForOrders;
-		myVillage.gold = 200;
-		myVillage.wood = 200;
+		myVillage.gold = 0;
+		myVillage.wood = 0;
 
 		foreach (Tile t in myVillage.controlledRegion) 
 		{
@@ -195,6 +195,15 @@ public class Village : MonoBehaviour {
 	{
 		controlledRegion.Add (t);
 		t.setVillage (this);
+		List<Player> allPlayers = this.controlledBy.getGame ().getPlayers ();
+
+		for(int i = 0; i < allPlayers.Count; i++) {
+			if(allPlayers[i] == controlledBy)
+			{
+				t.setColor(i);
+				break;
+			}
+		}
 	}
 
 	public void removeTile(Tile t)

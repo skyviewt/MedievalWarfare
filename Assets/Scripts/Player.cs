@@ -59,6 +59,10 @@ public class Player : MonoBehaviour{
 	{
 		this.aGame = pGame;
 	}
+	public Game getGame()
+	{
+		return this.aGame;
+	}
 	public string getName()
 	{
 		return username;

@@ -154,16 +154,31 @@ public class InGameGUI : MonoBehaviour {
 			{
 				UnitCanvas.enabled = false;
 				Unit u = _Unit.GetComponent<Unit>();
+				Village v = u.getVillage ();
 
 				if( _move.canUnitMove(u.getUnitType() ) )
 				{
 					print ("doing the move now");
 					u.movePrefab(new Vector3(_move.point.x, 0.15f, _move.point.y));
 					unitManager.moveUnit(u, _move);
+
+					//TODO This code is for taking over neutral tiles.
+					//This code doesnt' work because MapGenerator isn't making a Game :( maybe it's an easy fix? :S
+					if (selection.getVillage() == null)
+					{
+						v.addTile (selection);
+						int redrawRegion = v.getControlledRegion().Count;
+						_RegionText.text = redrawRegion.ToString();
+					}
+					//TODO This code is for cutting trees
+					if(selection.getLandType () == LandType.Trees)
+					{
+
+						int redrawWood = v.getWood();
+						_WoodText.text = redrawWood.ToString();
+					}
 					print ("finished moving");
-					Village v = u.getVillage ();
-					int redrawWood = v.getWood();
-					_WoodText.text = redrawWood.ToString();
+
 				}
 				else
 				{

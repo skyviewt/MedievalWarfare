@@ -243,7 +243,8 @@ public class MapGenerator : MonoBehaviour {
 
 					GameObject hovel = Instantiate(HovelPrefab, new Vector3(location.point.x, 0, location.point.y), HovelPrefab.transform.rotation) as GameObject;
 					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
-					newVillage.addGold( 7 );
+					newVillage.addGold( 200 );
+					newVillage.addWood ( 200);
 					p.addVillage( newVillage );
 				} 
 			}
