@@ -277,7 +277,7 @@ public class MapGenerator : MonoBehaviour {
 			{
 				//t.setColor(players.Count);
 				//t.gameObject.renderer.material.color = Color.white;
-				//t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2);
+				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2);
 			}
 		}
 
