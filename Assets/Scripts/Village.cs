@@ -81,7 +81,7 @@ public class Village : MonoBehaviour {
 		locatedAt.setVillage (myVillage);
 		myVillage.myAction = VillageActionType.ReadyForOrders;
 		myVillage.gold = 0;
-		myVillage.wood = 0;
+		myVillage.wood = 200;
 
 		foreach (Tile t in myVillage.controlledRegion) 
 		{
@@ -254,7 +254,7 @@ public class Village : MonoBehaviour {
 		//TODO
 
 		// show the new wood value
-		//wood -= 8;
+		wood -= 8;
 		if (myType == VillageType.Hovel) 
 		{
 			this.transform.FindChild("Hovel").gameObject.SetActive (false);
