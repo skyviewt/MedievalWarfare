@@ -146,6 +146,8 @@ public class InGameGUI : MonoBehaviour {
 					case "Peasant": case "Infantry": case "Soldier": case "Knight":
 					{
 						_Unit = hit.collider.gameObject;
+<<<<<<< HEAD
+=======
 						
 						Unit u = _Unit.GetComponent<Unit>();
 						Village v = u.getVillage();
@@ -155,7 +157,12 @@ public class InGameGUI : MonoBehaviour {
 						_GoldText.text = redrawGold.ToString();
 
 						Tile onIt = _Unit.GetComponent<Unit>().getLocation();
-		
+						_moves = onIt.neighbours;
+						foreach(Tile t in _moves)
+						{
+							t.gameObject.renderer.material.color = Color.white;
+						}
+>>>>>>> e3722f3ba980836d61ece23e7c561bfc20f207dc
 						UnitCanvas.enabled = true;
 						print (hit.collider.tag);
 						_isAUnitSelected = true;
