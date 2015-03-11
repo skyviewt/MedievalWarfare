@@ -22,19 +22,16 @@ public class MapGenerator : MonoBehaviour {
 		return this.map;
 	}
 	// Use this for initialization
-	public void initMap () 
-	{	
-		Debug.Log ("Mapgenerator: initMap()");
+	void Awake () 
+	{
 		// add tag for selection
 		TreePrefab.tag = "Trees";
 		MeadowPrefab.tag = "Meadow";
 		GrassPrefab.tag = "Grass";
 
-		GameObject firstPref = Network.Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation, 0) as GameObject;
-		//no longer static
-		//Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), firstPref);
-		Tile firstTile = firstPref.GetComponent<Tile> ();
-
+		GameObject firstPref = Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation) as GameObject;
+		
+		Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), firstPref);
 		map = new Graph (firstTile, null);
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
@@ -45,41 +42,24 @@ public class MapGenerator : MonoBehaviour {
 		{
 			Tile curr = unvisited_vertices[0];
 
-			GameObject upPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x+1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
-			//Tile up = Tile.CreateComponent(new Vector2(curr.point.x+1, curr.point.y), upPref);
-			Tile up = upPref.GetComponent<Tile>();
-			//Vector2 uPos = new Vector2(curr.point.x+1, curr.point.y);
-			upPref.networkView.RPC("setPointN", RPCMode.AllBuffered, new Vector3(curr.point.x+1, 0, curr.point.y));
+			GameObject upPref = Instantiate(GrassPrefab, new Vector3(curr.point.x+1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
+			Tile up = Tile.CreateComponent(new Vector2(curr.point.x+1, curr.point.y), upPref);
 
-			GameObject downPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
-			//Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
-			Tile down = downPref.GetComponent<Tile>();
-			//Vector2 dPos = new Vector2(curr.point.x-1, curr.point.y);
-			downPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x-1, 0, curr.point.y));
+			GameObject downPref = Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation) as GameObject;
+			Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
 
-			GameObject leftupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
-			//Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
-			Tile leftup = leftupPref.GetComponent<Tile>();
-			//Vector2 luPos =new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f);
-			leftupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f));
+			GameObject leftupPref = Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation) as GameObject;
+			Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
 
-			GameObject rightupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
-			//Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
-			Tile rightup = rightupPref.GetComponent<Tile>();
-			//Vector2 ruPos =new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f);
-			rightupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f));
+			GameObject rightupPref = Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation) as GameObject;
+			Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
 
-			GameObject leftdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
-			//Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), leftdownPref);
-			Tile leftdown = leftdownPref.GetComponent<Tile>();
-			//Vector2 ldPos =new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f);
-			leftdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f));
+			GameObject leftdownPref = Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation) as GameObject;
+			Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), leftdownPref);
 
-			GameObject rightdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
-			//Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), rightdownPref);
-			Tile rightdown = rightdownPref.GetComponent<Tile>();
-			//Vector2 rdPos =new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f);
-			rightdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f));
+			GameObject rightdownPref = Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation) as GameObject;
+			Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), rightdownPref);
+
 
 			unvisited_vertices.RemoveAt(0);
 			
@@ -100,49 +80,42 @@ public class MapGenerator : MonoBehaviour {
 			
 			if(tmp != null)
 			{
-				//curr.addNeighbour(tmp);
-
-				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				curr.addNeighbour(tmp);
 			}
 			
 			tmp = map.GetTile(curr.point.x-1, curr.point.y);
 			
 			if(tmp != null)
 			{
-				//curr.addNeighbour(tmp);
-				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				curr.addNeighbour(tmp);
 			}
 			
 			tmp = map.GetTile(curr.point.x + 0.5f, curr.point.y + 0.75f);
 			
 			if(tmp != null)
 			{
-				//curr.addNeighbour(tmp);
-				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				curr.addNeighbour(tmp);
 			}
 			
 			tmp = map.GetTile(curr.point.x + 0.5f, curr.point.y - 0.75f);
 			
 			if(tmp != null)
 			{
-				//curr.addNeighbour(tmp);
-				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				curr.addNeighbour(tmp);
 			}
 			
 			tmp = map.GetTile(curr.point.x - 0.5f, curr.point.y + 0.75f);
 			
 			if(tmp != null)
 			{
-				//curr.addNeighbour(tmp);
-				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				curr.addNeighbour(tmp);
 			}
 			
 			tmp = map.GetTile(curr.point.x - 0.5f, curr.point.y - 0.75f);
 			
 			if(tmp != null)
 			{
-				//curr.addNeighbour(tmp);
-				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				curr.addNeighbour(tmp);
 			}
 			
 		}
@@ -180,17 +153,12 @@ public class MapGenerator : MonoBehaviour {
 			}
 
 			map.vertices.Remove(curr);
-			gameObject.networkView.RPC("logMsg", RPCMode.AllBuffered, "Removed 1 tile");
-
-			//Network.destroy calls are not buffered!! use RPC
-			//Destroy (curr.gameObject);
-
-			curr.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, curr.gameObject.networkView.viewID);
+			Destroy (curr.gameObject);
 			tileRemoved++;
 			
 			count++;
 		}
-		//colors
+		
 		foreach(Tile n in map.vertices)
 		{
 			//TODO: hardcoded to 2 players color
@@ -198,33 +166,18 @@ public class MapGenerator : MonoBehaviour {
 			int probability = rand.Next(0,101);
 			if( probability > 0 && probability <= 20)
 			{
-				//n.InstantiateTree(TreePrefab);
-
-				GameObject tpref = Network.Instantiate(TreePrefab, new Vector3(n.point.x, 0.2f, n.point.y), TreePrefab.transform.rotation, 0) as GameObject;
-				n.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tpref.networkView.viewID);
-				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Trees);
+				n.InstantiateTree(TreePrefab);
+	
 			}
 			else if( probability > 20 && probability <=30)
 			{
-				//n.InstantiateMeadow(MeadowPrefab);
-
-				GameObject mpref = Network.Instantiate(MeadowPrefab, new Vector3(n.point.x, 0.2f, n.point.y), TreePrefab.transform.rotation, 0) as GameObject;
-				n.networkView.RPC ("setPrefab", RPCMode.AllBuffered, mpref.networkView.viewID);
-				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Meadow);
-
+				n.InstantiateMeadow(MeadowPrefab);
 			}
-			//n.setColor(color);
-			//n.colorTile();
-			n.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
+			n.setColor(color);
+			n.colorTile();
 		}
-
+		
 	}
-
-	[RPC]
-	void logMsg(string text){
-		Debug.Log (text);
-	}
-
 	
 	// Update is called once per frame
 	void Update () {
@@ -253,7 +206,7 @@ public class MapGenerator : MonoBehaviour {
 			
 					Tile location = TilesToReturn[0];
 
-					GameObject hovel = Network.Instantiate(HovelPrefab, new Vector3(location.point.x, 0, location.point.y), HovelPrefab.transform.rotation, 0) as GameObject;
+					GameObject hovel = Instantiate(HovelPrefab, new Vector3(location.point.x, 0, location.point.y), HovelPrefab.transform.rotation) as GameObject;
 					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
 					newVillage.addGold( 7 );
 					p.addVillage( newVillage );
@@ -295,16 +248,13 @@ public class MapGenerator : MonoBehaviour {
 		if(map.addTileUnique(t))
 		{
 			unvisited_vertices.Add(t);
-			//curr.addNeighbour(t);
-			curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			curr.addNeighbour(t);
 		}
 		else
 		{
 			Tile tmpTile = map.GetTile(t.point.x, t.point.y);
-			//curr.addNeighbour(tmpTile);
-			curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmpTile.gameObject.networkView.viewID);
-			//Destroy(t.gameObject);
-			t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			curr.addNeighbour(tmpTile);
+			Destroy(t.gameObject);
 		}
 	}
 	

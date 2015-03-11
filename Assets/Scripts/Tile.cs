@@ -28,23 +28,15 @@ public class Tile : MonoBehaviour
 	private Structure occupyingStructure;
 
 
-	//TODO point setters
-	//Changed static to public
-	public Tile CreateComponent (Vector2 pt, GameObject g) {
-		Debug.Log ("----------Tile.CreateComponent() ran--------------");
-		//Tile myTile = g.AddComponent<Tile>();
-		Tile myTile = this.gameObject.GetComponents<Tile> ()[0];
+
+	public static Tile CreateComponent (Vector2 pt, GameObject g) {
+		Tile myTile = g.AddComponent<Tile>();
 		myTile.point = pt;
 		myTile.visited = false;
 		myTile.neighbours = new List<Tile>();
 		return myTile;
 	}
-	//newly created constructor. This will be called whenever a gameobject containing Tile.cs gets instantiated
-	public Tile (){
-		visited = false;
-		neighbours = new List<Tile>();
-	}
-
+	
 
 	public void addNeighbour(Tile t)
 	{
@@ -103,11 +95,6 @@ public class Tile : MonoBehaviour
 	public void setLandType(LandType type)
 	{
 		this.myType = type;
-	}
-	[RPC]
-	public void setLandTypeNet(int type)
-	{
-		this.myType = (LandType)type;
 	}
 	public LandType getLandType()
 	{
@@ -180,43 +167,5 @@ public class Tile : MonoBehaviour
 			return false;
 		}
 		return false;
-	}
-
-	[RPC]
-	void destroyTile(NetworkViewID tileid){
-		Destroy (NetworkView.Find (tileid).gameObject);
-	}
-	[RPC]
-	void setPrefab (NetworkViewID prefID ){
-		prefab = NetworkView.Find (prefID).gameObject;
-	}
-	[RPC]
-	void setAndColor(int newColor){
-		color = newColor;
-		if( color == 0 )
-		{
-			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
-		}
-		else if ( color == 1 )
-		{
-			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
-		}
-	}
-
-	[RPC]
-	void setPointN(Vector3 pt){
-		this.point.x = pt.x;
-		this.point.y = pt.z;
-	}
-
-	[RPC]
-	public void addNeighbourN(NetworkViewID tileID)
-	{
-		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
-		if(this.neighbours.Where(
-			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
-		{
-			this.neighbours.Add(t);
-		}
 	}
 }

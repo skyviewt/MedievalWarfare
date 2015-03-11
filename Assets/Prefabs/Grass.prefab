@@ -11,8 +11,6 @@ GameObject:
   - 33: {fileID: 3361544}
   - 23: {fileID: 2361544}
   - 64: {fileID: 6461544}
-  - 148: {fileID: 14840496}
-  - 114: {fileID: 11410582}
   m_Layer: 0
   m_Name: Grass
   m_TagString: Grass
@@ -72,33 +70,6 @@ MeshCollider:
   m_SmoothSphereCollisions: 0
   m_Convex: 0
   m_Mesh: {fileID: 4300002, guid: 9d70a4cf056281b4da5c280701638893, type: 3}
---- !u!114 &11410582
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 161544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96e674a843be24f598e7be030d9db2f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  point: {x: 0, y: 0}
-  neighbours: []
-  outline: {fileID: 0}
-  prefab: {fileID: 0}
---- !u!148 &14840496
-NetworkView:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 161544}
-  m_Enabled: 1
-  m_StateSynchronization: 1
-  m_Observed: {fileID: 461544}
-  m_ViewID:
-    m_ID: 0
-    m_Type: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
