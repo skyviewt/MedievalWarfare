@@ -51,6 +51,8 @@ public class InGameGUI : MonoBehaviour {
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.hirePeasant (v,PeasantPrefab);
+		int redrawUnits = v.getControlledUnits().Count();
+		_UnitsText.text = redrawUnits.ToString();
 		VillageCanvas.enabled = false;
 	}
 	public void villageUpgradePressed()

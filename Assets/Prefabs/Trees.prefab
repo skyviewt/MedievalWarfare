@@ -68,7 +68,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.54139233, y: 2.93021441, z: 1.82563949}
+  m_Size: {x: 0, y: 0, z: 0}
   m_Center: {x: -.0870476961, y: 1.4651072, z: .178073853}
 --- !u!148 &14839130
 NetworkView:
