@@ -14,8 +14,8 @@ public class InGameGUI : MonoBehaviour {
 
 
 	// prefabs
-	public GameObject PeasantPrefab;
-	public GameObject InfantryPrefab;
+	public GameObject UnitPrefab;
+	//public GameObject InfantryPrefab;
 
 	//selections
 	private GameObject _Village;
@@ -52,7 +52,7 @@ public class InGameGUI : MonoBehaviour {
 	public void trainPeasantPressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
-		villageManager.hirePeasant (v,PeasantPrefab);
+		villageManager.hirePeasant (v,UnitPrefab);
 		int redrawUnits = v.getControlledUnits().Count();
 		int redrawGold = v.getGold();
 		_UnitsText.text = redrawUnits.ToString();
@@ -63,7 +63,7 @@ public class InGameGUI : MonoBehaviour {
 	public void trainInfantryPressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
-		villageManager.hireInfantry (v,InfantryPrefab);
+		villageManager.hireInfantry (v,UnitPrefab);
 		int redrawUnits = v.getControlledUnits().Count();
 		int redrawGold = v.getGold();
 		_UnitsText.text = redrawUnits.ToString();
@@ -227,7 +227,7 @@ public class InGameGUI : MonoBehaviour {
 						break;
 					}
 					//TODO for jordan, he will understand (making gameObject to wrap all 4 unit prefabs to simplify upgrading, just like village)
-					case "Peasant": case "Infantry": case "Soldier": case "Knight":
+					case "Unit":
 					{
 						_Unit = hit.collider.gameObject;
 						

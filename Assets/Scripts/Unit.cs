@@ -150,7 +150,25 @@ public class Unit : MonoBehaviour {
 		this.myType = newLevel;
 		//this.myAction = UnitActionType.UpgradingCombining;
 
-		//TODO
-
+		switch (myType) {
+		case UnitType.INFANTRY:
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (true);
+			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+			this.transform.FindChild("Knight").gameObject.SetActive (false);
+			break;
+		case UnitType.SOLDIER:
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+			this.transform.FindChild("Soldier").gameObject.SetActive (true);
+			this.transform.FindChild("Knight").gameObject.SetActive (false);
+			break;
+		case UnitType.KNIGHT:
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+			this.transform.FindChild("Knight").gameObject.SetActive (true);
+			break;
+		}
 	}
 }

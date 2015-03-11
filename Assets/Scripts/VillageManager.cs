@@ -101,6 +101,10 @@ public class VillageManager : MonoBehaviour {
 		if (villageGold >= 10) 
 		{
 			Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, peasantPrefab);
+			p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (true);
+			p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
+			p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
+			p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
 			v.setGold (villageGold - TEN);
 			v.addUnit (p);
 		} else {
@@ -115,6 +119,10 @@ public class VillageManager : MonoBehaviour {
 		int villageGold = v.getGold ();
 		if (villageGold >= 20) {
 			Unit p = Unit.CreateComponent (UnitType.INFANTRY, tileAt, v, infantryPrefab);
+			p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
+			p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (true);
+			p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
+			p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
 			v.setGold (villageGold - TWENTY);
 			v.addUnit (p);
 		} else {
