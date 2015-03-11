@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class UnitManager : MonoBehaviour {
-<<<<<<< HEAD
 
 	public VillageManager villageManager;
 	public readonly int TEN = 10;
@@ -12,13 +11,6 @@ public class UnitManager : MonoBehaviour {
 	{
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
 	}
-
-
-=======
-	
-	public VillageManager villageManager;
-	public readonly int TEN = 10;
-
 
 	// Use this for initialization
 	void Start () {
