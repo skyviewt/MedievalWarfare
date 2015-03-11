@@ -242,17 +242,9 @@ public class Village : MonoBehaviour {
 	//Needs setVillage in Tile. Remove comment once setVillage is implemented
 	public void addTile(Tile t)
 	{
-		controlledRegion.Add (t);
-		t.setVillage (this);
-		List<Player> allPlayers = this.controlledBy.getGame ().getPlayers ();
-
-		for(int i = 0; i < allPlayers.Count; i++) {
-			if(allPlayers[i] == controlledBy)
-			{
-				t.setColor(i);
-				break;
-			}
-		}
+		controlledRegion.Add(t);
+		t.setVillage(this);
+		t.setColor(this.getPlayer().getColor ());
 	}
 
 	public void removeTile(Tile t)
