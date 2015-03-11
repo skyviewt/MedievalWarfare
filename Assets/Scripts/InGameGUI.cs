@@ -127,7 +127,7 @@ public class InGameGUI : MonoBehaviour {
 
 				switch(hit.collider.tag)
 				{
-					case "Hovel": case "Town": case "Fort":
+					case "Town":
 					{
 						VillageCanvas.enabled = true;
 						_Village = hit.collider.gameObject;

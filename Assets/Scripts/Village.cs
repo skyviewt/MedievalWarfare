@@ -22,7 +22,7 @@ public class Village : MonoBehaviour {
 	private Player controlledBy;
 	private Tile locatedAt;
 	private List<Unit> supportedUnits;
-	private VillageType myType;
+	public VillageType myType;
 	private VillageActionType myAction;
 	private int gold;
 	private int wood;
@@ -48,6 +48,10 @@ public class Village : MonoBehaviour {
 		foreach (Transform child in transform)
 		{
 			child.renderer.material.shader = outline;
+			foreach (Transform childchild in child)
+			{
+				childchild.renderer.material.shader = outline;
+			}
 		}
 	}
 	
@@ -57,6 +61,10 @@ public class Village : MonoBehaviour {
 		foreach (Transform child in transform)
 		{
 			child.renderer.material.shader = Shader.Find("Diffuse");
+			foreach (Transform childchild in child)
+			{
+				childchild.renderer.material.shader = Shader.Find("Diffuse");
+			}
 		}
 	}
 
@@ -241,28 +249,22 @@ public class Village : MonoBehaviour {
 
 	public void upgrade()
 	{
-		myAction = VillageActionType.BuildStageOne;
+		//myAction = VillageActionType.BuildStageOne;
 
 		//TODO
 		// show the new wood value
-		// wood -= 8;
+		wood -= 8;
 		if (myType == VillageType.Hovel) 
 		{
-
-			//TODO
-			//destroy hovel make town
-
-			GameObject town = (GameObject)Instantiate (vm.townPrefab, gameObject.transform.position, Quaternion.identity);			
-			Village newVillage = Village.CreateComponent(controlledBy, controlledRegion, locatedAt, town);
-			town.transform.eulerAngles = new Vector3(-90,0,0); 
-			newVillage.setMyType (VillageType.Town);
+			this.transform.FindChild("Hovel").gameObject.SetActive (false);
+			this.transform.FindChild("Town").gameObject.SetActive (true);
+			setMyType (VillageType.Town);
 		}
 		else if (myType == VillageType.Town) 
 		{
-			GameObject fort = (GameObject)Instantiate (vm.fortPrefab, gameObject.transform.position, Quaternion.identity);			
-			Village newVillage = Village.CreateComponent(controlledBy, controlledRegion, locatedAt, fort);
-			fort.transform.eulerAngles = new Vector3(0,0,0); 
-			newVillage.setMyType (VillageType.Fort);
+			transform.FindChild("Town").gameObject.SetActive (false);
+			transform.FindChild("Fort").gameObject.SetActive (true);
+			setMyType (VillageType.Fort);
 		}
 	}
 	//sets gold to 0 and returns the previous gold value
