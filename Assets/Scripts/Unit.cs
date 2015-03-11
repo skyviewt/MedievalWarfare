@@ -75,14 +75,20 @@ public class Unit : MonoBehaviour {
 	{
 		this.renderer.material.shader = outline;
 	}
-	
+
+	public void movePrefab(Vector3 vector)
+	{
+		this.transform.localPosition = vector;
+	}
+
 	void OnMouseExit()
 	{
 		this.renderer.material.shader = Shader.Find("Diffuse");
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
 		
 	}
 	

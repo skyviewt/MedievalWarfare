@@ -232,6 +232,7 @@ public class Village : MonoBehaviour {
 		{
 			//TODO
 			//destroy hovel make town
+
 		}
 		else if (myType == VillageType.Fort) 
 		{
