@@ -56,7 +56,7 @@ public class Unit : MonoBehaviour {
 		}
 		GameObject o = Instantiate(PeasantPrefab, new Vector3(toplace.point.x, 0.15f, toplace.point.y), toplace.transform.rotation) as GameObject;
 		Unit theUnit = o.AddComponent<Unit>();
-		theUnit.locatedAt = location;
+		theUnit.locatedAt = toplace;
 
 		theUnit.myType = unitType;
 		theUnit.myVillage = v;

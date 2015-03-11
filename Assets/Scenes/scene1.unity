@@ -1475,7 +1475,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 426345803}
-        m_MethodName: closeVillgePressed
+        m_MethodName: closeVillagePressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
