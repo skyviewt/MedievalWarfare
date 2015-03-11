@@ -24,8 +24,7 @@ public class UnitManager : MonoBehaviour {
 	void Start () {
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
 	}
-
->>>>>>> 0fab799e0399770ed7c57414f0685f88d19f69c7
+	
 	public void moveUnit(Unit unit, Tile dest)
 	{
 		Village destVillage = dest.getVillage ();
