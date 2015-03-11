@@ -27,6 +27,8 @@ public class InGameGUI : MonoBehaviour {
 
 	public Text _WoodText;
 	public Text _GoldText;
+	public Text _RegionText;
+	public Text _UnitsText;
 
 	private Tile _move;
 
@@ -44,8 +46,8 @@ public class InGameGUI : MonoBehaviour {
 		ErrorCanvas.enabled = false;
 	}
 	
-	//Functions for when Village is pressed
-	public void peasantPressed()
+	//Functions for when a Village is selected
+	public void hirePeasantPressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.hirePeasant (v,PeasantPrefab);
@@ -66,10 +68,10 @@ public class InGameGUI : MonoBehaviour {
 		VillageCanvas.enabled = false;
 	}
 
+	//Functions for when a Unit is selected
 	public void unitPressed()
 	{
 		UnitCanvas.enabled = true;
-
 	}
 	void ClearSelections()
 	{
@@ -79,10 +81,41 @@ public class InGameGUI : MonoBehaviour {
 		_isAUnitSelected = false;
 	}
 
-	public void cancelUnitMovePressed()
+	public void cancelUnitPressed()
 	{
 		UnitCanvas.enabled = false;
 		ClearSelections ();
+	}
+
+	public void unitUpgradeInfantryPressed()
+	{
+		//When you upgrade a unit, you only need to redraw the gold on the HUD
+		Unit u = _Unit.GetComponent<Unit>();
+		unitManager.upgradeUnit(u,UnitType.INFANTRY);
+		Village v = u.getVillage();
+		int redrawGold = v.getGold();
+		_GoldText.text = redrawGold.ToString();
+
+	}
+
+	public void unitUpgradeSoldierPressed()
+	{
+		Unit u = _Unit.GetComponent<Unit>();
+		unitManager.upgradeUnit(u,UnitType.SOLDIER);
+		Village v = u.getVillage();
+		int redrawGold = v.getGold();
+		_GoldText.text = redrawGold.ToString();
+
+	}
+
+	public void unitUpgradeKnightPressed()
+	{
+		Unit u = _Unit.GetComponent<Unit>();
+		unitManager.upgradeUnit(u,UnitType.KNIGHT);
+		Village v = u.getVillage();
+		int redrawGold = v.getGold();
+		_GoldText.text = redrawGold.ToString();
+
 	}
 
 	void validateMove(RaycastHit hit)
@@ -121,7 +154,7 @@ public class InGameGUI : MonoBehaviour {
 
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update()
 	{
@@ -143,8 +176,12 @@ public class InGameGUI : MonoBehaviour {
 						Village v = _Village.GetComponent<Village>();
 						int redrawWood = v.getWood();
 						int redrawGold = v.getGold();
+						int redrawRegion = v.getControlledRegion().Count();
+						int redrawUnits = v.getControlledUnits().Count();
 						_WoodText.text = redrawWood.ToString();
 						_GoldText.text = redrawGold.ToString();
+						_RegionText.text = redrawRegion.ToString();
+						_UnitsText.text = redrawUnits.ToString();
 						break;
 					}
 					case "Peasant": case "Infantry": case "Soldier": case "Knight":
@@ -155,8 +192,12 @@ public class InGameGUI : MonoBehaviour {
 						Village v = u.getVillage();
 						int redrawWood = v.getWood();
 						int redrawGold = v.getGold();
+						int redrawRegion = v.getControlledRegion().Count();
+						int redrawUnits = v.getControlledUnits().Count();
 						_WoodText.text = redrawWood.ToString();
 						_GoldText.text = redrawGold.ToString();
+						_RegionText.text = redrawRegion.ToString();
+						_UnitsText.text = redrawUnits.ToString();
 
 						Tile onIt = _Unit.GetComponent<Unit>().getLocation();
 		
@@ -182,10 +223,15 @@ public class InGameGUI : MonoBehaviour {
 			{
 				VillageCanvas.enabled = false;
 			}
+			if(UnitCanvas.enabled == true)
+			{
+				UnitCanvas.enabled = false;
+			}
 			if(ErrorCanvas.enabled == true)
 			{
 				ErrorCanvas.enabled = false;
 			}
+
 			//TODO: bring up the esc menu
 			else{
 

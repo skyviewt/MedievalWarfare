@@ -112,16 +112,17 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
-/*	public void upgradeUnit(Unit u, UnitType newLevel)
+	public void upgradeUnit(Unit u, UnitType newLevel)
 	{
-		UnitType currentType = u.getUnitType();
-
-		else 
+		Village unitVillage = u.getVillage();
+		UnitType unitType = u.getUnitType();
+		UnitActionType unitAction = u.getAction();
+		int goldAvailable = unitVillage.getGold();
+		int goldRequired = (newLevel - unitType) * TEN;
+		
+		if((goldAvailable >= goldRequired)&&(newLevel > unitType)&&(unitAction == UnitActionType.ReadyForOrders || unitAction == UnitActionType.Moved))
 		{
-			UnitActionType currentAction = u.getAction ();
-			int goldAvailable = u.getVillage ().getGold ();
-			int goldRequired = 
+			u.upgrade(newLevel,goldRequired);
 		}
-
-	}*/
+	}
 }

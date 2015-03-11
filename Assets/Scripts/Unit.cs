@@ -145,4 +145,12 @@ public class Unit : MonoBehaviour {
 			return FIFTY_FOUR;
 		}
 	}
+	public void upgrade(UnitType newLevel, int goldRequired)
+	{
+		myVillage.addGold (-goldRequired);
+		this.myType = newLevel;
+		//this.myAction = UnitActionType.UpgradingCombining;
+		//TODO make new unit prefab and an object containing it for upgrading, just like what Jordan did for Village (JORDAN DO THIS PLS !)
+
+	}
 }
