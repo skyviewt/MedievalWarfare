@@ -197,7 +197,7 @@ public class MapGenerator : MonoBehaviour {
 				int color = t.getColor();
 			
 				searchVillages( t, TilesToReturn, color );
-
+				TilesToReturn.Add (t);
 
 				if( TilesToReturn.Count >= 3 )
 				{
@@ -211,6 +211,11 @@ public class MapGenerator : MonoBehaviour {
 					newVillage.addGold( 7 );
 					p.addVillage( newVillage );
 				} 
+			}
+			if (t.getVillage() == null && t.getColor() != players.Count)
+			{
+				t.setColor(players.Count);
+				t.gameObject.renderer.material.color = Color.white;
 			}
 		}
 
@@ -227,7 +232,7 @@ public class MapGenerator : MonoBehaviour {
 
 	public void searchVillages(Tile toSearch, List<Tile> TilesToReturn, int color )
 	{
-		foreach( Tile n in toSearch.neighbours )
+		foreach( Tile n in toSearch.getNeighbours() )
 		{
 			if(n.getVisited() == false && n.getColor() == color)
 			{

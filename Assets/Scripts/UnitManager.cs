@@ -6,11 +6,13 @@ using System.Linq;
 public class UnitManager : MonoBehaviour {
 
 	public VillageManager villageManager;
+	public readonly int TEN = 10;
 	void Start()
 	{
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
 	}
-	
+
+
 	public void moveUnit(Unit unit, Tile dest)
 	{
 		Village destVillage = dest.getVillage ();
@@ -37,7 +39,7 @@ public class UnitManager : MonoBehaviour {
 				{
 					dest.setOccupyingUnit(unit);
 					unit.setLocation(dest);
-					unit.setAction(ActionType.CapturingNeutral);
+					unit.setAction(UnitActionType.CapturingNeutral);
 					srcVillage.addTile(dest);
 					villageManager.MergeAlliedRegions(dest);
 				}
@@ -60,7 +62,7 @@ public class UnitManager : MonoBehaviour {
 								//Destroy () //destroy prefab
 								unit.setLocation(dest);
 								dest.setOccupyingUnit(unit);
-								unit.setAction(ActionType.CapturingNeutral);
+								unit.setAction(UnitActionType.CapturingNeutral);
 								villageManager.takeOverTile(dest);
 								villageManager.MergeAlliedRegions((dest);
 							}
@@ -69,7 +71,7 @@ public class UnitManager : MonoBehaviour {
 							{
 								unit.setLocation(dest);
 								dest.setOccupyingUnit(unit);
-								unit.setAction(ActionType.CapturingEnemy);
+								unit.setAction(UnitActionType.CapturingEnemy);
 								villageManager.takeOverTile(dest);
 								villageManager.MergeAlliedRegions((dest);
 							}
@@ -91,23 +93,36 @@ public class UnitManager : MonoBehaviour {
 			bool destHasRoad = dest.checkRoad ();
 			if (destLandType == LandType.Meadow && destHasRoad == false) {
 				dest.setLandType (LandType.Grass);
-				unit.setAction (ActionType.Moved);
+				unit.setAction (UnitActionType.Moved);
 			}		
 		} 
 		else if (srcUnitType != UnitType.KNIGHT) 
 		{
 			if (destLandType == LandType.Trees)
 			{
-				unit.setAction(ActionType.ChoppingTree);
+				unit.setAction(UnitActionType.ChoppingTree);
 				srcVillage.addWood(1);
 				dest.setLandType(LandType.Grass);
 			}
 			else if (destLandType == LandType.TombStone)
 			{
-				unit.setAction(ActionType.ClearingTombstone);
+				unit.setAction(UnitActionType.ClearingTombstone);
 				dest.setLandType(LandType.Grass);
 			}
-			unit.setAction(ActionType.Moved);
+			unit.setAction(UnitActionType.Moved);
 		}
 	}
+
+/*	public void upgradeUnit(Unit u, UnitType newLevel)
+	{
+		UnitType currentType = u.getUnitType();
+
+		else 
+		{
+			UnitActionType currentAction = u.getAction ();
+			int goldAvailable = u.getVillage ().getGold ();
+			int goldRequired = 
+		}
+
+	}*/
 }

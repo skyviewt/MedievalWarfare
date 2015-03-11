@@ -11,7 +11,7 @@ public enum UnitType
 	KNIGHT
 };
 
-public enum ActionType
+public enum UnitActionType
 {
 	ReadyForOrders,
 	Moved,
@@ -29,7 +29,7 @@ public enum ActionType
 public class Unit : MonoBehaviour {
 
 	public Tile locatedAt;
-	public ActionType myAction;
+	public UnitActionType myAction;
 	public UnitType myType;
 	private Village myVillage;
 	private readonly int TWO = 2;
@@ -60,7 +60,7 @@ public class Unit : MonoBehaviour {
 
 		theUnit.myType = unitType;
 		theUnit.myVillage = v;
-		theUnit.myAction = ActionType.ReadyForOrders;
+		theUnit.myAction = UnitActionType.ReadyForOrders;
 
 		location.setOccupyingUnit (theUnit);
 		return theUnit;
@@ -117,12 +117,12 @@ public class Unit : MonoBehaviour {
 		this.locatedAt = t;
 	}
 	
-	public void setAction(ActionType action)
+	public void setAction(UnitActionType action)
 	{
 		this.myAction = action;
 	}
 	
-	public ActionType getAction()
+	public UnitActionType getAction()
 	{
 		return this.myAction;
 	}
