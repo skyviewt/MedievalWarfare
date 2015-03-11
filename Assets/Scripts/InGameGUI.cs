@@ -82,7 +82,7 @@ public class InGameGUI : MonoBehaviour {
 
 	void validateMove(RaycastHit hit)
 	{
-		if(_Unit != null && _moves != null && _Unit.GetComponent<Unit>().myAction == ActionType.ReadyForOrders)
+		if(_Unit != null && _moves != null && _Unit.GetComponent<Unit>().myAction == UnitActionType.ReadyForOrders)
 		{
 			_Tile = hit.collider.gameObject;
 			Tile selection = _Tile.GetComponent<Tile>();
@@ -177,7 +177,7 @@ public class InGameGUI : MonoBehaviour {
 			}
 		}
 
-		if (_Unit != null && _Unit.GetComponent<Unit>().myAction == ActionType.Moved ) 
+		if (_Unit != null && _Unit.GetComponent<Unit>().myAction == UnitActionType.Moved ) 
 		{
 			UnitCanvas.enabled = false;
 			ErrorCanvas.enabled = true;

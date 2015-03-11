@@ -7,11 +7,6 @@ public class UnitManager : MonoBehaviour {
 
 	public VillageManager villageManager;
 	public readonly int TEN = 10;
-	void Start()
-	{
-		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
-	}
-
 	// Use this for initialization
 	void Start () {
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
