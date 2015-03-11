@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class InGameGUI : MonoBehaviour {
 	public Camera myCamera;
 	public Canvas VillageCanvas;
 	public Canvas UnitCanvas;
+	public Canvas HUDCanvas;
 
 	// prefabs
 	public GameObject PeasantPrefab;
@@ -13,15 +15,24 @@ public class InGameGUI : MonoBehaviour {
 	private GameObject _Village;
 	private GameObject _Unit;
 	private GameObject _Tile;
+	private GameObject _WoodValue;
+	private GameObject _GoldValue;
+
+	public Text _WoodText;
+	public Text _GoldText;
 
 	public VillageManager villageManager;
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
 		myCamera =  GameObject.FindGameObjectWithTag("MainCamera").camera;
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
+		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
-	}
 
+	}
+	
+	//Functions for when Village is pressed
 	public void peasantPressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
@@ -34,12 +45,13 @@ public class InGameGUI : MonoBehaviour {
 		villageManager.upgradeVillage (v);
 		VillageCanvas.enabled = false;
 	}
-	public void closeVillgePressed()
+	public void closeVillagePressed()
 	{
 		VillageCanvas.enabled = false;
 	}
 	// Update is called once per frame
-	void Update(){
+	void Update()
+	{
 
 		Ray ray = myCamera.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
@@ -55,9 +67,13 @@ public class InGameGUI : MonoBehaviour {
 					{
 						VillageCanvas.enabled = true;
 						_Village = hit.collider.gameObject;
+						Village v = _Village.GetComponent<Village>();
+						int redrawWood = v.getWood();
+						int redrawGold = v.getGold ();
+						_WoodText.text = redrawWood.ToString();
+						_GoldText.text = redrawGold.ToString ();
 						break;
 					}
-
 					case "Peasant": case "Infantry": case "Soldier": case "Knight":
 					{
 						_Unit = hit.collider.gameObject;
