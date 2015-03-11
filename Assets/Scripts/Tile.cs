@@ -28,13 +28,20 @@ public class Tile : MonoBehaviour
 	private Structure occupyingStructure;
 
 
-
+	//This function should not be used, the Tile component is now always attached to a Grass Tile
 	public static Tile CreateComponent (Vector2 pt, GameObject g) {
+		Debug.Log ("----------Tile.CreateComponent() ran--------------");
 		Tile myTile = g.AddComponent<Tile>();
 		myTile.point = pt;
 		myTile.visited = false;
 		myTile.neighbours = new List<Tile>();
 		return myTile;
+	}
+
+	//newly created constructor. This will be called whenever a gameobject containing Tile.cs gets instantiated
+	public Tile (){
+		visited = false;
+		neighbours = new List<Tile>();
 	}
 	
 
@@ -46,15 +53,19 @@ public class Tile : MonoBehaviour
 			this.neighbours.Add(t);
 		}
 	}
-
+	//This method shouldn't be called
 	public void InstantiateTree( GameObject TreePrefab)
 	{
+		Debug.Log ("------Tile.InstanciateTree------");
 		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0.15f, this.point.y), TreePrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Trees );
 	}
 
+
+	//This method shouldn't be called
 	public void InstantiateMeadow( GameObject MeadowPrefab )
 	{
+		Debug.Log ("-----Tile.InstanciateMeadow------");
 		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0.15f, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Meadow );
 	}
@@ -167,5 +178,49 @@ public class Tile : MonoBehaviour
 			return false;
 		}
 		return false;
+	}
+
+	[RPC]
+	public void setLandTypeNet(int type)
+	{
+		this.myType = (LandType)type;
+	}
+
+	[RPC]
+	void destroyTile(NetworkViewID tileid){
+		Destroy (NetworkView.Find (tileid).gameObject);
+	}
+	[RPC]
+	void setPrefab (NetworkViewID prefID ){
+		prefab = NetworkView.Find (prefID).gameObject;
+	}
+	[RPC]
+	void setAndColor(int newColor){
+		color = newColor;
+		if( color == 0 )
+		{
+			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
+		}
+		else if ( color == 1 )
+		{
+			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+		}
+	}
+	
+	[RPC]
+	void setPointN(Vector3 pt){
+		this.point.x = pt.x;
+		this.point.y = pt.z;
+	}
+	
+	[RPC]
+	public void addNeighbourN(NetworkViewID tileID)
+	{
+		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
+		if(this.neighbours.Where(
+			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
+		{
+			this.neighbours.Add(t);
+		}
 	}
 }
