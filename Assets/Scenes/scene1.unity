@@ -434,6 +434,7 @@ GameObject:
   - 4: {fileID: 197624456}
   - 114: {fileID: 197624457}
   - 114: {fileID: 197624458}
+  - 148: {fileID: 197624459}
   m_Layer: 0
   m_Name: attachingMap
   m_TagString: Untagged
@@ -481,6 +482,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pp: {fileID: 100206, guid: e9c5981fbaf261f4f976333c279b3ffc, type: 3}
+  ipAddress: 
+  port: 25000
+  isServer: 1
+--- !u!148 &197624459
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 197624455}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 197624456}
+  m_ViewID:
+    m_ID: 3
+    m_Type: 1
 --- !u!1 &253451205
 GameObject:
   m_ObjectHideFlags: 0
@@ -1890,6 +1906,13 @@ MonoBehaviour:
   m_FillOrigin: 0
 --- !u!222 &1121244241
 CanvasRenderer:
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1107421451
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
