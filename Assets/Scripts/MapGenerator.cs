@@ -9,8 +9,6 @@ public class MapGenerator : MonoBehaviour {
 	public GameObject GrassPrefab;
 	public GameObject MeadowPrefab;
 	public GameObject TreePrefab;
-	public GameObject villages;
-
 	public GameObject HovelPrefab;
 	
 	private Graph map;

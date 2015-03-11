@@ -34,8 +34,8 @@ public class InGameGUI : MonoBehaviour {
 
 	private Tile _move;
 
-	public VillageManager villageManager;
-	public UnitManager unitManager;
+	private VillageManager villageManager;
+	private UnitManager unitManager;
 	// Use this for initialization
 	void Start () 
 	{
@@ -95,7 +95,11 @@ public class InGameGUI : MonoBehaviour {
 		UnitCanvas.enabled = false;
 		ClearSelections ();
 	}
+	public void moveUnitPressed()
+	{
+		UnitCanvas.enabled = false;
 
+	}
 	public void unitUpgradeInfantryPressed()
 	{
 		//When you upgrade a unit, you only need to redraw the gold on the HUD
