@@ -15,6 +15,7 @@ public class InGameGUI : MonoBehaviour {
 
 	// prefabs
 	public GameObject PeasantPrefab;
+	public GameObject InfantryPrefab;
 
 	//selections
 	private GameObject _Village;
@@ -29,6 +30,7 @@ public class InGameGUI : MonoBehaviour {
 	public Text _GoldText;
 	public Text _RegionText;
 	public Text _UnitsText;
+	public Text _ErrorText;
 
 	private Tile _move;
 
@@ -47,22 +49,34 @@ public class InGameGUI : MonoBehaviour {
 	}
 	
 	//Functions for when a Village is selected
-	public void hirePeasantPressed()
+	public void trainPeasantPressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.hirePeasant (v,PeasantPrefab);
 		int redrawUnits = v.getControlledUnits().Count();
+		int redrawGold = v.getGold();
 		_UnitsText.text = redrawUnits.ToString();
+		_GoldText.text = redrawGold.ToString();
 		VillageCanvas.enabled = false;
 	}
+
+	public void trainInfantryPressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.hireInfantry (v,InfantryPrefab);
+		int redrawUnits = v.getControlledUnits().Count();
+		int redrawGold = v.getGold();
+		_UnitsText.text = redrawUnits.ToString();
+		_GoldText.text = redrawGold.ToString();
+		VillageCanvas.enabled = false;
+	}
+
 	public void villageUpgradePressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.upgradeVillage (v);
 		int redrawWood = v.getWood();
-		int redrawGold = v.getGold();
 		_WoodText.text = redrawWood.ToString();
-		_GoldText.text = redrawGold.ToString();
 		VillageCanvas.enabled = false;
 	}
 	public void closeVillagePressed()
@@ -74,13 +88,6 @@ public class InGameGUI : MonoBehaviour {
 	public void unitPressed()
 	{
 		UnitCanvas.enabled = true;
-	}
-	void ClearSelections()
-	{
-		_Unit = null;
-		_move = null;
-		_Tile = null;
-		_isAUnitSelected = false;
 	}
 
 	public void cancelUnitPressed()
@@ -120,6 +127,14 @@ public class InGameGUI : MonoBehaviour {
 
 	}
 
+	public void displayError(string error)
+	{
+		VillageCanvas.enabled = false;
+		UnitCanvas.enabled = false;
+		ErrorCanvas.enabled = true;
+		_ErrorText.text = error;
+	}
+
 	void validateMove(RaycastHit hit)
 	{
 		print ("in validateMove");
@@ -146,17 +161,27 @@ public class InGameGUI : MonoBehaviour {
 					u.movePrefab(new Vector3(_move.point.x, 0.15f, _move.point.y));
 					unitManager.moveUnit(u, _move);
 					print ("finished moving");
+					Village v = u.getVillage ();
+					int redrawWood = v.getWood();
+					_WoodText.text = redrawWood.ToString();
 				}
 				else
 				{
-					ErrorCanvas.enabled = true;
+					this.displayError("Somethings wrong with moving.");
 				}
 				ClearSelections();
 			}
 
 		}
 	}
-
+	
+	void ClearSelections()
+	{
+		_Unit = null;
+		_move = null;
+		_Tile = null;
+		_isAUnitSelected = false;
+	}
 	// Update is called once per frame
 	void Update()
 	{
@@ -186,6 +211,7 @@ public class InGameGUI : MonoBehaviour {
 						_UnitsText.text = redrawUnits.ToString();
 						break;
 					}
+					//TODO for jordan, he will understand (making gameObject to wrap all 4 unit prefabs to simplify upgrading, just like village)
 					case "Peasant": case "Infantry": case "Soldier": case "Knight":
 					{
 						_Unit = hit.collider.gameObject;

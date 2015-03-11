@@ -80,7 +80,7 @@ public class Village : MonoBehaviour {
 		myVillage.locatedAt = locatedAt;
 		locatedAt.setVillage (myVillage);
 		myVillage.myAction = VillageActionType.ReadyForOrders;
-		myVillage.gold = 0;
+		myVillage.gold = 200;
 		myVillage.wood = 200;
 
 		foreach (Tile t in myVillage.controlledRegion) 

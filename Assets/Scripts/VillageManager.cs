@@ -8,10 +8,14 @@ public class VillageManager : MonoBehaviour {
 	public readonly int ZERO = 0;
 	public readonly int ONE = 1;
 	public readonly int EIGHT = 8;
-
+	public readonly int TEN = 10;
+	public readonly int TWENTY = 20;
+	public readonly int THIRTY = 30;
+	public readonly int FOURTY = 40;
+	public InGameGUI gameGUI;
 	// Use this for initialization
 	void Start () {
-		
+		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
 	
 	public void upgradeVillage(Village v)
@@ -19,14 +23,14 @@ public class VillageManager : MonoBehaviour {
 		int vWood = v.getWood ();
 		VillageType vType = v.getMyType ();
 		VillageActionType vAction = v.getAction ();
-		if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
+		if (vType == VillageType.Fort) 
+		{
+			gameGUI.displayError("The Fort is the highest rank you can upgrade to.");
+		}
+		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
 			v.upgrade ();
 		} 
-		else if (vType == VillageType.Fort) 
-		{
-			//print("Cannot upgrade past fort!");
-		}
 	}	
 	
 	public void MergeAlliedRegions(Tile newTile)
@@ -94,10 +98,28 @@ public class VillageManager : MonoBehaviour {
 	{
 		Tile tileAt = v.getLocatedAt ();
 		int villageGold = v.getGold ();
-		//if (villageGold >= 10) 
-		//{
-		Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, peasantPrefab);
-		//}
-		v.addUnit (p);
+		if (villageGold >= 10) 
+		{
+			Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, peasantPrefab);
+			v.setGold (villageGold - TEN);
+			v.addUnit (p);
+		} else {
+			gameGUI.displayError ("Wow you're broke, can't even afford a peasant?");
+		}
+
+	}
+
+	public void hireInfantry(Village v,GameObject infantryPrefab)
+	{
+		Tile tileAt = v.getLocatedAt ();
+		int villageGold = v.getGold ();
+		if (villageGold >= 20) {
+			Unit p = Unit.CreateComponent (UnitType.INFANTRY, tileAt, v, infantryPrefab);
+			v.setGold (villageGold - TWENTY);
+			v.addUnit (p);
+		} else {
+			gameGUI.displayError ("You do not have enough gold to train infantry.");
+		}
+
 	}
 }

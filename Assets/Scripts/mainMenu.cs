@@ -45,6 +45,12 @@ public class mainMenu : MonoBehaviour {
 		Application.LoadLevel("scene1");
 	}
 
+	//TODO
+/*	public void OpenStats()
+	{
+		Application.LoadLevel("stats");
+	}*/
+
 	public void ExitGame()
 	{
 		Application.Quit ();

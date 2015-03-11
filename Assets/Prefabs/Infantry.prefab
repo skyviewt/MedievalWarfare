@@ -100,6 +100,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 469460}
   - 95: {fileID: 9569448}
+  - 65: {fileID: 6536452}
   m_Layer: 0
   m_Name: Infantry
   m_TagString: Infantry
@@ -732,7 +733,7 @@ Transform:
   m_GameObject: {fileID: 169460}
   m_LocalRotation: {x: .0050639133, y: .987022221, z: .0631749257, w: .147548437}
   m_LocalPosition: {x: -.779999971, y: -.439999998, z: -4.96999979}
-  m_LocalScale: {x: 3.5, y: 3.5, z: 3.5}
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
   m_Children:
   - {fileID: 469484}
   - {fileID: 469448}
@@ -837,7 +838,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 169476}
-  m_LocalRotation: {x: -.0242559519, y: -.223939806, z: .0131167164, w: .974212766}
+  m_LocalRotation: {x: -.0242559537, y: -.223939821, z: .0131167173, w: .974212825}
   m_LocalPosition: {x: -2.79431589e-10, y: .111340947, z: 1.87615812e-09}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -877,7 +878,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 169482}
-  m_LocalRotation: {x: .518976748, y: .212348655, z: -.0644578785, w: .825479448}
+  m_LocalRotation: {x: .518976808, y: .21234867, z: -.0644578859, w: .825479507}
   m_LocalPosition: {x: -7.35883854e-11, y: .0925793797, z: 3.6000905e-10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1205,6 +1206,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 469504}
   m_RootOrder: 0
+--- !u!65 &6536452
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 169460}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: .25, y: .25, z: 10.25}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &9569448
 Animator:
   serializedVersion: 3

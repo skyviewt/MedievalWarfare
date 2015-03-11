@@ -6,10 +6,12 @@ using System.Linq;
 public class UnitManager : MonoBehaviour {
 
 	public VillageManager villageManager;
+	public InGameGUI gameGUI;
 	public readonly int TEN = 10;
 	// Use this for initialization
 	void Start () {
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
+		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
 	
 	public void moveUnit(Unit unit, Tile dest)
@@ -115,14 +117,29 @@ public class UnitManager : MonoBehaviour {
 	public void upgradeUnit(Unit u, UnitType newLevel)
 	{
 		Village unitVillage = u.getVillage();
+		VillageType unitVillageLevel = unitVillage.getMyType();
 		UnitType unitType = u.getUnitType();
 		UnitActionType unitAction = u.getAction();
 		int goldAvailable = unitVillage.getGold();
 		int goldRequired = (newLevel - unitType) * TEN;
-		
-		if((goldAvailable >= goldRequired)&&(newLevel > unitType)&&(unitAction == UnitActionType.ReadyForOrders || unitAction == UnitActionType.Moved))
+		if (unitType == UnitType.KNIGHT) {
+			gameGUI.displayError ("The Knight is already your strongest warrior!");
+		} 
+		else if((goldAvailable >= goldRequired)&&(newLevel > unitType)&&(unitAction == UnitActionType.ReadyForOrders || unitAction == UnitActionType.Moved))
 		{
-			u.upgrade(newLevel,goldRequired);
+			if(newLevel == UnitType.SOLDIER && unitVillageLevel < VillageType.Town)
+			{
+				gameGUI.displayError ("Please upgrade your village to atleast a Town first.");
+			}
+			else if(newLevel == UnitType.KNIGHT && unitVillageLevel < VillageType.Fort)
+			{
+				gameGUI.displayError ("Please upgrade your village to Fort first.");
+			}
+			else
+			{
+				unitVillage.setGold (goldAvailable - goldRequired);
+				u.upgrade(newLevel);
+			}
 		}
 	}
 }
