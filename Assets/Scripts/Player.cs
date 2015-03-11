@@ -6,12 +6,12 @@ using System.Linq;
 public class Player : MonoBehaviour{
 	
 	private string username;
-
 	private string password;
 	private int wins;
 	private int losses;
 	private List<Village> myVillages;
 	private Game aGame;
+	private int color;
 
 	//constructor
 	public static Player CreateComponent ( string pName, string pPass, int pWins, int pLosses, GameObject g ) 
@@ -79,6 +79,14 @@ public class Player : MonoBehaviour{
 	public List<Village> getVillages()
 	{
 		return myVillages;
+	}
+	public void setColor(int i)
+	{
+		this.color = i;
+	}
+	public int getColor()
+	{
+		return this.color;
 	}
 	/*
 	 * This function will be to update the database.
