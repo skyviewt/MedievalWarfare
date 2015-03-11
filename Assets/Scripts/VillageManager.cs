@@ -8,6 +8,10 @@ public class VillageManager : MonoBehaviour {
 	public readonly int ZERO = 0;
 	public readonly int ONE = 1;
 	public readonly int EIGHT = 8;
+
+	public GameObject hovelPrefab;
+	public GameObject townPrefab;
+	public GameObject fortPrefab;
 	
 	// Use this for initialization
 	void Start () {
@@ -19,9 +23,12 @@ public class VillageManager : MonoBehaviour {
 		int vWood = v.getWood ();
 		VillageType vType = v.getMyType ();
 		VillageActionType vAction = v.getAction ();
-		if ((vType != VillageType.Fort) && (vWood >= EIGHT) && (vAction == VillageActionType.ReadyForOrders)) 
+		if ((vType != VillageType.Fort) && (vWood >= 0) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
 			v.upgrade ();
+		} else if (vType == VillageType.Fort) 
+		{
+			print("Cannot upgrade past fort!");
 		}
 	}	
 	

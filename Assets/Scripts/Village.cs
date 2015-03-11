@@ -27,11 +27,15 @@ public class Village : MonoBehaviour {
 	private int gold;
 	private int wood;
 	private Shader outline;
+	private VillageManager vm;
 	
 	// Use this for initialization
 	void Start()
 	{
 		outline = Shader.Find("Glow");
+		GameObject go = GameObject.Find("VillageManager");
+		vm = go.GetComponent<VillageManager> ();
+
 	}
 	
 	// Update is called once per frame
@@ -41,11 +45,19 @@ public class Village : MonoBehaviour {
 	void OnMouseEnter()
 	{
 		this.renderer.material.shader = outline;
+		foreach (Transform child in transform)
+		{
+			child.renderer.material.shader = outline;
+		}
 	}
 	
 	void OnMouseExit()
 	{
 		this.renderer.material.shader = Shader.Find("Diffuse");
+		foreach (Transform child in transform)
+		{
+			child.renderer.material.shader = Shader.Find("Diffuse");
+		}
 	}
 
 	//constructor
@@ -93,6 +105,11 @@ public class Village : MonoBehaviour {
 	public VillageType getMyType()
 	{
 		return myType;
+	}
+
+	public void setMyType(VillageType vt)
+	{
+		myType = vt;
 	}
 
 	public VillageActionType getAction()
@@ -224,19 +241,22 @@ public class Village : MonoBehaviour {
 
 	public void upgrade()
 	{
-		myType += 1;
 		//TODO
 		// show the new wood value
-		wood -= 8;
-		if (myType == VillageType.Town) 
+		// wood -= 8;
+		if (myType == VillageType.Hovel) 
 		{
-			//TODO
-			//destroy hovel make town
+			GameObject town = (GameObject)Instantiate (vm.townPrefab, gameObject.transform.position, Quaternion.identity);			
+			Village newVillage = Village.CreateComponent(controlledBy, controlledRegion, locatedAt, town);
+			town.transform.eulerAngles = new Vector3(-90,0,0); 
+			newVillage.setMyType (VillageType.Town);
 		}
-		else if (myType == VillageType.Fort) 
+		else if (myType == VillageType.Town) 
 		{
-			//TODO
-			//destroy town make fort
+			GameObject fort = (GameObject)Instantiate (vm.fortPrefab, gameObject.transform.position, Quaternion.identity);			
+			Village newVillage = Village.CreateComponent(controlledBy, controlledRegion, locatedAt, fort);
+			fort.transform.eulerAngles = new Vector3(0,0,0); 
+			newVillage.setMyType (VillageType.Fort);
 		}
 	}
 	//sets gold to 0 and returns the previous gold value
