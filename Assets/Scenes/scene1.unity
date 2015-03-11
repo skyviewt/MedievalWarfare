@@ -344,7 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Sprite: {fileID: 21300000, guid: 81c9c3047c880fe4f8867e7f50c0df29, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 83671d7f9ab3ffa46af59b68d3fede7e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -756,9 +756,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52b78ed05263e4d7ca16ce3e8840cba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hovelPrefab: {fileID: 0}
-  townPrefab: {fileID: 0}
-  fortPrefab: {fileID: 0}
+  hovelPrefab: {fileID: 107634, guid: f5c2c1845db0d49f288a3b96f33cdc0f, type: 2}
+  townPrefab: {fileID: 197064, guid: 0a9d7dac09b0f41b2b4a27d4e6b43278, type: 2}
+  fortPrefab: {fileID: 151590, guid: 6821beb44c6194d198d6225c0fa55686, type: 2}
 --- !u!4 &800187053
 Transform:
   m_ObjectHideFlags: 0

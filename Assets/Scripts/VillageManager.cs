@@ -26,9 +26,10 @@ public class VillageManager : MonoBehaviour {
 		if ((vType != VillageType.Fort) && (vWood >= 0) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
 			v.upgrade ();
-		} else if (vType == VillageType.Fort) 
+		} 
+		else if (vType == VillageType.Fort) 
 		{
-			print("Cannot upgrade past fort!");
+			//print("Cannot upgrade past fort!");
 		}
 	}	
 	
