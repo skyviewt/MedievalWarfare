@@ -55,6 +55,10 @@ public class InGameGUI : MonoBehaviour {
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.upgradeVillage (v);
+		int redrawWood = v.getWood();
+		int redrawGold = v.getGold();
+		_WoodText.text = redrawWood.ToString();
+		_GoldText.text = redrawGold.ToString();
 		VillageCanvas.enabled = false;
 	}
 	public void closeVillagePressed()
