@@ -69,14 +69,20 @@ public class InGameGUI : MonoBehaviour {
 						_Village = hit.collider.gameObject;
 						Village v = _Village.GetComponent<Village>();
 						int redrawWood = v.getWood();
-						int redrawGold = v.getGold ();
+						int redrawGold = v.getGold();
 						_WoodText.text = redrawWood.ToString();
-						_GoldText.text = redrawGold.ToString ();
+						_GoldText.text = redrawGold.ToString();
 						break;
 					}
 					case "Peasant": case "Infantry": case "Soldier": case "Knight":
 					{
 						_Unit = hit.collider.gameObject;
+						Unit u = _Unit.GetComponent<Unit>();
+						Village v = u.getVillage();
+						int redrawWood = v.getWood();
+						int redrawGold = v.getGold();
+						_WoodText.text = redrawWood.ToString();
+						_GoldText.text = redrawGold.ToString();
 						break;
 					}
 				}
