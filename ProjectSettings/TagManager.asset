@@ -13,6 +13,7 @@ TagManager:
   - Knight
   - Infantry
   - Peasant
+  - Unit
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
