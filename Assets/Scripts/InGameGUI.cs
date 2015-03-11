@@ -15,7 +15,6 @@ public class InGameGUI : MonoBehaviour {
 
 	// prefabs
 	public GameObject UnitPrefab;
-	//public GameObject InfantryPrefab;
 
 	//selections
 	private GameObject _Village;
@@ -70,6 +69,29 @@ public class InGameGUI : MonoBehaviour {
 		_GoldText.text = redrawGold.ToString();
 		VillageCanvas.enabled = false;
 	}
+
+	public void trainSoldierPressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.hireSoldier (v,UnitPrefab);
+		int redrawUnits = v.getControlledUnits().Count();
+		int redrawGold = v.getGold();
+		_UnitsText.text = redrawUnits.ToString();
+		_GoldText.text = redrawGold.ToString();
+		VillageCanvas.enabled = false;
+	}
+
+	public void trainKnightPressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.hireKnight (v,UnitPrefab);
+		int redrawUnits = v.getControlledUnits().Count();
+		int redrawGold = v.getGold();
+		_UnitsText.text = redrawUnits.ToString();
+		_GoldText.text = redrawGold.ToString();
+		VillageCanvas.enabled = false;
+	}
+
 
 	public void villageUpgradePressed()
 	{

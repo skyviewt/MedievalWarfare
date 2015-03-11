@@ -22,7 +22,7 @@ public class Village : MonoBehaviour {
 	private Player controlledBy;
 	private Tile locatedAt;
 	private List<Unit> supportedUnits;
-	public VillageType myType;
+	private VillageType myType;
 	private VillageActionType myAction;
 	private int gold;
 	private int wood;

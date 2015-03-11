@@ -94,13 +94,13 @@ public class VillageManager : MonoBehaviour {
 		
 	}
 	
-	public void hirePeasant(Village v,GameObject peasantPrefab)
+	public void hirePeasant(Village v,GameObject unitPrefab)
 	{
 		Tile tileAt = v.getLocatedAt ();
 		int villageGold = v.getGold ();
 		if (villageGold >= 10) 
 		{
-			Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, peasantPrefab);
+			Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, unitPrefab);
 			p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (true);
 			p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
 			p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
@@ -113,12 +113,12 @@ public class VillageManager : MonoBehaviour {
 
 	}
 
-	public void hireInfantry(Village v,GameObject infantryPrefab)
+	public void hireInfantry(Village v,GameObject unitPrefab)
 	{
 		Tile tileAt = v.getLocatedAt ();
 		int villageGold = v.getGold ();
 		if (villageGold >= 20) {
-			Unit p = Unit.CreateComponent (UnitType.INFANTRY, tileAt, v, infantryPrefab);
+			Unit p = Unit.CreateComponent (UnitType.INFANTRY, tileAt, v, unitPrefab);
 			p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
 			p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (true);
 			p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
@@ -127,6 +127,53 @@ public class VillageManager : MonoBehaviour {
 			v.addUnit (p);
 		} else {
 			gameGUI.displayError ("You do not have enough gold to train infantry.");
+		}
+	}
+
+	public void hireSoldier(Village v, GameObject unitPrefab)
+	{
+		Tile tileAt = v.getLocatedAt ();
+		int villageGold = v.getGold ();
+		if (villageGold >= 30) {
+			if(v.getMyType() >= VillageType.Town)
+			{
+				Unit p = Unit.CreateComponent (UnitType.SOLDIER, tileAt, v, unitPrefab);
+				p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
+				p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
+				p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (true);
+				p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
+				v.setGold (villageGold - THIRTY);
+				v.addUnit (p);
+			}
+			else
+			{
+				gameGUI.displayError("Please upgrade your village to a Town first.");
+			}
+		} else {
+			gameGUI.displayError("You can't afford a soldier.");
+		}
+	}
+	public void hireKnight(Village v, GameObject unitPrefab)
+	{
+		Tile tileAt = v.getLocatedAt ();
+		int villageGold = v.getGold ();
+		if (villageGold >= 40) {
+			if(v.getMyType() == VillageType.Fort)
+			{
+				Unit p = Unit.CreateComponent (UnitType.KNIGHT, tileAt, v, unitPrefab);
+				p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
+				p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
+				p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
+				p.gameObject.transform.FindChild("Knight").gameObject.SetActive (true);
+				v.setGold (villageGold - FOURTY);
+				v.addUnit (p);
+			}
+			else
+			{
+				gameGUI.displayError ("Please upgrade your village to a Fort first.");
+			}
+		} else {
+			gameGUI.displayError("You don't have enough gold for a knight");
 		}
 
 	}
