@@ -71,23 +71,72 @@ public class Village : MonoBehaviour {
 	//constructor
 	public static Village CreateComponent ( Player p, List<Tile> regions, Tile locatedAt, GameObject locationPrefab ) 
 	{
+		Debug.Log ("-----Village.CreateComponent() CALLED--------");
 		Village myVillage = locationPrefab.AddComponent<Village>();
-		myVillage.controlledRegion = regions;
-		myVillage.controlledBy = p;
+		myVillage.controlledRegion = regions;//todo
+		myVillage.controlledBy = p;//TODO: Currently set in Mapgenerator
 		myVillage.myType = VillageType.Hovel;
 		myVillage.supportedUnits = new List<Unit> ();
-		locatedAt.replace (locationPrefab);
-		myVillage.locatedAt = locatedAt;
-		locatedAt.setVillage (myVillage);
+		locatedAt.replace (locationPrefab);//to check : Set in Mapgenerator
+		myVillage.locatedAt = locatedAt;//done
+		locatedAt.setVillage (myVillage);//done
 		myVillage.myAction = VillageActionType.ReadyForOrders;
 		myVillage.gold = 0;
 		myVillage.wood = 0;
-
+		//TODO: set controlledRegions in tiles : Call updateControlledRegionNet()
 		foreach (Tile t in myVillage.controlledRegion) 
 		{
 			t.setVillage(myVillage);
 		}
 		return myVillage;
+	}
+
+	//new constructor
+	public Village(){
+		myType = VillageType.Hovel;
+		supportedUnits = new List<Unit> ();
+		//need to be set over network: controlledRegion, controlledBy, locatedAt.Replace(), locatedAt, locatedAt.setVillage(), pdateControlledRegionNet()
+		controlledRegion = new List<Tile> ();
+
+
+
+		myAction = VillageActionType.ReadyForOrders;
+		gold = 0;
+		wood = 0;
+		//set controlled regions
+	}
+
+	[RPC]
+	//adds a single tile to the controlledRegion. To add multiple tiles, use a loop
+	void addTileNet(NetworkViewID tileID){
+		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
+		controlledRegion.Add (t);
+	}
+
+	[RPC]
+	//set the location of the village by getting the Tile component of the GrassTile Prefab with that tileID 
+	void setLocatedAtNet(NetworkViewID tileID){
+		locatedAt = NetworkView.Find (tileID).GetComponent<Tile>();
+	}
+
+	[RPC]
+	//All tiles in controlledRegion will be set to belong to this village. The village MUST have a controlledRegion set first
+	void updateControlledRegionNet(){
+		foreach (Tile t in controlledRegion) 
+		{
+			t.setVillage(this);
+		}
+	}
+
+	[RPC]
+	//adding gold values
+	void addGoldNet(int goldToAdd){
+		gold += goldToAdd;
+	}
+	[RPC]
+	//adding wood values
+	void addWoodNet(int woodToAdd){
+		wood += woodToAdd;
 	}
 	
 	//setters and getters
@@ -289,4 +338,10 @@ public class Village : MonoBehaviour {
 		wood = 0;
 		return previousWoodValue;
 	}
+
+	public void setControlledBy(Player p){
+		controlledBy = p;
+	}
+
+
 }

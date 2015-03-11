@@ -205,6 +205,10 @@ public class Tile : MonoBehaviour
 		{
 			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
 		}
+		else if ( color == 2 )
+		{
+			gameObject.renderer.material.color = Color.white;
+		}
 	}
 	
 	[RPC]
@@ -223,4 +227,17 @@ public class Tile : MonoBehaviour
 			this.neighbours.Add(t);
 		}
 	}
+	[RPC]
+	//replaces the prefab on this tile ie: replace tree with hovel
+	void replaceTilePrefabNet(NetworkViewID prefID){
+		Destroy (prefab);
+		prefab = NetworkView.Find (prefID).gameObject;
+	}
+
+	[RPC]
+	//sets the village of the tile to new village attached to that gameObject
+	void setVillageNet(NetworkViewID villageID){
+		myVillage = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
+	}
+
 }

@@ -240,18 +240,46 @@ public class MapGenerator : MonoBehaviour {
 					Player p = players[color];
 			
 					Tile location = TilesToReturn[0];
+					Vector3 hovelLocation = new Vector3(location.point.x, 0, location.point.y);
+					GameObject hovel = Network.Instantiate(HovelPrefab, hovelLocation, HovelPrefab.transform.rotation, 0) as GameObject;
+					//Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
+					Village newVillage = hovel.GetComponent<Village>();
 
-					GameObject hovel = Instantiate(HovelPrefab, new Vector3(location.point.x, 0, location.point.y), HovelPrefab.transform.rotation) as GameObject;
-					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
-					newVillage.addGold( 200 );
-					newVillage.addWood ( 200);
+					//need to be set over network: controlledRegion, locatedAt.Replace(), locatedAt, locatedAt.setVillage(), updateControlledRegionNet()
+					//ControlledRegion: loop to add tiles over network
+					foreach (Tile cTile in TilesToReturn){
+						NetworkViewID tileID = cTile.gameObject.networkView.viewID;
+						hovel.networkView.RPC ("addTileNet", RPCMode.AllBuffered, tileID);
+					}
+					//replace the prefab at the location
+					location.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, hovel.networkView.viewID);
+
+					//set locatedAt for the new village:
+					hovel.networkView.RPC("setLocatedAtNet", RPCMode.AllBuffered, location.networkView.viewID);
+
+					//set the village for the LocatedAt tile:
+					location.networkView.RPC("setVillageNet", RPCMode.AllBuffered, hovel.networkView.viewID);
+
+					//update the tile regions: Not done over a network, The client at this point should have all the necessary info from controlledRegion
+					hovel.networkView.RPC ("updateControlledRegionNet", RPCMode.AllBuffered);
+
+					//TODO: Set Player (Controlled by), Currently NOT set over network
+					newVillage.setControlledBy(p);
+
+					//newVillage.addGold( 200 );
+					hovel.networkView.RPC("addGoldNet", RPCMode.AllBuffered, 200);
+					//newVillage.addWood ( 200);
+					hovel.networkView.RPC("addWoodNet", RPCMode.AllBuffered, 200);
+
+					//TODO: add village to player over network
 					p.addVillage( newVillage );
 				} 
 			}
 			if (t.getVillage() == null && t.getColor() != players.Count)
 			{
-				t.setColor(players.Count);
-				t.gameObject.renderer.material.color = Color.white;
+				//t.setColor(players.Count);
+				//t.gameObject.renderer.material.color = Color.white;
+				//t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2);
 			}
 		}
 
