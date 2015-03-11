@@ -35,7 +35,7 @@ public class MapGenerator : MonoBehaviour {
 		map = new Graph (firstTile, null);
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
-
+		
 		int maxNumberTile = rand.Next (400, 450);
 		
 		while(map.vertices.Count < maxNumberTile)
@@ -210,7 +210,15 @@ public class MapGenerator : MonoBehaviour {
 					Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
 					newVillage.addGold( 7 );
 					p.addVillage( newVillage );
-				} 
+				}
+				else if( TilesToReturn.Count < 3)
+				{
+					foreach ( Tile neutralize in TilesToReturn ) 
+					{
+						neutralize.setColor(players.Count);
+						neutralize.gameObject.renderer.material.color = Color.clear;
+					}
+				}
 			}
 		}
 
