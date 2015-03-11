@@ -92,11 +92,6 @@ public class Tile : MonoBehaviour
 		this.renderer.material.shader = Shader.Find("Diffuse");
 	}
 
-	void Update()
-	{
-		colorTile ();
-	}
-
 	public void setLandType(LandType type)
 	{
 		this.myType = type;
