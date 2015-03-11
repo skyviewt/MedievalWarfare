@@ -11,6 +11,7 @@ GameObject:
   - 33: {fileID: 3397064}
   - 23: {fileID: 2397064}
   - 95: {fileID: 9597064}
+  - 65: {fileID: 6594606}
   m_Layer: 0
   m_Name: Town
   m_TagString: Town
@@ -57,6 +58,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 197064}
   m_Mesh: {fileID: 4300000, guid: e36cf732b73e87f458b5e69d2c1f6417, type: 3}
+--- !u!65 &6594606
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 197064}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 9.50229836, y: 9.91814804, z: 8.85743999}
+  m_Center: {x: 0, y: 0, z: 4.42921972}
 --- !u!95 &9597064
 Animator:
   serializedVersion: 3

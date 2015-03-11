@@ -73,7 +73,6 @@ NavMeshSettings:
     minRegionArea: 2
     widthInaccuracy: 16.666666
     heightInaccuracy: 10
-    tileSizeHint: 0
   m_NavMesh: {fileID: 0}
 --- !u!1 &84574840
 GameObject:
@@ -545,6 +544,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52b78ed05263e4d7ca16ce3e8840cba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hovelPrefab: {fileID: 107634, guid: f5c2c1845db0d49f288a3b96f33cdc0f, type: 2}
+  townPrefab: {fileID: 197064, guid: 0a9d7dac09b0f41b2b4a27d4e6b43278, type: 2}
+  fortPrefab: {fileID: 151590, guid: 6821beb44c6194d198d6225c0fa55686, type: 2}
 --- !u!4 &800187053
 Transform:
   m_ObjectHideFlags: 0
@@ -836,8 +838,8 @@ MonoBehaviour:
   m_Script: {fileID: 1301386320, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
+  ignoreReversedGraphics: 1
+  blockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -961,8 +963,8 @@ MonoBehaviour:
   m_Script: {fileID: 1301386320, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
+  ignoreReversedGraphics: 1
+  blockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
