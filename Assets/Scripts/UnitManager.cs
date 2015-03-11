@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public class UnitManager : MonoBehaviour {
+<<<<<<< HEAD
 
 	public VillageManager villageManager;
 	public readonly int TEN = 10;
@@ -13,6 +14,18 @@ public class UnitManager : MonoBehaviour {
 	}
 
 
+=======
+	
+	public VillageManager villageManager;
+	public readonly int TEN = 10;
+
+
+	// Use this for initialization
+	void Start () {
+		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
+	}
+
+>>>>>>> 0fab799e0399770ed7c57414f0685f88d19f69c7
 	public void moveUnit(Unit unit, Tile dest)
 	{
 		Village destVillage = dest.getVillage ();

@@ -1,17 +1,23 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+<<<<<<< HEAD
 using System.Collections.Generic;
 using System.Linq;
 
+=======
+>>>>>>> 0fab799e0399770ed7c57414f0685f88d19f69c7
 
 public class InGameGUI : MonoBehaviour {
 	public Camera myCamera;
 	public Canvas VillageCanvas;
 	public Canvas UnitCanvas;
-	public Canvas HUDCanvas;
+<<<<<<< HEAD
 	public Canvas ErrorCanvas;
 
+=======
+	public Canvas HUDCanvas;
+>>>>>>> 0fab799e0399770ed7c57414f0685f88d19f69c7
 
 	// prefabs
 	public GameObject PeasantPrefab;
@@ -36,11 +42,17 @@ public class InGameGUI : MonoBehaviour {
 	{
 		myCamera =  GameObject.FindGameObjectWithTag("MainCamera").camera;
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
+<<<<<<< HEAD
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
-		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
 		ErrorCanvas.enabled = false;
+	}
+=======
+		HUDCanvas.enabled = true;
+		VillageCanvas.enabled = false;
+>>>>>>> 0fab799e0399770ed7c57414f0685f88d19f69c7
+
 	}
 	
 	//Functions for when Village is pressed
@@ -114,9 +126,14 @@ public class InGameGUI : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
+<<<<<<< HEAD
+	void Update(){
+		
+=======
 	void Update()
 	{
 
+>>>>>>> 0fab799e0399770ed7c57414f0685f88d19f69c7
 		Ray ray = myCamera.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		//if clicked
