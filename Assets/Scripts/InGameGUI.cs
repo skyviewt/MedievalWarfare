@@ -98,6 +98,8 @@ public class InGameGUI : MonoBehaviour {
 	public void moveUnitPressed()
 	{
 		UnitCanvas.enabled = false;
+		_isAUnitSelected = true;
+		this.displayError("Please select a friendly or neutral tile 1 distance away to move to.");
 
 	}
 	public void unitUpgradeInfantryPressed()
@@ -108,6 +110,7 @@ public class InGameGUI : MonoBehaviour {
 		Village v = u.getVillage();
 		int redrawGold = v.getGold();
 		_GoldText.text = redrawGold.ToString();
+		UnitCanvas.enabled = false;
 
 	}
 
@@ -118,6 +121,7 @@ public class InGameGUI : MonoBehaviour {
 		Village v = u.getVillage();
 		int redrawGold = v.getGold();
 		_GoldText.text = redrawGold.ToString();
+		UnitCanvas.enabled = false;
 
 	}
 
@@ -128,6 +132,7 @@ public class InGameGUI : MonoBehaviour {
 		Village v = u.getVillage();
 		int redrawGold = v.getGold();
 		_GoldText.text = redrawGold.ToString();
+		UnitCanvas.enabled = false;
 
 	}
 
@@ -135,8 +140,9 @@ public class InGameGUI : MonoBehaviour {
 	{
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
-		ErrorCanvas.enabled = true;
 		_ErrorText.text = error;
+		ErrorCanvas.enabled = true;
+
 	}
 
 	void validateMove(RaycastHit hit)
@@ -250,12 +256,12 @@ public class InGameGUI : MonoBehaviour {
 		
 						UnitCanvas.enabled = true;
 						print (hit.collider.tag);
-						_isAUnitSelected = true;
 						break;
 					}
 					case "Grass":
 					{
 						print ("in tile");
+						ErrorCanvas.enabled = false;
 						validateMove(hit);
 						break;
 					}
@@ -273,6 +279,7 @@ public class InGameGUI : MonoBehaviour {
 			if(UnitCanvas.enabled == true)
 			{
 				UnitCanvas.enabled = false;
+				_isAUnitSelected = false;
 			}
 			if(ErrorCanvas.enabled == true)
 			{

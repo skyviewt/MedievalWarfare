@@ -25,7 +25,7 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType vAction = v.getAction ();
 		if (vType == VillageType.Fort) 
 		{
-			gameGUI.displayError("The Fort is the highest rank you can upgrade to.");
+			gameGUI.displayError("The Fort is your strongest village!");
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{

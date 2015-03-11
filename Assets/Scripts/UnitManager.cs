@@ -129,11 +129,11 @@ public class UnitManager : MonoBehaviour {
 		{
 			if(newLevel == UnitType.SOLDIER && unitVillageLevel < VillageType.Town)
 			{
-				gameGUI.displayError ("Please upgrade your village to atleast a Town first.");
+				gameGUI.displayError ("Please upgrade your village to a Town first.");
 			}
 			else if(newLevel == UnitType.KNIGHT && unitVillageLevel < VillageType.Fort)
 			{
-				gameGUI.displayError ("Please upgrade your village to Fort first.");
+				gameGUI.displayError ("Please upgrade your village to a Fort first.");
 			}
 			else
 			{
