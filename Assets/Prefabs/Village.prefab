@@ -186,6 +186,8 @@ GameObject:
   - 33: {fileID: 3364112}
   - 23: {fileID: 2364112}
   - 65: {fileID: 6564112}
+  - 148: {fileID: 14849066}
+  - 114: {fileID: 11445644}
   m_Layer: 0
   m_Name: Village
   m_TagString: Town
@@ -792,6 +794,30 @@ Animator:
   m_ApplyRootMotion: 1
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11445644
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 164132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b60e765d494a4ae2b5961132f5f201c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myType: 0
+--- !u!148 &14849066
+NetworkView:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 164132}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 464132}
+  m_ViewID:
+    m_ID: 0
+    m_Type: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
