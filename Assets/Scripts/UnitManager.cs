@@ -14,7 +14,7 @@ public class UnitManager : MonoBehaviour {
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
 	
-	public void moveUnit(Unit unit, Tile dest)
+	public bool moveUnit(Unit unit, Tile dest)
 	{
 		print ("----in move unit----");
 		Village destVillage = dest.getVillage ();
@@ -34,6 +34,8 @@ public class UnitManager : MonoBehaviour {
 				dest.setOccupyingUnit(unit); //reassign unit/tile to each other
 				unit.setLocation(dest);
 				this.performMove(unit,dest); //need to be implemented in UnitManager
+				unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
+				return true;
 			}
 			else if (srcVillage != destVillage)
 			{
@@ -41,9 +43,11 @@ public class UnitManager : MonoBehaviour {
 				{
 					dest.setOccupyingUnit(unit);
 					unit.setLocation(dest);
-					unit.setAction(UnitActionType.CapturingNeutral);
 					srcVillage.addTile(dest);
 					villageManager.MergeAlliedRegions(dest);
+					this.performMove(unit,dest); 
+					unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
+					return true;
 				}
 				
 				
@@ -82,6 +86,7 @@ public class UnitManager : MonoBehaviour {
 				}*/
 			}
 		}
+		return false;
 	}
 	
 	public void performMove(Unit unit, Tile dest)
