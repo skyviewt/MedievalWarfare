@@ -12,7 +12,7 @@ public class InGameGUI : MonoBehaviour {
 	public Canvas HUDCanvas;
 	public Canvas ErrorCanvas;
 
-	public int myTurn = 1;
+	public int myTurn;
 	public int turnOrder = 0;
 
 	// prefabs
@@ -50,13 +50,13 @@ public class InGameGUI : MonoBehaviour {
 		UnitCanvas.enabled = false;
 		ErrorCanvas.enabled = false;
 		menuUp = false;
-		myTurn = 0;
-		gameObject.networkView.RPC ("setOtherToTurn1", RPCMode.OthersBuffered);
+		myTurn = 1;
+		gameObject.networkView.RPC ("setOtherToTurn0", RPCMode.OthersBuffered);
 	}
 
 	[RPC]
-	void setOtherToTurn1(){
-		myTurn = 1;
+	void setOtherToTurn0(){
+		myTurn = 0;
 	}
 
 	[RPC]

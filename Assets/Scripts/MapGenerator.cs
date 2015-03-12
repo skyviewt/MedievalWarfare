@@ -200,7 +200,7 @@ public class MapGenerator : MonoBehaviour {
 			else if( probability > 20 && probability <=30)
 			{
 				//n.InstantiateMeadow(MeadowPrefab);
-				GameObject mpref = Network.Instantiate(MeadowPrefab, new Vector3(n.point.x, 0.2f, n.point.y), TreePrefab.transform.rotation, 0) as GameObject;
+				GameObject mpref = Network.Instantiate(MeadowPrefab, new Vector3(n.point.x, 0.2f, n.point.y), MeadowPrefab.transform.rotation, 0) as GameObject;
 				n.networkView.RPC ("setPrefab", RPCMode.AllBuffered, mpref.networkView.viewID);
 				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Meadow);
 
