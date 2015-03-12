@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		this.initGame (ipAddress, port);
+	}
+	public void initGame(string ip, int pPort)
+	{
 		if (isServer) {
 			
 			Network.InitializeServer (32, port);
@@ -27,11 +31,18 @@ public class GameManager : MonoBehaviour {
 			
 			MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
 			gen.initMap ();
-			
 			gen.initializeVillagesOnMap (participants);
 		} else {
-			Network.Connect (ipAddress, port);
+			Network.Connect (ip, pPort);
 		}
+	}
+	public void setIsServer(bool b)
+	{
+		this.isServer = b;
+	}
+	public bool getIsServer()
+	{
+		return this.isServer;
 	}
 
 	// Update is called once per frame
