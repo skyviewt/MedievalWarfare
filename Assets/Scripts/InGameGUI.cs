@@ -218,17 +218,10 @@ public class InGameGUI : MonoBehaviour {
 					Village v = u.getVillage ();
 		
 					print ("doing the move now");
-					
-<<<<<<< HEAD
-					unitManager.moveUnit (u, _move);
 
-=======
-					//unitManager.moveUnit (u, _move);
+					unitManager.moveUnit (u, _move);
 					gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
 					
-					//TODO This code is for taking over neutral tiles.
-					//This code doesnt' work because MapGenerator isn't making a Game :( maybe it's an easy fix? :S
->>>>>>> ddf489a718862543b631f4ac942cf2279e332c32
 					if (selection.getVillage () == null) {
 							v.addTile (selection);
 							int redrawRegion = v.getControlledRegion ().Count;
