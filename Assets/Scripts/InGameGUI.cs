@@ -184,56 +184,54 @@ public class InGameGUI : MonoBehaviour {
 
 	void validateMove(RaycastHit hit)
 	{
+		bool isMoved = false;
 		print ("in validateMove");
-		if(_isAUnitSelected && (_Unit.GetComponent<Unit>().myAction == UnitActionType.ReadyForOrders || 
-		                        _Unit.GetComponent<Unit>().myAction == UnitActionType.Moved) )
+		if (_isAUnitSelected && (_Unit.GetComponent<Unit> ().myAction == UnitActionType.ReadyForOrders || 
+					_Unit.GetComponent<Unit> ().myAction == UnitActionType.Moved)) 
 		{
 			_Tile = hit.collider.gameObject;
-			Tile selection = _Tile.GetComponent<Tile>();
+			Tile selection = _Tile.GetComponent<Tile> ();
 			print (selection != null);
-			Debug.Log(_Unit.GetComponent<Unit>().getLocation().neighbours);
-			if(_Unit.GetComponent<Unit>().getLocation().neighbours.Contains( selection ))
-			{
-				_move = selection;
+			Debug.Log (_Unit.GetComponent<Unit> ().getLocation ().neighbours);
+			if (_Unit.GetComponent<Unit> ().getLocation ().neighbours.Contains (selection)) {
+					_move = selection;
 			}
 			Debug.LogWarning (_move);
-			if( _move != null )
+			if (_move != null) 
 			{
-				UnitCanvas.enabled = false;
-				Unit u = _Unit.GetComponent<Unit>();
-				Village v = u.getVillage ();
+					UnitCanvas.enabled = false;
+					Unit u = _Unit.GetComponent<Unit> ();
+					Village v = u.getVillage ();
 
-				if( _move.canUnitMove(u.getUnitType() ) )
-				{
+		
 					print ("doing the move now");
-					u.movePrefab(new Vector3(_move.point.x, 0.15f, _move.point.y));
-					unitManager.moveUnit(u, _move);
+					
+					isMoved = unitManager.moveUnit (u, _move);
 
 					//TODO This code is for taking over neutral tiles.
 					//This code doesnt' work because MapGenerator isn't making a Game :( maybe it's an easy fix? :S
-					if (selection.getVillage() == null)
-					{
-						v.addTile (selection);
-						int redrawRegion = v.getControlledRegion().Count;
-						_RegionText.text = redrawRegion.ToString();
+					if (selection.getVillage () == null) {
+							v.addTile (selection);
+							int redrawRegion = v.getControlledRegion ().Count;
+							_RegionText.text = redrawRegion.ToString ();
 					}
 					//TODO This code is for cutting trees
-					if(selection.getLandType () == LandType.Trees)
-					{
-						
-						int redrawWood = v.getWood();
-						_WoodText.text = redrawWood.ToString();
+					if (selection.getLandType () == LandType.Trees) {
+	
+							int redrawWood = v.getWood ();
+							_WoodText.text = redrawWood.ToString ();
 
 					}
 
-				}
-				else
-				{
-					this.displayError("Something's wrong with moving.");
-				}
-				ClearSelections();
+					
+					ClearSelections ();
 			}
 
+		} 
+		else if(( _isAUnitSelected && !(_Unit.GetComponent<Unit> ().myAction == UnitActionType.ReadyForOrders || 
+		                             _Unit.GetComponent<Unit> ().myAction == UnitActionType.Moved)) || !isMoved || _move == null)
+		{
+			this.displayError ("Cannot Move.");
 		}
 	}
 	

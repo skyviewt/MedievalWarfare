@@ -50,9 +50,18 @@ public class OrbitCamera : MonoBehaviour
 		Reset();
 	}
 
-	// Update is called once per frame
-	void Update()
-	{
+	void Update () {
+
+		Vector3 forward = Camera.main.transform.TransformDirection(Vector3.forward);
+		forward.y = 0;
+		forward = forward.normalized;
+		Vector3 right = new Vector3(forward.z, 0, -forward.x);
+		float h = Input.GetAxis("Horizontal");
+		float v = Input.GetAxis("Vertical");
+		
+		Vector3 moveDirection = (h * right + v * forward).normalized;
+		moveDirection *= 0.1f;
+		TargetLookAt.transform.Translate(moveDirection);
 	}
 
 	// LateUpdate is called after all Update functions have been called.
