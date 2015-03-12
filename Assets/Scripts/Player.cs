@@ -36,7 +36,7 @@ public class Player : MonoBehaviour{
 		thePlayer.myVillages = new List<Village> ();
 		return thePlayer;
 	}
-
+	//constructor 
 	public Player(){
 		wins = 0;
 		losses = 0;
@@ -46,6 +46,11 @@ public class Player : MonoBehaviour{
 	public void initPlayer(string pName, string pPass){
 		username = pName;
 		password = pPass;
+	}
+	[RPC]
+	void addVillageNet(NetworkViewID villageID){
+		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
+		myVillages.Add (vil);
 	}
 
 	public void addWin()

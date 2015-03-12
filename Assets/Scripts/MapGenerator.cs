@@ -264,7 +264,8 @@ public class MapGenerator : MonoBehaviour {
 					hovel.networkView.RPC ("updateControlledRegionNet", RPCMode.AllBuffered);
 
 					//TODO: Set Player (Controlled by), Currently NOT set over network
-					newVillage.setControlledBy(p);
+					//newVillage.setControlledBy(p);
+					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gameObject.networkView.viewID, color);
 
 					//newVillage.addGold( 200 );
 					hovel.networkView.RPC("addGoldNet", RPCMode.AllBuffered, 200);
@@ -272,7 +273,8 @@ public class MapGenerator : MonoBehaviour {
 					hovel.networkView.RPC("addWoodNet", RPCMode.AllBuffered, 200);
 
 					//TODO: add village to player over network
-					p.addVillage( newVillage );
+					//p.addVillage( newVillage );
+					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
 				}
 			}
 			if (t.getVillage() == null && t.getColor() != players.Count)

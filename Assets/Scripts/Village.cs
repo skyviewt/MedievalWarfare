@@ -344,4 +344,10 @@ public class Village : MonoBehaviour {
 		unitToAdd.setVillage (this);
 	}
 
+	[RPC]
+	void setControlledByNet(NetworkViewID objectId, int playerIndex){
+		Player[] pls = NetworkView.Find(objectId).gameObject.GetComponents<Player>();
+		controlledBy = pls [playerIndex];
+	}
+
 }
