@@ -77,7 +77,8 @@ public class mainMenu : MonoBehaviour {
 	{
 		GM.setIpAddress(_ipInput.text);
 		GM.setPort(System.Int32.Parse (_portInput.text));
-		Application.LoadLevel("scene1");
+		Application.LoadLevel("scene2");
+		GM.initGame(_ipInput.text, System.Int32.Parse (_portInput.text));
 	}
 	
 	public void StartLevel()
