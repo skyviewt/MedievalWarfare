@@ -74,12 +74,12 @@ public class InGameGUI : MonoBehaviour {
 		disableAllCanvases ();
 		if(myTurn == turnOrder)
 		{
-			EndButton.GetComponent<Button>().enabled = true;
+			EndButton.GetComponent<Button>().interactable = true;
 			notifyTurnStart ();
 		}
 		else
 		{
-			EndButton.GetComponent<Button>().enabled = false;
+			EndButton.GetComponent<Button>().interactable = false;
 		}
 
 
