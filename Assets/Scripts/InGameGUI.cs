@@ -11,6 +11,7 @@ public class InGameGUI : MonoBehaviour {
 	public Canvas UnitCanvas;
 	public Canvas HUDCanvas;
 	public Canvas ErrorCanvas;
+	public Canvas YourTurnCanvas;
 
 	public int myTurn;
 	public int turnOrder = 0;
@@ -33,6 +34,7 @@ public class InGameGUI : MonoBehaviour {
 	public Text _UnitsText;
 	public Text _ErrorText;
 
+	private Button _EndButton;
 	private Tile _move;
 
 	private VillageManager villageManager;
@@ -45,6 +47,7 @@ public class InGameGUI : MonoBehaviour {
 		myCamera =  GameObject.FindGameObjectWithTag("MainCamera").camera;
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
+		_EndButton = GameObject.Find ("HUDCanvas").transform.Find ("endTurnButton").GetComponent<Button> ();
 		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
@@ -63,6 +66,15 @@ public class InGameGUI : MonoBehaviour {
 	void incrementTurnOrderNet(){
 		turnOrder = (turnOrder+1)%2;
 		disableAllCanvases ();
+		if(myTurn == turnOrder)
+		{
+			_EndButton.enabled = true;
+			notifyTurnStart ();
+		}
+		else
+		{
+			_EndButton.enabled = false;
+		}
 	}
 
 	//Functions on the HUD
@@ -211,7 +223,16 @@ public class InGameGUI : MonoBehaviour {
 		ErrorCanvas.enabled = true;
 
 	}
-
+	private void notifyTurnStart()
+	{
+		disableAllCanvases ();
+		ClearSelections ();
+		YourTurnCanvas.enabled = true;
+	}
+	public void okBeginTurnPressed()
+	{
+		YourTurnCanvas.enabled = false;
+	}
 	void validateMove(RaycastHit hit)
 	{
 		//print ("in validateMove");
@@ -234,7 +255,7 @@ public class InGameGUI : MonoBehaviour {
 		
 					//print ("doing the move now");
 
-					unitManager.moveUnit (u, _move);
+					//unitManager.moveUnit (u, _move);
 					gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
 					
 					if (selection.getVillage () == null) {

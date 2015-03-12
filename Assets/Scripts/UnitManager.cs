@@ -32,16 +32,18 @@ public class UnitManager : MonoBehaviour {
 		LandType destLandType = dest.getLandType ();
 		UnitType srcUnitType = unit.getUnitType();
 		
-		bool unitPermitted = this.canUnitMove (srcUnitType, dest); //need to implement canUnitMove in tile
+		bool unitPermitted = this.canUnitMove (srcUnitType, dest);
 		
 		//if the move is allowed to move onto the tile
 		if (unitPermitted == true ) 	
 		{
+			Tile originalLocation = unit.getLocation ();
 			if (srcVillage == destVillage)
 			{
 				dest.setOccupyingUnit(unit);
 				unit.setLocation(dest);
-				this.performMove(unit,dest); 
+				this.performMove(unit,dest);
+				originalLocation.setOccupyingUnit(null);
 			}
 			else if (srcVillage != destVillage)
 			{
@@ -51,8 +53,9 @@ public class UnitManager : MonoBehaviour {
 					unit.setLocation(dest);
 					srcVillage.addTile(dest);
 					villageManager.MergeAlliedRegions(dest);
-					this.performMove(unit,dest); 
+					this.performMove(unit,dest);
 					unit.setAction(UnitActionType.CapturingNeutral);
+					originalLocation.setOccupyingUnit(null);
 				}
 				
 				
@@ -98,7 +101,6 @@ public class UnitManager : MonoBehaviour {
 	{
 
 		Village srcVillage = unit.getVillage ();
-		Tile originalLocation = unit.getLocation ();
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
 //		print ("--------------landtype of the tile below------------------");		
@@ -111,11 +113,10 @@ public class UnitManager : MonoBehaviour {
 			}
 			unit.setAction (UnitActionType.Moved);
 			unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
-			originalLocation.setOccupyingUnit(null);
+
 		} 
 		else
 		{
-			gameGUI.displayError("before functions");
 			//Debug.LogError("HERREEE in else");
 			if (destLandType == LandType.Trees)
 			{
@@ -135,7 +136,7 @@ public class UnitManager : MonoBehaviour {
 				dest.setLandType(LandType.Grass);
 			}
 			unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
-			originalLocation.setOccupyingUnit(null);
+
 		}
 	}
 
