@@ -188,4 +188,10 @@ public class UnitManager : MonoBehaviour {
 			}
 		}
 	}
+
+	[RPC]
+	void upgradeUnitNet(NetworkViewID unitID, int newlvl){
+		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
+		upgradeUnit (u, (UnitType)newlvl);
+	}
 }

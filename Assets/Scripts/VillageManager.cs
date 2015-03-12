@@ -13,6 +13,8 @@ public class VillageManager : MonoBehaviour {
 	public readonly int THIRTY = 30;
 	public readonly int FOURTY = 40;
 	private InGameGUI gameGUI;
+	// Use this for initialization
+	public GameObject meadowPrefab;
 
 	void Start () {
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
@@ -92,7 +94,11 @@ public class VillageManager : MonoBehaviour {
 				}
 				//destroying a village from the game
 				//Destroy (//prefab for village);
+				Destroy (villageLocation.prefab);
 				villageLocation.setLandType (LandType.Meadow);
+				//This MeadowPrefab has no networkviewID
+				villageLocation.prefab = Instantiate(meadowPrefab, new Vector3(villageLocation.point.x, 0.2f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+
 			}
 			biggestVillage.addGold(totalGold);
 			biggestVillage.addWood(totalWood);
