@@ -244,7 +244,9 @@ public class Village : MonoBehaviour {
 	{
 		controlledRegion.Add(t);
 		t.setVillage(this);
-		t.setColor(this.getPlayer().getColor ());
+		int color = this.getPlayer ().getColor ();
+		t.setColor( color );
+		t.colorTile ();
 	}
 
 	public void removeTile(Tile t)

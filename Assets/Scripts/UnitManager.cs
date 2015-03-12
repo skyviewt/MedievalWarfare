@@ -85,11 +85,12 @@ public class UnitManager : MonoBehaviour {
 	
 	public void performMove(Unit unit, Tile dest)
 	{
+
 		Village srcVillage = unit.getVillage ();
 		
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
-		
+		print (destLandType);
 		if (srcUnitType == UnitType.KNIGHT) {
 			bool destHasRoad = dest.checkRoad ();
 			if (destLandType == LandType.Meadow && destHasRoad == false) {
@@ -97,11 +98,20 @@ public class UnitManager : MonoBehaviour {
 				unit.setAction (UnitActionType.Moved);
 			}		
 		} 
-		else if (srcUnitType != UnitType.KNIGHT) 
+		else
 		{
+			Debug.LogError("HERREEE in else");
 			if (destLandType == LandType.Trees)
 			{
+				print ("entered cutting trees");
 				unit.setAction(UnitActionType.ChoppingTree);
+				unit.animation.CrossFade("attack");
+				float elapsedTime = 0;
+
+				Destroy (dest.prefab);
+				dest.prefab = null;
+
+				unit.animation.CrossFade("idle");
 				srcVillage.addWood(1);
 				dest.setLandType(LandType.Grass);
 			}
