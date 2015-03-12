@@ -37,6 +37,17 @@ public class Player : MonoBehaviour{
 		return thePlayer;
 	}
 
+	public Player(){
+		wins = 0;
+		losses = 0;
+		myVillages = new List<Village>();
+	}
+	
+	public void initPlayer(string pName, string pPass){
+		username = pName;
+		password = pPass;
+	}
+
 	public void addWin()
 	{
 		this.wins++;
