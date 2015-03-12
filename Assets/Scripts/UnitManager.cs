@@ -21,7 +21,7 @@ public class UnitManager : MonoBehaviour {
 		moveUnit (unitToMove, dest);
 	}
 	
-	public bool moveUnit(Unit unit, Tile dest)
+	public void moveUnit(Unit unit, Tile dest)
 	{
 		print ("----in move unit----");
 		Village destVillage = dest.getVillage ();
@@ -34,15 +34,13 @@ public class UnitManager : MonoBehaviour {
 		bool unitPermitted = dest.canUnitMove (srcUnitType); //need to implement canUnitMove in tile
 		
 		//if the move is allowed to move onto the tile
-		if (unitPermitted == true) 	
+		if (unitPermitted == true ) 	
 		{
 			if (srcVillage == destVillage)
 			{
 				dest.setOccupyingUnit(unit); //reassign unit/tile to each other
 				unit.setLocation(dest);
-				this.performMove(unit,dest); //need to be implemented in UnitManager
-				unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
-				return true;
+				this.performMove(unit,dest); //need to be implemented in UnitManager;
 			}
 			else if (srcVillage != destVillage)
 			{
@@ -53,8 +51,7 @@ public class UnitManager : MonoBehaviour {
 					srcVillage.addTile(dest);
 					villageManager.MergeAlliedRegions(dest);
 					this.performMove(unit,dest); 
-					unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
-					return true;
+					unit.setAction(UnitActionType.CapturingNeutral);
 				}
 				
 				
@@ -93,7 +90,7 @@ public class UnitManager : MonoBehaviour {
 				}*/
 			}
 		}
-		return false;
+
 	}
 	
 	public void performMove(Unit unit, Tile dest)
@@ -109,8 +106,10 @@ public class UnitManager : MonoBehaviour {
 			bool destHasRoad = dest.checkRoad ();
 			if (destLandType == LandType.Meadow && destHasRoad == false) {
 				dest.setLandType (LandType.Grass);
-				unit.setAction (UnitActionType.Moved);
-			}		
+				Destroy (dest.prefab);
+			}
+			unit.setAction (UnitActionType.Moved);
+			unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
 		} 
 		else
 		{
@@ -133,7 +132,7 @@ public class UnitManager : MonoBehaviour {
 				unit.setAction(UnitActionType.ClearingTombstone);
 				dest.setLandType(LandType.Grass);
 			}
-			unit.setAction(UnitActionType.Moved);
+			unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
 		}
 	}
 

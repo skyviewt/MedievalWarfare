@@ -131,9 +131,9 @@ public class InGameGUI : MonoBehaviour {
 	public void moveUnitPressed()
 	{
 		UnitCanvas.enabled = false;
-		menuUp = false;
 		_isAUnitSelected = true;
 		this.displayError("Please select a friendly or neutral tile 1 distance away to move to.");
+		menuUp = false;
 
 	}
 	public void unitUpgradeInfantryPressed()
@@ -184,10 +184,9 @@ public class InGameGUI : MonoBehaviour {
 
 	void validateMove(RaycastHit hit)
 	{
-		bool isMoved = false;
 		print ("in validateMove");
-		if (_isAUnitSelected && (_Unit.GetComponent<Unit> ().myAction == UnitActionType.ReadyForOrders || 
-					_Unit.GetComponent<Unit> ().myAction == UnitActionType.Moved)) 
+		if (_isAUnitSelected && ( _Unit.GetComponent<Unit> ().myAction == UnitActionType.ReadyForOrders || 
+					_Unit.GetComponent<Unit> ().myAction == UnitActionType.Moved )) 
 		{
 			_Tile = hit.collider.gameObject;
 			Tile selection = _Tile.GetComponent<Tile> ();
@@ -205,7 +204,7 @@ public class InGameGUI : MonoBehaviour {
 		
 					print ("doing the move now");
 					
-					isMoved = unitManager.moveUnit (u, _move);
+					unitManager.moveUnit (u, _move);
 
 					//TODO This code is for taking over neutral tiles.
 					//This code doesnt' work because MapGenerator isn't making a Game :( maybe it's an easy fix? :S
@@ -225,12 +224,17 @@ public class InGameGUI : MonoBehaviour {
 					
 					ClearSelections ();
 			}
+			else
+			{
+				this.displayError ("Invalid Move Selection.");
+			}
 
 		} 
-		else if(( _isAUnitSelected && !(_Unit.GetComponent<Unit>().myAction == UnitActionType.ReadyForOrders || 
-		                             _Unit.GetComponent<Unit>().myAction == UnitActionType.Moved)) || !isMoved || _move == null)
+		else if( _isAUnitSelected && !(_Unit.GetComponent<Unit> ().myAction == UnitActionType.ReadyForOrders || 
+		                             _Unit.GetComponent<Unit> ().myAction == UnitActionType.Moved)) 
 		{
-			this.displayError ("Cannot Move.");
+			this.displayError ("Already Moved.");
+			ClearSelections();
 		}
 	}
 	

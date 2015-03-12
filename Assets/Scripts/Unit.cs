@@ -22,8 +22,8 @@ public enum UnitActionType
 	StartCultivating, 
 	FinishCultivating,
 	CapturingNeutral,
-	CapturingEnemy
-	
+	CapturingEnemy,
+	EndOfTurn	
 };
 
 public class Unit : MonoBehaviour {
