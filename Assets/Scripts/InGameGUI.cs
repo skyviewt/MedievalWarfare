@@ -33,10 +33,10 @@ public class InGameGUI : MonoBehaviour {
 
 	private Tile _move;
 
-	private bool menuUp;
-
 	private VillageManager villageManager;
 	private UnitManager unitManager;
+
+	private bool menuUp;
 	// Use this for initialization
 	void Start () 
 	{
@@ -125,8 +125,8 @@ public class InGameGUI : MonoBehaviour {
 	public void cancelUnitPressed()
 	{
 		UnitCanvas.enabled = false;
-		ClearSelections ();
 		menuUp = false;
+		ClearSelections ();
 	}
 	public void moveUnitPressed()
 	{
@@ -134,6 +134,7 @@ public class InGameGUI : MonoBehaviour {
 		_isAUnitSelected = true;
 		this.displayError("Please select a friendly or neutral tile 1 distance away to move to.");
 		menuUp = false;
+
 	}
 	public void unitUpgradeInfantryPressed()
 	{
@@ -145,6 +146,7 @@ public class InGameGUI : MonoBehaviour {
 		_GoldText.text = redrawGold.ToString();
 		UnitCanvas.enabled = false;
 		menuUp = false;
+
 	}
 
 	public void unitUpgradeSoldierPressed()
@@ -156,6 +158,7 @@ public class InGameGUI : MonoBehaviour {
 		_GoldText.text = redrawGold.ToString();
 		UnitCanvas.enabled = false;
 		menuUp = false;
+
 	}
 
 	public void unitUpgradeKnightPressed()
@@ -167,6 +170,7 @@ public class InGameGUI : MonoBehaviour {
 		_GoldText.text = redrawGold.ToString();
 		UnitCanvas.enabled = false;
 		menuUp = false;
+
 	}
 
 	public void displayError(string error)
@@ -216,7 +220,7 @@ public class InGameGUI : MonoBehaviour {
 					//TODO This code is for cutting trees
 					if(selection.getLandType () == LandType.Trees)
 					{
-
+						
 						int redrawWood = v.getWood();
 						_WoodText.text = redrawWood.ToString();
 
@@ -247,7 +251,7 @@ public class InGameGUI : MonoBehaviour {
 		Ray ray = myCamera.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		//if clicked
-		if (Input.GetMouseButtonDown(0)&&!menuUp)
+		if (Input.GetMouseButtonDown(0)&& !menuUp)
 		{
 
 			if (Physics.Raycast(ray, out hit)){
