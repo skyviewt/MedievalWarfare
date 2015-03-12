@@ -199,25 +199,25 @@ public class InGameGUI : MonoBehaviour {
 
 	void validateMove(RaycastHit hit)
 	{
-		print ("in validateMove");
+		//print ("in validateMove");
 		if (_isAUnitSelected && ( _Unit.GetComponent<Unit> ().myAction == UnitActionType.ReadyForOrders || 
 					_Unit.GetComponent<Unit> ().myAction == UnitActionType.Moved )) 
 		{
 			_Tile = hit.collider.gameObject;
 			Tile selection = _Tile.GetComponent<Tile> ();
 			print (selection != null);
-			Debug.Log (_Unit.GetComponent<Unit> ().getLocation ().neighbours);
+			//Debug.Log (_Unit.GetComponent<Unit> ().getLocation ().neighbours);
 			if (_Unit.GetComponent<Unit> ().getLocation ().neighbours.Contains (selection)) {
 					_move = selection;
 			}
-			Debug.LogWarning (_move);
+			//Debug.LogWarning (_move);
 			if (_move != null) 
 			{
 					UnitCanvas.enabled = false;
 					Unit u = _Unit.GetComponent<Unit> ();
 					Village v = u.getVillage ();
 		
-					print ("doing the move now");
+					//print ("doing the move now");
 
 					unitManager.moveUnit (u, _move);
 					gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
@@ -241,7 +241,7 @@ public class InGameGUI : MonoBehaviour {
 			}
 			else
 			{
-				this.displayError ("Invalid Move Selection.");
+				this.displayError (@"Invalid Move. ¯\(°_o)/¯");
 				ClearSelections ();//can delete this line later if we want, added it to help simplify turns
 			}
 
@@ -249,7 +249,7 @@ public class InGameGUI : MonoBehaviour {
 		else if( _isAUnitSelected && !(_Unit.GetComponent<Unit> ().myAction == UnitActionType.ReadyForOrders || 
 		                             _Unit.GetComponent<Unit> ().myAction == UnitActionType.Moved)) 
 		{
-			this.displayError ("Already Moved.");
+			this.displayError (@"Already Moved. ¯\(°_o)/¯");
 			ClearSelections();
 		}
 	}

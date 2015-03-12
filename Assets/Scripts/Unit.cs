@@ -112,7 +112,7 @@ public class Unit : MonoBehaviour {
 		myType = unitType;
 		myVillage = v;
 		myAction = UnitActionType.ReadyForOrders;
-		location.setOccupyingUnit (this);
+		locatedAt.setOccupyingUnit (this);
 	}
 
 

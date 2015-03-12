@@ -132,6 +132,19 @@ public class Tile : MonoBehaviour
 		this.myVillage = v;
 	}
 
+	public Structure getStructure()
+	{
+		return this.occupyingStructure;
+	}
+
+	public void setStructure(bool b)
+	{
+		if (b == true) {
+			//instantiate an occupyingStructure
+		} else {
+			//destroy/remove occupyingSructure
+		}
+	}
 	public List<Tile> getNeighbours()
 	{
 		return neighbours;
@@ -165,19 +178,6 @@ public class Tile : MonoBehaviour
 	public bool checkRoad()
 	{
 		return this.isRoad;
-	}
-
-	public bool canUnitMove(UnitType type)
-	{
-		if(occupyingStructure == null || myType != LandType.Trees)
-		{
-			return true;
-		}
-		else if(occupyingStructure != null || (type == UnitType.KNIGHT && myType == LandType.Trees) || occupyingUnit != null)
-		{
-			return false;
-		}
-		return false;
 	}
 
 	[RPC]

@@ -9,6 +9,7 @@ public class UnitManager : MonoBehaviour {
 	private InGameGUI gameGUI;
 	public readonly int TEN = 10;
 	// Use this for initialization
+
 	void Start () {
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
@@ -31,16 +32,16 @@ public class UnitManager : MonoBehaviour {
 		LandType destLandType = dest.getLandType ();
 		UnitType srcUnitType = unit.getUnitType();
 		
-		bool unitPermitted = dest.canUnitMove (srcUnitType); //need to implement canUnitMove in tile
+		bool unitPermitted = this.canUnitMove (srcUnitType, dest); //need to implement canUnitMove in tile
 		
 		//if the move is allowed to move onto the tile
 		if (unitPermitted == true ) 	
 		{
 			if (srcVillage == destVillage)
 			{
-				dest.setOccupyingUnit(unit); //reassign unit/tile to each other
+				dest.setOccupyingUnit(unit);
 				unit.setLocation(dest);
-				this.performMove(unit,dest); //need to be implemented in UnitManager;
+				this.performMove(unit,dest); 
 			}
 			else if (srcVillage != destVillage)
 			{
@@ -92,16 +93,16 @@ public class UnitManager : MonoBehaviour {
 		}
 
 	}
-	
+
 	public void performMove(Unit unit, Tile dest)
 	{
 
 		Village srcVillage = unit.getVillage ();
-		
+		Tile originalLocation = unit.getLocation ();
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
-		print ("--------------landtype of the tile below------------------");		
-		print (destLandType);
+//		print ("--------------landtype of the tile below------------------");		
+//		print (destLandType);
 		if (srcUnitType == UnitType.KNIGHT) {
 			bool destHasRoad = dest.checkRoad ();
 			if (destLandType == LandType.Meadow && destHasRoad == false) {
@@ -110,16 +111,17 @@ public class UnitManager : MonoBehaviour {
 			}
 			unit.setAction (UnitActionType.Moved);
 			unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
+			originalLocation.setOccupyingUnit(null);
 		} 
 		else
 		{
-			Debug.LogError("HERREEE in else");
+			gameGUI.displayError("before functions");
+			//Debug.LogError("HERREEE in else");
 			if (destLandType == LandType.Trees)
 			{
-				print ("entered cutting trees");
+				//print ("entered cutting trees");
 				unit.setAction(UnitActionType.ChoppingTree);
 				//unit.animation.CrossFade("attack");
-	
 				Destroy (dest.prefab);
 				dest.prefab = null;
 
@@ -133,7 +135,28 @@ public class UnitManager : MonoBehaviour {
 				dest.setLandType(LandType.Grass);
 			}
 			unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
+			originalLocation.setOccupyingUnit(null);
 		}
+	}
+
+	private bool canUnitMove(UnitType type, Tile dest)
+	{
+		if (dest.getStructure () == null && dest.getOccupyingUnit () == null && dest.getLandType () != LandType.Trees) {
+			return true;
+		} else if(dest.getLandType () == LandType.Trees && type != UnitType.KNIGHT){
+			return true;
+		} else if (dest.getStructure () != null) {
+			gameGUI.displayError (@"The tower doesn't want you to stand ontop of it. ¯\(°_o)/¯");
+			return false;
+		} else if (type == UnitType.KNIGHT && dest.getLandType () == LandType.Trees) {
+			gameGUI.displayError (@"Your Knight is out of shape. It cannot cut down this tree. ¯\(°_o)/¯");
+			return false;
+		} else if (dest.getOccupyingUnit () != null) {
+			gameGUI.displayError (@"There is a unit already standing there!!! ¯\(°_o)/¯");
+			return false;
+		}
+
+		return false;
 	}
 
 	public void upgradeUnit(Unit u, UnitType newLevel)
@@ -145,17 +168,17 @@ public class UnitManager : MonoBehaviour {
 		int goldAvailable = unitVillage.getGold();
 		int goldRequired = (newLevel - unitType) * TEN;
 		if (unitType == UnitType.KNIGHT) {
-			gameGUI.displayError ("The Knight is already your strongest warrior!");
-		} 
+			gameGUI.displayError (@"The Knight is already your strongest warrior! ¯\(°_o)/¯");
+		}
 		else if((goldAvailable >= goldRequired)&&(newLevel > unitType)&&(unitAction == UnitActionType.ReadyForOrders || unitAction == UnitActionType.Moved))
 		{
 			if(newLevel == UnitType.SOLDIER && unitVillageLevel < VillageType.Town)
 			{
-				gameGUI.displayError ("Please upgrade your village to a Town first.");
+				gameGUI.displayError (@"Please upgrade your village to a Town first. ¯\(°_o)/¯");
 			}
 			else if(newLevel == UnitType.KNIGHT && unitVillageLevel < VillageType.Fort)
 			{
-				gameGUI.displayError ("Please upgrade your village to a Fort first.");
+				gameGUI.displayError (@"Please upgrade your village to a Fort first. ¯\(°_o)/¯");
 			}
 			else
 			{

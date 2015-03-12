@@ -27,7 +27,7 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType vAction = v.getAction ();
 		if (vType == VillageType.Fort) 
 		{
-			gameGUI.displayError("The Fort is your strongest village!");
+			gameGUI.displayError(@"The Fort is your strongest village! ¯\(°_o)/¯");
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
@@ -123,7 +123,7 @@ public class VillageManager : MonoBehaviour {
 			//v.addUnit (p);
 			v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newPeasant.networkView.viewID);
 		} else {
-			gameGUI.displayError ("Wow you're broke, can't even afford a peasant?");
+			gameGUI.displayError (@"Wow you're broke, can't even afford a peasant? ¯\(°_o)/¯");
 		}
 
 	}
@@ -149,7 +149,7 @@ public class VillageManager : MonoBehaviour {
 			//v.addUnit (p);
 			v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newInfantry.networkView.viewID);
 		} else {
-			gameGUI.displayError ("You do not have enough gold to train infantry.");
+			gameGUI.displayError (@"You do not have enough gold to train infantry. ¯\(°_o)/¯");
 		}
 	}
 
@@ -177,10 +177,10 @@ public class VillageManager : MonoBehaviour {
 			}
 			else
 			{
-				gameGUI.displayError("Please upgrade your village to a Town first.");
+				gameGUI.displayError(@"Please upgrade your village to a Town first. ¯\(°_o)/¯");
 			}
 		} else {
-			gameGUI.displayError("You can't afford a soldier.");
+			gameGUI.displayError(@"You can't afford a soldier. ¯\(°_o)/¯");
 		}
 	}
 	public void hireKnight(Village v, GameObject unitPrefab)
@@ -208,10 +208,10 @@ public class VillageManager : MonoBehaviour {
 			}
 			else
 			{
-				gameGUI.displayError ("Please upgrade your village to a Fort first.");
+				gameGUI.displayError (@"Please upgrade your village to a Fort first. ¯\(°_o)/¯");
 			}
 		} else {
-			gameGUI.displayError("You don't have enough gold for a knight");
+			gameGUI.displayError(@"You don't have enough gold for a knight. ¯\(°_o)/¯");
 		}
 
 	}
