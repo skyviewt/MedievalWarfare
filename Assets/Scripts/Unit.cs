@@ -65,6 +65,47 @@ public class Unit : MonoBehaviour {
 		location.setOccupyingUnit (theUnit);
 		return theUnit;
 	}
+
+	public Unit(){
+	}
+
+	[RPC]
+	void setActiveNet(){
+
+	}
+
+
+	[RPC]
+	void initUnitNet(int unitTypeID, NetworkViewID locationTileID, NetworkViewID villageID){
+		//Getting all the parameters
+		UnitType unitType = (UnitType)unitTypeID;
+		Tile location = NetworkView.Find (locationTileID).gameObject.GetComponent<Tile>();
+		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
+
+		//CreateComponent
+		Tile toplace = null;
+		foreach (Tile a in location.neighbours) 
+		{
+			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
+			{
+				toplace = a;
+			}
+		}
+		if(toplace == null)
+		{
+			toplace = location;
+		}
+
+
+		locatedAt = toplace;
+		myType = unitType;
+		myVillage = v;
+		myAction = UnitActionType.ReadyForOrders;
+		location.setOccupyingUnit (this);
+	}
+
+
+
 	// Use this for initialization
 	void Start () 
 	{

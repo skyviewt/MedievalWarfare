@@ -101,6 +101,7 @@ public class VillageManager : MonoBehaviour {
 		if (villageGold >= 10) 
 		{
 			Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, unitPrefab);
+			//GameObject newPeasant = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0);
 			p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (true);
 			p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
 			p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
