@@ -21,13 +21,17 @@ public class GameManager : MonoBehaviour {
 			
 			Network.InitializeServer (32, port);
 			
-			Player p1 = Player.CreateComponent ("Sky", "123", gameObject);
-			p1.setColor(0);
-			Player p2 = Player.CreateComponent ("Joerg", "456", gameObject);
-			p2.setColor(1);
+			//Player p1 = Player.CreateComponent ("Sky", "123", gameObject);
+			//p1.setColor(0);
+			//Player p2 = Player.CreateComponent ("Joerg", "456", gameObject);
+			//p2.setColor(1);
+
+			gameObject.networkView.RPC ("initPlayers", RPCMode.AllBuffered);
+
+			Player[] pls = gameObject.GetComponents<Player>();
 			List<Player> participants = new List<Player> ();
-			participants.Add (p1);
-			participants.Add (p2);
+			participants.Add (pls[0]);
+			participants.Add (pls[1]);
 			
 			MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
 			gen.initMap ();
@@ -60,6 +64,17 @@ public class GameManager : MonoBehaviour {
 	public int getPort()
 	{
 		return this.port;
+	}
+
+
+	[RPC]
+	void initPlayers(){
+		Player[] pls = gameObject.GetComponents<Player>();
+		pls [0].initPlayer ("P1", "Pass");
+		pls[0].setColor(0);
+		pls [1].initPlayer ("P2", "Pass");
+		pls [1].setColor (1);
+
 	}
 
 	// Update is called once per frame
