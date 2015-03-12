@@ -46,20 +46,25 @@ public class VillageManager : MonoBehaviour {
 		foreach (Tile neighbour in neighbours) 
 		{
 			Village neighbourVillage = neighbour.getVillage ();
-			Player neighbourPlayer = neighbourVillage.getPlayer ();
-			if((myPlayer == neighbourPlayer) && !(villagesToMerge.Contains(neighbourVillage)))
+			if( neighbourVillage != null )
 			{
-				List<Tile> neighbourControlledRegion = neighbourVillage.getControlledRegion();
-				int neighbourSize = neighbourControlledRegion.Count();
-				VillageType neighbourVillageType = neighbourVillage.getMyType();
-				if(((size < neighbourSize) && (biggestVillageType == neighbourVillageType)) || biggestVillageType < neighbourVillageType)
+				Player neighbourPlayer = neighbourVillage.getPlayer ();
+				if((myPlayer == neighbourPlayer) && !(villagesToMerge.Contains(neighbourVillage)))
 				{
-					size = neighbourSize;
-					biggestVillage = neighbourVillage;
-					biggestVillageType = neighbourVillageType;
+					List<Tile> neighbourControlledRegion = neighbourVillage.getControlledRegion();
+					int neighbourSize = neighbourControlledRegion.Count();
+					VillageType neighbourVillageType = neighbourVillage.getMyType();
+					if(((size < neighbourSize) && (biggestVillageType == neighbourVillageType)) || biggestVillageType < neighbourVillageType)
+					{
+						size = neighbourSize;
+						biggestVillage = neighbourVillage;
+						biggestVillageType = neighbourVillageType;
+					}
+					villagesToMerge.Add(neighbourVillage);
 				}
-				villagesToMerge.Add(neighbourVillage);
+
 			}
+	
 		}
 		int totalGold = ZERO;
 		int totalWood = ZERO;

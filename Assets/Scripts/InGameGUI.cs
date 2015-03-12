@@ -229,7 +229,7 @@ public class InGameGUI : MonoBehaviour {
 				}
 				else
 				{
-					this.displayError("Somethings wrong with moving.");
+					this.displayError("Something's wrong with moving.");
 				}
 				ClearSelections();
 			}
