@@ -12,6 +12,8 @@ public class InGameGUI : MonoBehaviour {
 	public Canvas HUDCanvas;
 	public Canvas ErrorCanvas;
 
+	private int myTurn = 1;
+	public int turnOrder = 0;
 
 	// prefabs
 	public GameObject UnitPrefab;
@@ -49,7 +51,20 @@ public class InGameGUI : MonoBehaviour {
 		ErrorCanvas.enabled = false;
 		menuUp = false;
 	}
-	
+	//Functions on the HUD
+
+	public void endTurnPressed()
+	{
+		turnOrder = (turnOrder+1)%2;
+		disableAllCanvases ();
+	}
+	private void disableAllCanvases()
+	{
+		VillageCanvas.enabled = false;
+		UnitCanvas.enabled = false;
+		ErrorCanvas.enabled = false;
+		menuUp = false;
+	}
 	//Functions for when a Village is selected
 	public void trainPeasantPressed()
 	{
@@ -206,27 +221,27 @@ public class InGameGUI : MonoBehaviour {
 					
 					unitManager.moveUnit (u, _move);
 
-					//TODO This code is for taking over neutral tiles.
-					//This code doesnt' work because MapGenerator isn't making a Game :( maybe it's an easy fix? :S
 					if (selection.getVillage () == null) {
 							v.addTile (selection);
 							int redrawRegion = v.getControlledRegion ().Count;
 							_RegionText.text = redrawRegion.ToString ();
 					}
-					//TODO This code is for cutting trees
-					if (selection.getLandType () == LandType.Trees) {
+					
+/*					if (selection.getLandType () == LandType.Trees) {
 	
 							int redrawWood = v.getWood ();
 							_WoodText.text = redrawWood.ToString ();
 
-					}
+					}*/
 
-					
+					int redrawWood = v.getWood ();
+					_WoodText.text = redrawWood.ToString ();
 					ClearSelections ();
 			}
 			else
 			{
 				this.displayError ("Invalid Move Selection.");
+				ClearSelections ();//can delete this line later if we want, added it to help simplify turns
 			}
 
 		} 
@@ -261,8 +276,7 @@ public class InGameGUI : MonoBehaviour {
 				{
 					case "Town":
 					{
-						VillageCanvas.enabled = true;
-						menuUp = true;
+						
 						_Village = hit.collider.gameObject;
 						Village v = _Village.GetComponent<Village>();
 						int redrawWood = v.getWood();
@@ -273,6 +287,11 @@ public class InGameGUI : MonoBehaviour {
 						_GoldText.text = redrawGold.ToString();
 						_RegionText.text = redrawRegion.ToString();
 						_UnitsText.text = redrawUnits.ToString();
+						if(myTurn != turnOrder)
+						{
+							VillageCanvas.enabled = true;
+							menuUp = true;
+						}
 						break;
 					}
 
@@ -291,15 +310,30 @@ public class InGameGUI : MonoBehaviour {
 						_RegionText.text = redrawRegion.ToString();
 						_UnitsText.text = redrawUnits.ToString();
 
-						Tile onIt = _Unit.GetComponent<Unit>().getLocation();
-		
-						UnitCanvas.enabled = true;
-						menuUp = true;
-						print (hit.collider.tag);
+						//Tile onIt = _Unit.GetComponent<Unit>().getLocation();
+						if(myTurn != turnOrder)
+						{
+							UnitCanvas.enabled = true;
+							menuUp = true;
+						}
 						break;
 					}
 					case "Grass":
 					{
+						if(_isAUnitSelected == false)
+						{
+							_Tile = hit.collider.gameObject;
+							Tile t = _Tile.GetComponent<Tile>();
+							Village v = t.getVillage ();
+							int redrawWood = v.getWood();
+							int redrawGold = v.getGold();
+							int redrawRegion = v.getControlledRegion().Count();
+							int redrawUnits = v.getControlledUnits().Count();
+							_WoodText.text = redrawWood.ToString();
+							_GoldText.text = redrawGold.ToString();
+							_RegionText.text = redrawRegion.ToString();
+							_UnitsText.text = redrawUnits.ToString();
+						}
 						ErrorCanvas.enabled = false;
 						validateMove(hit);
 						break;

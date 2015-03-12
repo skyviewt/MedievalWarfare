@@ -271,7 +271,7 @@ public class MapGenerator : MonoBehaviour {
 
 					//TODO: add village to player over network
 					p.addVillage( newVillage );
-				} 
+				}
 			}
 			if (t.getVillage() == null && t.getColor() != players.Count)
 			{
