@@ -70,8 +70,18 @@ public class Unit : MonoBehaviour {
 	}
 
 	[RPC]
-	void setActiveNet(){
+	void setActiveNet(string unitClass){
 
+		gameObject.transform.FindChild ("Peasant").gameObject.SetActive (false);
+		gameObject.transform.FindChild ("Infantry").gameObject.SetActive (false);
+		gameObject.transform.FindChild ("Soldier").gameObject.SetActive (false);
+		gameObject.transform.FindChild ("Knight").gameObject.SetActive (false);
+
+		gameObject.transform.FindChild (unitClass).gameObject.SetActive (true);
+
+		if (!(unitClass == "Peasant" || unitClass == "Infantry" || unitClass == "Soldier" || unitClass == "Knight")) {
+			Debug.Log("Invalid Unit.SetActive() parameter: " + unitClass);
+		}
 	}
 
 
@@ -95,7 +105,8 @@ public class Unit : MonoBehaviour {
 		{
 			toplace = location;
 		}
-
+		//BE CAREFUL!!! If the order of Tiles in neighbors are not the same, the position of the new unit will be different!!
+		gameObject.transform.position = new Vector3(toplace.point.x, 0.15f, toplace.point.y);
 
 		locatedAt = toplace;
 		myType = unitType;
