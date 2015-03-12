@@ -75,7 +75,9 @@ public class mainMenu : MonoBehaviour {
 
 	public void connectButtonPressed()
 	{
-		GM.initGame (_ipInput.text,System.Int32.Parse(_portInput.text));
+		GM.setIpAddress(_ipInput.text);
+		GM.setPort(System.Int32.Parse (_portInput.text));
+		Application.LoadLevel("scene1");
 	}
 	
 	public void StartLevel()
@@ -92,5 +94,12 @@ public class mainMenu : MonoBehaviour {
 	public void ExitGame()
 	{
 		Application.Quit ();
+	}
+
+	private void ClearScene()
+	{
+		foreach(GameObject obj in Object.FindObjectsOfType<GameObject>()){
+			Destroy(obj);
+		}
 	}
 }

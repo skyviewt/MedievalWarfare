@@ -107,20 +107,20 @@ public class VillageManager : MonoBehaviour {
 		int villageGold = v.getGold ();
 		if (villageGold >= 10) 
 		{
-			Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, unitPrefab);
-			//GameObject newPeasant = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
-			//newPeasant.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.PEASANT, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+			//Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, unitPrefab);
+			GameObject newPeasant = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+			newPeasant.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.PEASANT, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
 
-			p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (true);
-			p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
-			p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
-			p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
+			//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (true);
+			//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
+			//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
+			//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
 
 			//new method that sets the mesh active:
-			//newPeasant.networkView.RPC("setActiveNet", RPCMode.All, "Peasant");
-			v.setGold (villageGold - TEN);
-			v.addUnit (p);
-			//v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newPeasant.networkView.viewID);
+			newPeasant.networkView.RPC("setActiveNet", RPCMode.All, "Peasant");
+			//v.setGold (villageGold - TEN);
+			//v.addUnit (p);
+			v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newPeasant.networkView.viewID);
 		} else {
 			gameGUI.displayError ("Wow you're broke, can't even afford a peasant?");
 		}
