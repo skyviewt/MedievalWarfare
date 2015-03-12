@@ -337,5 +337,11 @@ public class Village : MonoBehaviour {
 		controlledBy = p;
 	}
 
+	[RPC]
+	void addUnitNet(NetworkViewID unitID){
+		Unit unitToAdd = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
+		supportedUnits.Add (unitToAdd);
+		unitToAdd.setVillage (this);
+	}
 
 }
