@@ -13,8 +13,6 @@ public class VillageManager : MonoBehaviour {
 	public readonly int THIRTY = 30;
 	public readonly int FOURTY = 40;
 	private InGameGUI gameGUI;
-	// Use this for initialization
-	public GameObject unitPref;
 
 	void Start () {
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();

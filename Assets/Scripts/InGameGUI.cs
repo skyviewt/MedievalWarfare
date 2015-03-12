@@ -187,7 +187,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		UnitCanvas.enabled = false;
 		_isAUnitSelected = true;
-		this.displayError("Please select a friendly or neutral tile 1 distance away to move to.");
+		this.displayError("Please select a friendly or neutral tile 1 distance away to move to. (*￣ー￣*)");
 		menuUp = false;
 
 	}
@@ -321,7 +321,7 @@ public class InGameGUI : MonoBehaviour {
 		{
 
 			if (Physics.Raycast(ray, out hit)){
-
+	
 				switch(hit.collider.tag)
 				{
 					case "Town":
