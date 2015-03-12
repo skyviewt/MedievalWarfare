@@ -9,6 +9,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 468650}
   - 136: {fileID: 13669138}
+  - 23: {fileID: 2358348}
+  - 148: {fileID: 14892882}
+  - 114: {fileID: 11498034}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Unit
@@ -6890,6 +6893,26 @@ Transform:
   - {fileID: 469072}
   m_Father: {fileID: 469050}
   m_RootOrder: 0
+--- !u!23 &2358348
+Renderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 168650}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
 --- !u!23 &2369132
 Renderer:
   m_ObjectHideFlags: 1
@@ -7121,6 +7144,20 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
+--- !u!114 &11498034
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 168650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad70ec85a155046b2abd4f2be2e48b50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  locatedAt: {fileID: 0}
+  myAction: 0
+  myType: 0
 --- !u!136 &13669138
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -7819,6 +7856,18 @@ CharacterController:
   m_SkinWidth: .0799999982
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!148 &14892882
+NetworkView:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 168650}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 468650}
+  m_ViewID:
+    m_ID: 0
+    m_Type: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

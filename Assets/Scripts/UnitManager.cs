@@ -16,6 +16,7 @@ public class UnitManager : MonoBehaviour {
 	
 	public void moveUnit(Unit unit, Tile dest)
 	{
+		print ("----in move unit----");
 		Village destVillage = dest.getVillage ();
 		Village srcVillage = unit.getVillage ();
 		
@@ -90,6 +91,7 @@ public class UnitManager : MonoBehaviour {
 		
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
+		print ("--------------landtype of the tile below------------------");		
 		print (destLandType);
 		if (srcUnitType == UnitType.KNIGHT) {
 			bool destHasRoad = dest.checkRoad ();
@@ -105,13 +107,12 @@ public class UnitManager : MonoBehaviour {
 			{
 				print ("entered cutting trees");
 				unit.setAction(UnitActionType.ChoppingTree);
-				unit.animation.CrossFade("attack");
-				float elapsedTime = 0;
-
+				//unit.animation.CrossFade("attack");
+	
 				Destroy (dest.prefab);
 				dest.prefab = null;
 
-				unit.animation.CrossFade("idle");
+				//unit.animation.CrossFade("idle");
 				srcVillage.addWood(1);
 				dest.setLandType(LandType.Grass);
 			}
