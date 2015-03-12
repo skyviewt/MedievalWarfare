@@ -741,6 +741,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 426345804}
   - 114: {fileID: 426345803}
+  - 148: {fileID: 426345806}
+  - 114: {fileID: 426345805}
   m_Layer: 0
   m_Name: attachingGUI
   m_TagString: Untagged
@@ -782,6 +784,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
+--- !u!114 &426345805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 426345802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef6ccdd19c114230975251dd0c342bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!148 &426345806
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 426345802}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 426345804}
+  m_ViewID:
+    m_ID: 4
+    m_Type: 1
 --- !u!1 &472697739
 GameObject:
   m_ObjectHideFlags: 0
@@ -1157,7 +1182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &681480072
 RectTransform:
   m_ObjectHideFlags: 0
