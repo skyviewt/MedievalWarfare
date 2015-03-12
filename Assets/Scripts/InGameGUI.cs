@@ -65,6 +65,12 @@ public class InGameGUI : MonoBehaviour {
 	[RPC]
 	void incrementTurnOrderNet(){
 		turnOrder = (turnOrder+1)%2;
+
+		GameObject[] allUnits = GameObject.FindGameObjectsWithTag("Unit");
+		foreach (GameObject u in allUnits) {
+			Debug.Log("Found 1 unit");
+			u.GetComponent<Unit>().setAction(UnitActionType.ReadyForOrders);
+		}
 		disableAllCanvases ();
 		if(myTurn == turnOrder)
 		{
@@ -75,6 +81,8 @@ public class InGameGUI : MonoBehaviour {
 		{
 			EndButton.GetComponent<Button>().enabled = false;
 		}
+
+
 	}
 
 	void OnConnectedToServer(){
