@@ -227,13 +227,13 @@ public class InGameGUI : MonoBehaviour {
 		ErrorCanvas.enabled = true;
 
 	}
-	private void notifyTurnStart()
+	public void notifyTurnStart()
 	{
 		disableAllCanvases ();
 		ClearSelections ();
 		YourTurnCanvas.enabled = true;
 	}
-	public void okBeginTurnPressed()
+	public void beginTurnPressed()
 	{
 		YourTurnCanvas.enabled = false;
 	}
@@ -404,7 +404,8 @@ public class InGameGUI : MonoBehaviour {
 			}
 
 			//TODO: bring up the esc menu
-			else{
+			else
+			{
 
 			}
 		}

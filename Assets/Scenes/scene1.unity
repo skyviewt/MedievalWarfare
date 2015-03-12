@@ -2016,7 +2016,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 426345803}
-        m_MethodName: okBeginTurnPressed
+        m_MethodName: beginTurnPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
