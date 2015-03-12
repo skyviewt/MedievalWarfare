@@ -14,7 +14,7 @@ public class InGameGUI : MonoBehaviour {
 	public Canvas YourTurnCanvas;
 
 	public int myTurn;
-	public int turnOrder = 1;
+	public int turnOrder = 0;
 
 	// prefabs
 	public GameObject UnitPrefab;
@@ -52,7 +52,6 @@ public class InGameGUI : MonoBehaviour {
 		UnitCanvas.enabled = false;
 		ErrorCanvas.enabled = false;
 		YourTurnCanvas.enabled = false;
-		EndButton.GetComponent<Button>().interactable = false;
 		menuUp = false;
 		myTurn = 0;
 		//gameObject.networkView.RPC ("setOtherToTurn0", RPCMode.OthersBuffered);
@@ -61,7 +60,6 @@ public class InGameGUI : MonoBehaviour {
 	[RPC]
 	void setOtherToTurn1(){
 		myTurn = 1;
-		notifyTurnStart ();
 	}
 
 	[RPC]
@@ -76,33 +74,20 @@ public class InGameGUI : MonoBehaviour {
 		disableAllCanvases ();
 		if(myTurn == turnOrder)
 		{
-			notifyTurnStart ();
-		}
-	}
-
-	public void notifyTurnStart()
-	{
-		disableAllCanvases ();
-		ClearSelections ();
-		YourTurnCanvas.enabled = true;
-	}
-	public void beginTurnPressed()
-	{
-		YourTurnCanvas.enabled = false;
-		if(myTurn == turnOrder)
-		{
 			EndButton.GetComponent<Button>().interactable = true;
+			notifyTurnStart ();
 		}
 		else
 		{
 			EndButton.GetComponent<Button>().interactable = false;
 		}
+
+
 	}
 
 	void OnConnectedToServer(){
 		gameObject.networkView.RPC ("setOtherToTurn1", RPCMode.Others);
 	}
-	
 
 	//Functions on the HUD
 
@@ -254,7 +239,16 @@ public class InGameGUI : MonoBehaviour {
 		ErrorCanvas.enabled = true;
 
 	}
-
+	public void notifyTurnStart()
+	{
+		disableAllCanvases ();
+		ClearSelections ();
+		YourTurnCanvas.enabled = true;
+	}
+	public void beginTurnPressed()
+	{
+		YourTurnCanvas.enabled = false;
+	}
 	void validateMove(RaycastHit hit)
 	{
 		//print ("in validateMove");
