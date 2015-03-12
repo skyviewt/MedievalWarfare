@@ -131,9 +131,9 @@ public class InGameGUI : MonoBehaviour {
 	public void moveUnitPressed()
 	{
 		UnitCanvas.enabled = false;
+		menuUp = false;
 		_isAUnitSelected = true;
 		this.displayError("Please select a friendly or neutral tile 1 distance away to move to.");
-		menuUp = false;
 
 	}
 	public void unitUpgradeInfantryPressed()
@@ -202,7 +202,6 @@ public class InGameGUI : MonoBehaviour {
 					UnitCanvas.enabled = false;
 					Unit u = _Unit.GetComponent<Unit> ();
 					Village v = u.getVillage ();
-
 		
 					print ("doing the move now");
 					
@@ -228,8 +227,8 @@ public class InGameGUI : MonoBehaviour {
 			}
 
 		} 
-		else if(( _isAUnitSelected && !(_Unit.GetComponent<Unit> ().myAction == UnitActionType.ReadyForOrders || 
-		                             _Unit.GetComponent<Unit> ().myAction == UnitActionType.Moved)) || !isMoved || _move == null)
+		else if(( _isAUnitSelected && !(_Unit.GetComponent<Unit>().myAction == UnitActionType.ReadyForOrders || 
+		                             _Unit.GetComponent<Unit>().myAction == UnitActionType.Moved)) || !isMoved || _move == null)
 		{
 			this.displayError ("Cannot Move.");
 		}
