@@ -65,6 +65,12 @@ public class InGameGUI : MonoBehaviour {
 	[RPC]
 	void incrementTurnOrderNet(){
 		turnOrder = (turnOrder+1)%2;
+
+		GameObject[] allUnits = GameObject.FindGameObjectsWithTag("Unit");
+		foreach (GameObject u in allUnits) {
+			Debug.Log("Found 1 unit");
+			u.GetComponent<Unit>().setAction(UnitActionType.ReadyForOrders);
+		}
 		disableAllCanvases ();
 		if(myTurn == turnOrder)
 		{
@@ -75,6 +81,8 @@ public class InGameGUI : MonoBehaviour {
 		{
 			EndButton.GetComponent<Button>().enabled = false;
 		}
+
+
 	}
 
 	void OnConnectedToServer(){
@@ -149,7 +157,8 @@ public class InGameGUI : MonoBehaviour {
 	public void villageUpgradePressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
-		villageManager.upgradeVillage (v);
+		//villageManager.upgradeVillage (v);
+		villageManager.gameObject.networkView.RPC ("upgradeVillageNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID);
 		int redrawWood = v.getWood();
 		_WoodText.text = redrawWood.ToString();
 		VillageCanvas.enabled = false;
