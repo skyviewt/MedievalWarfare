@@ -52,6 +52,7 @@ public class InGameGUI : MonoBehaviour {
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
 		ErrorCanvas.enabled = false;
+		YourTurnCanvas.enabled = false;
 		menuUp = false;
 		myTurn = 1;
 		gameObject.networkView.RPC ("setOtherToTurn0", RPCMode.OthersBuffered);
