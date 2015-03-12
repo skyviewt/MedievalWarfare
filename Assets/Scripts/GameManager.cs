@@ -45,6 +45,23 @@ public class GameManager : MonoBehaviour {
 		return this.isServer;
 	}
 
+	public void setIpAddress(string ip)
+	{
+		this.ipAddress = ip;
+	}
+	public string getIpAddress()
+	{
+		return this.ipAddress;
+	}
+	public void setPort(int pPort)
+	{
+		this.port = pPort;
+	}
+	public int getPort()
+	{
+		return this.port;
+	}
+
 	// Update is called once per frame
 	void Update () {
 	
