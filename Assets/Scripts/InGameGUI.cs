@@ -12,7 +12,7 @@ public class InGameGUI : MonoBehaviour {
 	public Canvas HUDCanvas;
 	public Canvas ErrorCanvas;
 
-	private int myTurn = 1;
+	public int myTurn = 1;
 	public int turnOrder = 0;
 
 	// prefabs
@@ -50,13 +50,28 @@ public class InGameGUI : MonoBehaviour {
 		UnitCanvas.enabled = false;
 		ErrorCanvas.enabled = false;
 		menuUp = false;
+		myTurn = 0;
+		gameObject.networkView.RPC ("setOtherToTurn1", RPCMode.OthersBuffered);
 	}
+
+	[RPC]
+	void setOtherToTurn1(){
+		myTurn = 1;
+	}
+
+	[RPC]
+	void incrementTurnOrderNet(){
+		turnOrder = (turnOrder+1)%2;
+		disableAllCanvases ();
+	}
+
 	//Functions on the HUD
 
 	public void endTurnPressed()
 	{
-		turnOrder = (turnOrder+1)%2;
-		disableAllCanvases ();
+		//turnOrder = (turnOrder+1)%2;
+		//disableAllCanvases ();
+		gameObject.networkView.RPC ("incrementTurnOrderNet", RPCMode.AllBuffered);
 	}
 	private void disableAllCanvases()
 	{
