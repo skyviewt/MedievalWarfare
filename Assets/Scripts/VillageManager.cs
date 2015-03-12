@@ -198,7 +198,7 @@ public class VillageManager : MonoBehaviour {
 				//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
 				//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
 				//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (true);
-				newKnight.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Soldier");
+				newKnight.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Knight");
 
 				//v.setGold (villageGold - FOURTY);
 				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -40);
