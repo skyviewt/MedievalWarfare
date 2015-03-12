@@ -28,7 +28,7 @@ public class MapGenerator : MonoBehaviour {
 		MeadowPrefab.tag = "Meadow";
 		GrassPrefab.tag = "Grass";
 
-		GameObject firstPref = Network.Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation) as GameObject;
+		GameObject firstPref = Network.Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation, 0) as GameObject;
 		//no longer static
 		//Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), firstPref);
 		Tile firstTile = firstPref.GetComponent<Tile> ();
