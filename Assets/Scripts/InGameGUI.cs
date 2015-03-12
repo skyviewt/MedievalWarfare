@@ -33,8 +33,8 @@ public class InGameGUI : MonoBehaviour {
 	public Text _RegionText;
 	public Text _UnitsText;
 	public Text _ErrorText;
+	public Transform EndButton;
 
-	private Button _EndButton;
 	private Tile _move;
 
 	private VillageManager villageManager;
@@ -47,7 +47,6 @@ public class InGameGUI : MonoBehaviour {
 		myCamera =  GameObject.FindGameObjectWithTag("MainCamera").camera;
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
-		_EndButton = GameObject.Find ("HUDCanvas").transform.Find ("endTurnButton").GetComponent<Button> ();
 		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
@@ -69,12 +68,12 @@ public class InGameGUI : MonoBehaviour {
 		disableAllCanvases ();
 		if(myTurn == turnOrder)
 		{
-			_EndButton.enabled = true;
+			EndButton.GetComponent<Button>().enabled = true;
 			notifyTurnStart ();
 		}
 		else
 		{
-			_EndButton.enabled = false;
+			EndButton.GetComponent<Button>().enabled = false;
 		}
 	}
 

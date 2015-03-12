@@ -841,6 +841,7 @@ MonoBehaviour:
   _RegionText: {fileID: 2014769341}
   _UnitsText: {fileID: 571130372}
   _ErrorText: {fileID: 1190809172}
+  EndButton: {fileID: 681480072}
 --- !u!4 &426345804
 Transform:
   m_ObjectHideFlags: 0
