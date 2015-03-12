@@ -53,13 +53,13 @@ public class InGameGUI : MonoBehaviour {
 		UnitCanvas.enabled = false;
 		ErrorCanvas.enabled = false;
 		menuUp = false;
-		myTurn = 1;
-		gameObject.networkView.RPC ("setOtherToTurn0", RPCMode.OthersBuffered);
+		myTurn = 0;
+		//gameObject.networkView.RPC ("setOtherToTurn0", RPCMode.OthersBuffered);
 	}
 
 	[RPC]
-	void setOtherToTurn0(){
-		myTurn = 0;
+	void setOtherToTurn1(){
+		myTurn = 1;
 	}
 
 	[RPC]
@@ -75,6 +75,10 @@ public class InGameGUI : MonoBehaviour {
 		{
 			_EndButton.enabled = false;
 		}
+	}
+
+	void OnConnectedToServer(){
+		gameObject.networkView.RPC ("setOtherToTurn1", RPCMode.Others);
 	}
 
 	//Functions on the HUD
