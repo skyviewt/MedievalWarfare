@@ -195,7 +195,8 @@ public class InGameGUI : MonoBehaviour {
 	{
 		//When you upgrade a unit, you only need to redraw the gold on the HUD
 		Unit u = _Unit.GetComponent<Unit>();
-		unitManager.upgradeUnit(u,UnitType.INFANTRY);
+		//unitManager.upgradeUnit(u,UnitType.INFANTRY);
+		unitManager.gameObject.networkView.RPC ("upgradeUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, (int)UnitType.INFANTRY);
 		Village v = u.getVillage();
 		int redrawGold = v.getGold();
 		_GoldText.text = redrawGold.ToString();
@@ -207,7 +208,8 @@ public class InGameGUI : MonoBehaviour {
 	public void unitUpgradeSoldierPressed()
 	{
 		Unit u = _Unit.GetComponent<Unit>();
-		unitManager.upgradeUnit(u,UnitType.SOLDIER);
+		//unitManager.upgradeUnit(u,UnitType.SOLDIER);
+		unitManager.gameObject.networkView.RPC ("upgradeUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, (int)UnitType.SOLDIER);
 		Village v = u.getVillage();
 		int redrawGold = v.getGold();
 		_GoldText.text = redrawGold.ToString();
@@ -219,7 +221,8 @@ public class InGameGUI : MonoBehaviour {
 	public void unitUpgradeKnightPressed()
 	{
 		Unit u = _Unit.GetComponent<Unit>();
-		unitManager.upgradeUnit(u,UnitType.KNIGHT);
+		//unitManager.upgradeUnit(u,UnitType.KNIGHT);
+		unitManager.gameObject.networkView.RPC ("upgradeUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, (int)UnitType.KNIGHT);
 		Village v = u.getVillage();
 		int redrawGold = v.getGold();
 		_GoldText.text = redrawGold.ToString();
