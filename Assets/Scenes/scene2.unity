@@ -695,13 +695,13 @@ MonoBehaviour:
   myCamera: {fileID: 2083084097}
   VillageCanvas: {fileID: 1107421449}
   UnitCanvas: {fileID: 578522666}
-  HUDCanvas: {fileID: 0}
+  HUDCanvas: {fileID: 1654715989}
   ErrorCanvas: {fileID: 2133763867}
   UnitPrefab: {fileID: 168650, guid: 1c1c75f75bd321e4f87a5f5a48a1b2ea, type: 2}
-  _WoodText: {fileID: 0}
-  _GoldText: {fileID: 0}
-  _RegionText: {fileID: 0}
-  _UnitsText: {fileID: 0}
+  _WoodText: {fileID: 330693522}
+  _GoldText: {fileID: 1307684924}
+  _RegionText: {fileID: 1221894943}
+  _UnitsText: {fileID: 215307287}
   _ErrorText: {fileID: 1190809172}
 --- !u!4 &426345804
 Transform:
@@ -1497,7 +1497,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &840165801
 RectTransform:
   m_ObjectHideFlags: 0
