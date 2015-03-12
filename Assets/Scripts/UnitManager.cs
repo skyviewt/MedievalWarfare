@@ -13,6 +13,13 @@ public class UnitManager : MonoBehaviour {
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
+
+	[RPC]
+	void moveUnitNet(NetworkViewID unitID, NetworkViewID tileID){
+		Unit unitToMove = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
+		Tile dest = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
+		moveUnit (unitToMove, dest);
+	}
 	
 	public bool moveUnit(Unit unit, Tile dest)
 	{
