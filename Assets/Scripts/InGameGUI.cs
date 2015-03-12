@@ -201,7 +201,6 @@ public class InGameGUI : MonoBehaviour {
 					UnitCanvas.enabled = false;
 					Unit u = _Unit.GetComponent<Unit> ();
 					Village v = u.getVillage ();
-
 		
 					print ("doing the move now");
 					
