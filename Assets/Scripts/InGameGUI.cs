@@ -47,7 +47,7 @@ public class InGameGUI : MonoBehaviour {
 		myCamera =  GameObject.FindGameObjectWithTag("MainCamera").camera;
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
-		_EndButton = GameObject.Find ("HUDCanvas").transform.Find ("endTurnButton").GetComponent<Button> ();
+		//_EndButton = GameObject.Find ("HUDCanvas").transform.Find ("endTurnButton").GetComponent<Button> ();
 		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;

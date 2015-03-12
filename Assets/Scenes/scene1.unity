@@ -501,6 +501,8 @@ GameObject:
   - 114: {fileID: 197624457}
   - 114: {fileID: 197624458}
   - 148: {fileID: 197624459}
+  - 114: {fileID: 197624461}
+  - 114: {fileID: 197624460}
   m_Layer: 0
   m_Name: attachingMap
   m_TagString: Untagged
@@ -562,6 +564,28 @@ NetworkView:
   m_ViewID:
     m_ID: 3
     m_Type: 1
+--- !u!114 &197624460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 197624455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808b4daa82cf24c65ad9ce380f79c77f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &197624461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 197624455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808b4daa82cf24c65ad9ce380f79c77f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &227424630
 GameObject:
   m_ObjectHideFlags: 0
