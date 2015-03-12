@@ -65,6 +65,58 @@ public class Unit : MonoBehaviour {
 		location.setOccupyingUnit (theUnit);
 		return theUnit;
 	}
+
+	public Unit(){
+	}
+
+	[RPC]
+	void setActiveNet(string unitClass){
+
+		gameObject.transform.FindChild ("Peasant").gameObject.SetActive (false);
+		gameObject.transform.FindChild ("Infantry").gameObject.SetActive (false);
+		gameObject.transform.FindChild ("Soldier").gameObject.SetActive (false);
+		gameObject.transform.FindChild ("Knight").gameObject.SetActive (false);
+
+		gameObject.transform.FindChild (unitClass).gameObject.SetActive (true);
+
+		if (!(unitClass == "Peasant" || unitClass == "Infantry" || unitClass == "Soldier" || unitClass == "Knight")) {
+			Debug.Log("Invalid Unit.SetActive() parameter: " + unitClass);
+		}
+	}
+
+
+	[RPC]
+	void initUnitNet(int unitTypeID, NetworkViewID locationTileID, NetworkViewID villageID){
+		//Getting all the parameters
+		UnitType unitType = (UnitType)unitTypeID;
+		Tile location = NetworkView.Find (locationTileID).gameObject.GetComponent<Tile>();
+		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
+
+		//CreateComponent
+		Tile toplace = null;
+		foreach (Tile a in location.neighbours) 
+		{
+			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
+			{
+				toplace = a;
+			}
+		}
+		if(toplace == null)
+		{
+			toplace = location;
+		}
+		//BE CAREFUL!!! If the order of Tiles in neighbors are not the same, the position of the new unit will be different!!
+		gameObject.transform.position = new Vector3(toplace.point.x, 0.15f, toplace.point.y);
+
+		locatedAt = toplace;
+		myType = unitType;
+		myVillage = v;
+		myAction = UnitActionType.ReadyForOrders;
+		location.setOccupyingUnit (this);
+	}
+
+
+
 	// Use this for initialization
 	void Start () 
 	{

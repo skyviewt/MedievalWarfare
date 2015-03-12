@@ -244,7 +244,9 @@ public class Village : MonoBehaviour {
 	{
 		controlledRegion.Add(t);
 		t.setVillage(this);
-		t.setColor(this.getPlayer().getColor ());
+		int color = this.getPlayer ().getColor ();
+		t.setColor( color );
+		t.colorTile ();
 	}
 
 	public void removeTile(Tile t)
@@ -335,5 +337,11 @@ public class Village : MonoBehaviour {
 		controlledBy = p;
 	}
 
+	[RPC]
+	void addUnitNet(NetworkViewID unitID){
+		Unit unitToAdd = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
+		supportedUnits.Add (unitToAdd);
+		unitToAdd.setVillage (this);
+	}
 
 }
