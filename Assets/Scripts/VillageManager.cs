@@ -70,19 +70,14 @@ public class VillageManager : MonoBehaviour {
 			}
 		}
 
-		int totalGold = ZERO;
-		int totalWood = ZERO;
-		List<Tile> totalRegion = new List<Tile> ();
-		List<Unit> totalUnits = new List<Unit> ();
-
 		foreach (Village village in villagesToMerge) {
 			if (village != biggestVillage) {
 				biggestVillage.addGold (village.getGold ());
 				biggestVillage.addWood (village.getWood ());
 				biggestVillage.addRegion(village.getControlledRegion ());
-				foreach (Unit u in village.getControlledUnits ()){
-					biggestVillage.addUnit (u);
-				}
+				//foreach (Unit u in village.getControlledUnits ()){
+				//	biggestVillage.addUnit (u);
+				//}
 				// remove prefab
 				Tile villageLocation = village.getLocatedAt();
 				Destroy (villageLocation.prefab);

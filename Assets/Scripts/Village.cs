@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
 public enum VillageActionType
@@ -275,7 +276,7 @@ public class Village : MonoBehaviour {
 
 			//if there is a unit on the tile
 			Unit u = t.getOccupyingUnit();
-			if(u != null){
+			if(u != null && u.getVillage()!=this){
 				u.setVillage(this);
 				supportedUnits.Add(u);
 			}
