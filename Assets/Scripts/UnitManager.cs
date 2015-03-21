@@ -14,7 +14,7 @@ public class UnitManager : MonoBehaviour {
 
 	void Start () {
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
-		tileManager = GameObject.Find ("TIleManager").GetComponent<TileManager> ();
+		tileManager = GameObject.Find ("TileManager").GetComponent<TileManager> ();
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
 
@@ -41,6 +41,7 @@ public class UnitManager : MonoBehaviour {
 		if (unitPermitted == true ) 	
 		{
 			Tile originalLocation = unit.getLocation ();
+			// moving within your region
 			if (srcVillage == destVillage)
 			{
 				performMove(unit,dest);
@@ -48,6 +49,7 @@ public class UnitManager : MonoBehaviour {
 			}
 			else if (srcVillage != destVillage)
 			{
+				// taking over neutral tiles
 				if (destVillage == null)
 				{
 					srcVillage.addTile(dest);
@@ -56,10 +58,10 @@ public class UnitManager : MonoBehaviour {
 					unit.setAction(UnitActionType.CapturingNeutral);
 					originalLocation.setOccupyingUnit(null);
 				}
-				
-				
-				//USED FOR INVADING
-				/*else if (srcUnitType != UnitType.PEASANT)
+				/*
+				// taking over enemy tiles
+				else if (srcUnitType != UnitType.PEASANT)
+
 				{
 					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
 					if (isGuardSurrounding == false)
@@ -69,23 +71,25 @@ public class UnitManager : MonoBehaviour {
 							UnitType destUnitType = destUnit.getUnitType();
 							if (srcUnitType > destUnitType)
 							{
-								destVillage.removeUnit(destUnit);
-								destUnit.setVillage (null);
-								//Destroy () //destroy prefab
-								unit.setAction(UnitActionType.CapturingNeutral);
+								unit.setAction(UnitActionType.CapturingEnemy);
+								villageManager.removeUnitFromVillage(destVillage,destUnit); // breaks relationship between V and U
+								tileManager.removeUnitFromTile(dest,destUnit);					// breaks relationship between T and U
+								//TODO destroy the unit prefab
+								//TODO create a tombstone prefab ontop of Tile
+								destVillage.removeTile(dest);
 								villageManager.takeOverTile(dest);
 								performMove(unit,dest);
-								villageManager.MergeAlliedRegions((dest);
+								villageManager.MergeAlliedRegions((dest));
 								originalLocation.setOccupyingUnit(null);
 							}
-
+							
 							else if (destUnit == null)
 							{
 								//move unit prefab location to the dest tile
 								unit.setAction(UnitActionType.CapturingEnemy);
 								villageManager.takeOverTile(dest);
 								performMove(unit,dest);
-								villageManager.MergeAlliedRegions((dest);
+								villageManager.MergeAlliedRegions(dest);
 								originalLocation.setOccupyingUnit(null);
 							}
 						}
@@ -95,7 +99,7 @@ public class UnitManager : MonoBehaviour {
 		}
 
 	}
-
+								                         
 	private void performMove(Unit unit, Tile dest)
 	{
 		dest.setOccupyingUnit(unit);
@@ -114,7 +118,7 @@ public class UnitManager : MonoBehaviour {
 				Destroy (dest.prefab);
 			}
 			unit.setAction (UnitActionType.Moved);
-			unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
+			//unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
 
 		} 
 		else
@@ -137,9 +141,8 @@ public class UnitManager : MonoBehaviour {
 				unit.setAction(UnitActionType.ClearingTombstone);
 				dest.setLandType(LandType.Grass);
 			}
-			unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
-
 		}
+		unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
 	}
 
 	private bool canUnitMove(UnitType type, Tile dest)

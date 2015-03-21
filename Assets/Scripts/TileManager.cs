@@ -35,4 +35,11 @@ public class TileManager : MonoBehaviour {
 		}
 		return false;
 	}
+
+	public void removeUnitFromTile(Tile t, Unit u)
+	{
+		t.setOccupyingUnit (null);
+		u.setLocation (null);
+		t.setLandType(LandType.TombStone); //this needs to be in unitmanager
+	}
 }
