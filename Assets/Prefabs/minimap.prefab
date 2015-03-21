@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &154366
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 454366}
+  - 114: {fileID: 11454372}
+  - 114: {fileID: 11454370}
+  - 148: {fileID: 14854366}
+  - 114: {fileID: 11454366}
+  - 114: {fileID: 11454368}
+  m_Layer: 0
+  m_Name: minimap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &454366
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 154366}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11454366
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 154366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808b4daa82cf24c65ad9ce380f79c77f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11454368
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 154366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808b4daa82cf24c65ad9ce380f79c77f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11454370
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 154366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef408c563b2e404cb976c3fa162e82e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pp: {fileID: 100206, guid: e9c5981fbaf261f4f976333c279b3ffc, type: 3}
+  ipAddress: 
+  port: 25000
+  isServer: 1
+--- !u!114 &11454372
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 154366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3a08c66b0d884a7f867b1f935a29b0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GrassPrefab: {fileID: 161544, guid: a05b14bb6a6914215b6cb6c9cd8d797d, type: 2}
+  MeadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
+  TreePrefab: {fileID: 126030, guid: bd74097a43dd548b0ae6323a66bb8952, type: 2}
+  HovelPrefab: {fileID: 164132, guid: 32744c9f3c5c23d49834ce1d47d4f310, type: 2}
+  minimap: 1
+  numTiles: 300
+  removeTiles: 100
+--- !u!148 &14854366
+NetworkView:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 154366}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 454366}
+  m_ViewID:
+    m_ID: 0
+    m_Type: 0
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 154366}
+  m_IsPrefabParent: 1
+  m_IsExploded: 1

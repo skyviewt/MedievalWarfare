@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public enum VillageActionType
 {
 	ReadyForOrders,
 	BuildStageOne
 };
 
+[System.Serializable]
 public enum VillageType
 {
 	Hovel,
@@ -16,7 +18,7 @@ public enum VillageType
 	Castle
 }
 
-
+[System.Serializable]
 public class Village : MonoBehaviour {
 
 	private List<Tile> controlledRegion;

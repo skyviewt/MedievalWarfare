@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+[System.Serializable]
 public class mainMenu : MonoBehaviour {
 
 	public Canvas ExitCanvas;
