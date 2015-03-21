@@ -6,12 +6,14 @@ using System.Linq;
 public class UnitManager : MonoBehaviour {
 
 	private VillageManager villageManager;
+	private TileManager tileManager;
 	private InGameGUI gameGUI;
-	public readonly int TEN = 10;
+	private readonly int TEN = 10;
 	// Use this for initialization
 
 	void Start () {
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
+		tileManager = GameObject.Find ("TIleManager").GetComponent<TileManager> ();
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
 
@@ -24,7 +26,7 @@ public class UnitManager : MonoBehaviour {
 	
 	public void moveUnit(Unit unit, Tile dest)
 	{
-		print ("----in move unit----");
+		//print ("----in move unit----");
 		Village destVillage = dest.getVillage ();
 		Village srcVillage = unit.getVillage ();
 		
@@ -32,7 +34,7 @@ public class UnitManager : MonoBehaviour {
 		LandType destLandType = dest.getLandType ();
 		UnitType srcUnitType = unit.getUnitType();
 		
-		bool unitPermitted = this.canUnitMove (srcUnitType, dest);
+		bool unitPermitted = canUnitMove (srcUnitType, dest);
 		
 		//if the move is allowed to move onto the tile
 		if (unitPermitted == true ) 	
@@ -40,20 +42,16 @@ public class UnitManager : MonoBehaviour {
 			Tile originalLocation = unit.getLocation ();
 			if (srcVillage == destVillage)
 			{
-				dest.setOccupyingUnit(unit);
-				unit.setLocation(dest);
-				this.performMove(unit,dest);
+				performMove(unit,dest);
 				originalLocation.setOccupyingUnit(null);
 			}
 			else if (srcVillage != destVillage)
 			{
 				if (destVillage == null)
 				{
-					dest.setOccupyingUnit(unit);
-					unit.setLocation(dest);
 					srcVillage.addTile(dest);
+					performMove(unit,dest);
 					villageManager.MergeAlliedRegions(dest);
-					this.performMove(unit,dest);
 					unit.setAction(UnitActionType.CapturingNeutral);
 					originalLocation.setOccupyingUnit(null);
 				}
@@ -62,8 +60,7 @@ public class UnitManager : MonoBehaviour {
 				//USED FOR INVADING
 				/*else if (srcUnitType != UnitType.PEASANT)
 				{
-					dest.getNeighbours();
-					bool isGuardSurrounding = checkNeighboursForGuards(dest);
+					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
 					if (isGuardSurrounding == false)
 					{
 						if (destUnit != null)
@@ -74,20 +71,21 @@ public class UnitManager : MonoBehaviour {
 								destVillage.removeUnit(destUnit);
 								destUnit.setVillage (null);
 								//Destroy () //destroy prefab
-								unit.setLocation(dest);
-								dest.setOccupyingUnit(unit);
 								unit.setAction(UnitActionType.CapturingNeutral);
 								villageManager.takeOverTile(dest);
+								performMove(unit,dest);
 								villageManager.MergeAlliedRegions((dest);
+								originalLocation.setOccupyingUnit(null);
 							}
 
 							else if (destUnit == null)
 							{
-								unit.setLocation(dest);
-								dest.setOccupyingUnit(unit);
+								//move unit prefab location to the dest tile
 								unit.setAction(UnitActionType.CapturingEnemy);
 								villageManager.takeOverTile(dest);
+								performMove(unit,dest);
 								villageManager.MergeAlliedRegions((dest);
+								originalLocation.setOccupyingUnit(null);
 							}
 						}
 					}
@@ -97,17 +95,20 @@ public class UnitManager : MonoBehaviour {
 
 	}
 
-	public void performMove(Unit unit, Tile dest)
+	private void performMove(Unit unit, Tile dest)
 	{
-
+		dest.setOccupyingUnit(unit);
+		unit.setLocation(dest);
 		Village srcVillage = unit.getVillage ();
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
 //		print ("--------------landtype of the tile below------------------");		
 //		print (destLandType);
-		if (srcUnitType == UnitType.KNIGHT) {
+		if (srcUnitType == UnitType.KNIGHT) 
+		{
 			bool destHasRoad = dest.checkRoad ();
-			if (destLandType == LandType.Meadow && destHasRoad == false) {
+			if (destLandType == LandType.Meadow && destHasRoad == false) 
+			{
 				dest.setLandType (LandType.Grass);
 				Destroy (dest.prefab);
 			}
