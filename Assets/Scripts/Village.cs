@@ -187,9 +187,19 @@ public class Village : MonoBehaviour {
 		return controlledRegion;
 	}
 
+	public int getRegionSize()
+	{
+		return this.controlledRegion.Count;
+	}
+
 	public List<Unit> getControlledUnits()
 	{
 		return supportedUnits;
+	}
+
+	public int getUnitSize()
+	{
+		return this.getControlledUnits.Count;
 	}
 
 	public void setLocation(Tile t)
@@ -237,8 +247,10 @@ public class Village : MonoBehaviour {
 		u.setVillage(null);
 	}
 
-
-	//Needs setVillage in Tile. Remove comment once setVillage is implemented
+	/*
+	 * Function adds t to village region and colors.
+	 * this function does NOT remove the tile from the old village.
+	 */
 	public void addTile(Tile t)
 	{
 		controlledRegion.Add(t);
@@ -290,7 +302,7 @@ public class Village : MonoBehaviour {
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.setOccupyingUnit(null);
-			unitLocation.setLandType(LandType.TombStone);
+			unitLocation.setLandType(LandType.Tombstone);
 			u.setLocation(null);
 			u.setVillage(null);
 			supportedUnits.Remove(u);
