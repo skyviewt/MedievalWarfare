@@ -40,6 +40,6 @@ public class TileManager : MonoBehaviour {
 	{
 		t.setOccupyingUnit (null);
 		u.setLocation (null);
-		t.setLandType(LandType.Tombstone); //this needs to be in unitmanager
+		t.setLandType(LandType.Tombstone);
 	}
 }

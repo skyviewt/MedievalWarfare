@@ -46,64 +46,49 @@ public class VillageManager : MonoBehaviour {
 	{
 		Village myVillage = newTile.getVillage ();
 		List<Tile> neighbours = newTile.getNeighbours();
+		int mySize = myVillage.getRegionSize ();
 		Player myPlayer = myVillage.getPlayer ();
-		VillageType myVillageType = myVillage.getMyType ();
 		List<Village> villagesToMerge = new List<Village>();
-		int size = ZERO;
-		Village biggestVillage = null;
-		VillageType biggestVillageType = VillageType.Hovel;
-		foreach (Tile neighbour in neighbours) 
-		{
-			Village neighbourVillage = neighbour.getVillage ();
-			if( neighbourVillage != null )
-			{
-				Player neighbourPlayer = neighbourVillage.getPlayer ();
-				if((myPlayer == neighbourPlayer) && !(villagesToMerge.Contains(neighbourVillage)))
-				{
-					List<Tile> neighbourControlledRegion = neighbourVillage.getControlledRegion();
-					int neighbourSize = neighbourControlledRegion.Count();
-					VillageType neighbourVillageType = neighbourVillage.getMyType();
-					if(((size < neighbourSize) && (biggestVillageType == neighbourVillageType)) || biggestVillageType < neighbourVillageType)
-					{
-						size = neighbourSize;
-						biggestVillage = neighbourVillage;
-						biggestVillageType = neighbourVillageType;
-					}
-					villagesToMerge.Add(neighbourVillage);
-				}
+		villagesToMerge.Add (myVillage);
+		Village biggestVillage = myVillage;
+		//VillageType biggestType = biggestVillage.getMyType ();
 
+		foreach (Tile neighbour in neighbours) {
+			Village neighbourVillage = neighbour.getVillage ();
+			if( neighbourVillage != null ){
+				Player neighbourPlayer = neighbourVillage.getPlayer ();
+				if((myPlayer == neighbourPlayer) && !(villagesToMerge.Contains(neighbourVillage))){
+					villagesToMerge.Add(neighbourVillage);
+					VillageType neighbourType = neighbourVillage.getMyType();
+					int neighbourSize = neighbourVillage.getRegionSize();
+					if (neighbourType>biggestVillage.getMyType()){
+						biggestVillage = neighbourVillage;
+					} else if (neighbourType==biggestVillage.getMyType()&&neighbourSize>biggestVillage.getRegionSize()){
+						biggestVillage = neighbourVillage;
+					}
+				}
 			}
-	
 		}
+
 		int totalGold = ZERO;
 		int totalWood = ZERO;
 		List<Tile> totalRegion = new List<Tile> ();
-		foreach (Village village in villagesToMerge) 
-		{
-			if(village != biggestVillage)
-			{
-				totalGold += village.getGold ();
-				totalWood += village.getWood ();
-				List<Tile> villageRegion = village.getControlledRegion();
-				Tile villageLocation = village.getLocatedAt();
-				List<Unit> villageUnits = village.getControlledUnits();
-				totalRegion.AddRange(villageRegion);
-				foreach(Unit u in villageUnits)
-				{
-					u.setVillage(biggestVillage);
-					biggestVillage.addUnit(u);
+		List<Unit> totalUnits = new List<Unit> ();
+
+		foreach (Village village in villagesToMerge) {
+			if (village != biggestVillage) {
+				biggestVillage.addGold (village.getGold ());
+				biggestVillage.addWood (village.getWood ());
+				biggestVillage.addRegion(village.getControlledRegion ());
+				foreach (Unit u in village.getControlledUnits ()){
+					biggestVillage.addUnit (u);
 				}
-				//destroying a village from the game
-				//Destroy (//prefab for village);
+				// remove prefab
+				Tile villageLocation = village.getLocatedAt();
 				Destroy (villageLocation.prefab);
 				villageLocation.setLandType (LandType.Meadow);
-				//This MeadowPrefab has no networkviewID
-				villageLocation.prefab = Instantiate(meadowPrefab, new Vector3(villageLocation.point.x, 0.2f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
-
+				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.2f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 			}
-			biggestVillage.addGold(totalGold);
-			biggestVillage.addWood(totalWood);
-			biggestVillage.addRegion(totalRegion);
 		}
 	}
 

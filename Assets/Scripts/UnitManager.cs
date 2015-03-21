@@ -41,6 +41,7 @@ public class UnitManager : MonoBehaviour {
 		if (unitPermitted == true ) 	
 		{
 			Tile originalLocation = unit.getLocation ();
+			// moving within your region
 			if (srcVillage == destVillage)
 			{
 				performMove(unit,dest);
@@ -48,6 +49,7 @@ public class UnitManager : MonoBehaviour {
 			}
 			else if (srcVillage != destVillage)
 			{
+				// taking over neutral tiles
 				if (destVillage == null)
 				{
 					srcVillage.addTile(dest);
@@ -57,7 +59,7 @@ public class UnitManager : MonoBehaviour {
 					originalLocation.setOccupyingUnit(null);
 				}
 
-				//USED FOR INVADING
+				// taking over enemy tiles
 				else if (srcUnitType != UnitType.PEASANT)
 				{
 					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
@@ -74,7 +76,7 @@ public class UnitManager : MonoBehaviour {
 								tileManager.removeUnitFromTile(dest,destUnit);				// remove relationship between T and U
 								//TODO destroy the unit prefab
 								//TODO create a tombstone prefab ontop of Tile
-								villageManager.takeOverTile(srcVillage,dest);
+								villageManager.takeoverTile(srcVillage,dest);
 								performMove(unit,dest);
 								villageManager.MergeAlliedRegions((dest));
 								originalLocation.setOccupyingUnit(null);
@@ -84,9 +86,9 @@ public class UnitManager : MonoBehaviour {
 							{
 								//move unit prefab location to the dest tile
 								unit.setAction(UnitActionType.CapturingEnemy);
-								villageManager.takeOverTile(dest);
+								villageManager.takeoverTile(srcVillage,dest);
 								performMove(unit,dest);
-								villageManager.MergeAlliedRegions((dest));
+								villageManager.MergeAlliedRegions(dest);
 								originalLocation.setOccupyingUnit(null);
 							}
 						}
