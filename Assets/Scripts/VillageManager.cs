@@ -110,7 +110,17 @@ public class VillageManager : MonoBehaviour {
 	{
 		
 	}
-	
+
+	public void removeUnitFromVillage(Village v,Unit u)
+	{
+		v.removeUnit(u);
+	}
+
+	public void removeTileFromVillage(Village v, Tile t)
+	{
+
+	}
+
 	public void hirePeasant(Village v,GameObject unitPrefab)
 	{
 		Tile tileAt = v.getLocatedAt ();
