@@ -58,7 +58,7 @@ public class UnitManager : MonoBehaviour {
 					unit.setAction(UnitActionType.CapturingNeutral);
 					originalLocation.setOccupyingUnit(null);
 				}
-
+				/*
 				// taking over enemy tiles
 				else if (srcUnitType != UnitType.PEASANT)
 
@@ -89,12 +89,12 @@ public class UnitManager : MonoBehaviour {
 								unit.setAction(UnitActionType.CapturingEnemy);
 								villageManager.takeOverTile(dest);
 								performMove(unit,dest);
-								villageManager.MergeAlliedRegions((dest);
+								villageManager.MergeAlliedRegions(dest);
 								originalLocation.setOccupyingUnit(null);
 							}
 						}
 					}
-				}
+				}*/
 			}
 		}
 
