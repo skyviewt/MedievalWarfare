@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 //The Graph Class used to store the map as a grid
+[System.Serializable]
 public class Graph
 {
 	

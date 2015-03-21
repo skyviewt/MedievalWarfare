@@ -2,20 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public enum VillageActionType
 {
 	ReadyForOrders,
 	BuildStageOne
 };
 
+[System.Serializable]
 public enum VillageType
 {
 	Hovel,
 	Town,
-	Fort
+	Fort,
+	Castle
 }
 
-
+[System.Serializable]
 public class Village : MonoBehaviour {
 
 	private List<Tile> controlledRegion;
@@ -226,18 +229,14 @@ public class Village : MonoBehaviour {
 		supportedUnits.Add (u);
 		u.setVillage (this);
 	}
-	//needs unit's setters and getters along with the Tombstone Landtype
-	/*
+
+
 	public void removeUnit(Unit u)
 	{
-		Tile unitLocation = u.getLocation ();
-		unitLocation.setOccupyingUnit (null);
-		u.setLocation (null);
-		u.setVillage(null);
-		unitLocation.setLandType(LandType.Tombstone);
 		supportedUnits.Remove(u);
+		u.setVillage(null);
 	}
-*/
+
 
 	//Needs setVillage in Tile. Remove comment once setVillage is implemented
 	public void addTile(Tile t)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+[System.Serializable]
 public class VillageManager : MonoBehaviour {
 	
 	public readonly int ZERO = 0;
@@ -110,7 +111,17 @@ public class VillageManager : MonoBehaviour {
 	{
 		
 	}
-	
+
+	public void removeUnitFromVillage(Village v,Unit u)
+	{
+		v.removeUnit(u);
+	}
+
+	public void removeTileFromVillage(Village v, Tile t)
+	{
+
+	}
+
 	public void hirePeasant(Village v,GameObject unitPrefab)
 	{
 		Tile tileAt = v.getLocatedAt ();

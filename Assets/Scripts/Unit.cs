@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+[System.Serializable]
 public enum UnitType
 {
 	PEASANT,
@@ -11,6 +12,7 @@ public enum UnitType
 	KNIGHT
 };
 
+[System.Serializable]
 public enum UnitActionType
 {
 	ReadyForOrders,
@@ -26,6 +28,7 @@ public enum UnitActionType
 	EndOfTurn	
 };
 
+[System.Serializable]
 public class Unit : MonoBehaviour {
 
 	public Tile locatedAt;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+[System.Serializable]
 public class TileManager : MonoBehaviour {
 
 	// Use this for initialization
@@ -33,5 +34,12 @@ public class TileManager : MonoBehaviour {
 			}
 		}
 		return false;
+	}
+
+	public void removeUnitFromTile(Tile t, Unit u)
+	{
+		t.setOccupyingUnit (null);
+		u.setLocation (null);
+		t.setLandType(LandType.Tombstone); //this needs to be in unitmanager
 	}
 }

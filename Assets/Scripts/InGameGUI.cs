@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
-
+[System.Serializable]
 public class InGameGUI : MonoBehaviour {
 	public Camera myCamera;
 	public Canvas VillageCanvas;
