@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
 public enum VillageActionType
@@ -237,8 +238,6 @@ public class Village : MonoBehaviour {
 		u.setVillage(null);
 	}
 
-
-	//Needs setVillage in Tile. Remove comment once setVillage is implemented
 	public void addTile(Tile t)
 	{
 		controlledRegion.Add(t);
@@ -263,7 +262,7 @@ public class Village : MonoBehaviour {
 
 			//if there is a unit on the tile
 			Unit u = t.getOccupyingUnit();
-			if(u != null){
+			if(u != null && u.getVillage()!=this){
 				u.setVillage(this);
 				supportedUnits.Add(u);
 			}
@@ -334,6 +333,10 @@ public class Village : MonoBehaviour {
 
 	public void setControlledBy(Player p){
 		controlledBy = p;
+	}
+
+	public int getRegionSize(){
+		return controlledRegion.Count ();
 	}
 
 	[RPC]
