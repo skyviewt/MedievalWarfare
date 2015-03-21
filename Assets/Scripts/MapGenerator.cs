@@ -10,6 +10,11 @@ public class MapGenerator : MonoBehaviour {
 	public GameObject MeadowPrefab;
 	public GameObject TreePrefab;
 	public GameObject HovelPrefab;
+
+	public bool minimap;
+
+	public int numTiles;
+	public int removeTiles;
 	
 	private Graph map;
 	private List<Tile> unvisited_vertices;
@@ -37,7 +42,7 @@ public class MapGenerator : MonoBehaviour {
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
 
-		int maxNumberTile = rand.Next (400, 450);
+		int maxNumberTile = rand.Next (Mathf.FloorToInt(numTiles * .9f), Mathf.FloorToInt(numTiles * 1.1f));
 		
 		while(map.vertices.Count < maxNumberTile)
 		{
@@ -145,7 +150,7 @@ public class MapGenerator : MonoBehaviour {
 		int tileRemoved = 0;
 		int index = 0, count = 0;
 
-		int tilesToRemove = rand.Next (10, 40);
+		int tilesToRemove = rand.Next (Mathf.FloorToInt(removeTiles*.9f),Mathf.FloorToInt(removeTiles*1.1f));
 		while(tileRemoved < tilesToRemove)
 		{
 			if(count > tilesToRemove)
@@ -156,7 +161,7 @@ public class MapGenerator : MonoBehaviour {
 
 			//its a little tricky here. we want to remove tiles that are on the outer outer, so <4 is more outer
 			//than <6.
-			List<Tile> sideTiles = map.vertices.Where (t =>t.neighbours.Count<4 ).ToList();
+			List<Tile> sideTiles = map.vertices.Where (t =>t.neighbours.Count<5 ).ToList();
 
 			if(sideTiles.Count == 0)
 			{
@@ -183,7 +188,23 @@ public class MapGenerator : MonoBehaviour {
 			
 			count++;
 		}
-		
+		/* there are now a few lone tiles around the edges, but they are no longer considered part of map
+		 * thus, they should not affect further map generation...
+		// the lone tiles are no longer considered part of map?
+		foreach(Tile n in map.vertices){
+			n.gameObject.renderer.material.color = Color.red;
+			//if (n.neighbours.Count<=0){
+				//map.vertices.Remove(n);
+				//n.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, n.gameObject.networkView.viewID);
+				//Destroy (this.gameObject);
+			//}
+		} */
+
+		//stop here for minimaps
+		if (minimap){
+			return;
+		}
+
 		foreach(Tile n in map.vertices)
 		{
 			//TODO: hardcoded to 2 players color
@@ -211,15 +232,10 @@ public class MapGenerator : MonoBehaviour {
 		}
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 
 	public void initializeVillagesOnMap(List<Player> players)
 	{
-
 		foreach ( Tile t in this.map.vertices )
 		{
 			// player.count is the neutral color.
@@ -234,7 +250,6 @@ public class MapGenerator : MonoBehaviour {
 
 				if( TilesToReturn.Count >= 3 )
 				{
-
 					Player p = players[color];
 			
 					Tile location = TilesToReturn[0];
