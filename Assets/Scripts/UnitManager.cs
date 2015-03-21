@@ -40,6 +40,7 @@ public class UnitManager : MonoBehaviour {
 		if (unitPermitted == true ) 	
 		{
 			Tile originalLocation = unit.getLocation ();
+			// moving within your region
 			if (srcVillage == destVillage)
 			{
 				performMove(unit,dest);
@@ -47,6 +48,7 @@ public class UnitManager : MonoBehaviour {
 			}
 			else if (srcVillage != destVillage)
 			{
+				// taking over neutral tiles
 				if (destVillage == null)
 				{
 					srcVillage.addTile(dest);
@@ -55,9 +57,8 @@ public class UnitManager : MonoBehaviour {
 					unit.setAction(UnitActionType.CapturingNeutral);
 					originalLocation.setOccupyingUnit(null);
 				}
-				
-				
-				//USED FOR INVADING
+
+				// taking over enemy tiles
 				/*else if (srcUnitType != UnitType.PEASANT)
 				{
 					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
