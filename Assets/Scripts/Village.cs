@@ -199,7 +199,7 @@ public class Village : MonoBehaviour {
 
 	public int getUnitSize()
 	{
-		return this.getControlledUnits.Count;
+		return this.getControlledUnits().Count;
 	}
 
 	public void setLocation(Tile t)

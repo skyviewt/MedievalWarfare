@@ -112,7 +112,11 @@ public class VillageManager : MonoBehaviour {
 
 	public void respawnHovel(Village v)
 	{
+		List<Tile> validTiles = new List<Tile> ();
+		foreach (Tile t in v.getControlledRegion()) 
+		{
 
+		}
 	}
 
 	public void splitRegion(Tile splitTile, Village v)

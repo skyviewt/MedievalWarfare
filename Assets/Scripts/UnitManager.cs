@@ -78,7 +78,7 @@ public class UnitManager : MonoBehaviour {
 								//TODO create a tombstone prefab ontop of Tile
 								villageManager.takeoverTile(srcVillage,dest);
 								performMove(unit,dest);
-								villageManager.MergeAlliedRegions((dest));
+								villageManager.MergeAlliedRegions(dest);
 								originalLocation.setOccupyingUnit(null);
 							}
 							
