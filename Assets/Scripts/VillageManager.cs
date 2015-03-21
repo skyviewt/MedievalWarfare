@@ -86,10 +86,33 @@ public class VillageManager : MonoBehaviour {
 			}
 		}
 	}
-	
-	public void takeoverTile(Tile Destination)
+
+	/*
+	 * Function adds village to invader. If the dest had a village prefab on it, then we take all resources
+	 */ 
+	public void takeoverTile(Village invader, Tile dest)
 	{
-		
+		Village invadedVillage = dest.getVillage ();
+		if(dest.checkVillagePrefab())
+		{
+			int pillagedWood = invadedVillage.getWood ();
+			int pillagedGold = invadedVillage.getGold ();
+			invader.addWood(pillagedWood);
+			invader.addGold(pillagedGold);
+			respawnHovel (invadedVillage);
+		}
+		invader.addTile(dest);
+		splitRegion(dest, invadedVillage);
+	}
+
+	public void respawnHovel(Village v)
+	{
+
+	}
+
+	public void splitRegion(Tile splitTile, Village v)
+	{
+
 	}
 
 	public void removeUnitFromVillage(Village v,Unit u)
@@ -99,7 +122,8 @@ public class VillageManager : MonoBehaviour {
 
 	public void removeTileFromVillage(Village v, Tile t)
 	{
-
+		v.removeTile (t);
+		t.setVillage (null);
 	}
 
 	public void hirePeasant(Village v,GameObject unitPrefab)

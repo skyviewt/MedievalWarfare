@@ -58,10 +58,9 @@ public class UnitManager : MonoBehaviour {
 					unit.setAction(UnitActionType.CapturingNeutral);
 					originalLocation.setOccupyingUnit(null);
 				}
-				/*
+
 				// taking over enemy tiles
 				else if (srcUnitType != UnitType.PEASANT)
-
 				{
 					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
 					if (isGuardSurrounding == false)
@@ -72,12 +71,12 @@ public class UnitManager : MonoBehaviour {
 							if (srcUnitType > destUnitType)
 							{
 								unit.setAction(UnitActionType.CapturingEnemy);
-								villageManager.removeUnitFromVillage(destVillage,destUnit); // breaks relationship between V and U
-								tileManager.removeUnitFromTile(dest,destUnit);					// breaks relationship between T and U
+								villageManager.removeUnitFromVillage(destVillage,destUnit); // remove relationship between V and U
+								villageManager.removeTileFromVillage(destVillage,dest);		// remove relationship vetween V and T
+								tileManager.removeUnitFromTile(dest,destUnit);				// remove relationship between T and U
 								//TODO destroy the unit prefab
 								//TODO create a tombstone prefab ontop of Tile
-								destVillage.removeTile(dest);
-								villageManager.takeOverTile(dest);
+								villageManager.takeoverTile(srcVillage,dest);
 								performMove(unit,dest);
 								villageManager.MergeAlliedRegions((dest));
 								originalLocation.setOccupyingUnit(null);
@@ -87,14 +86,14 @@ public class UnitManager : MonoBehaviour {
 							{
 								//move unit prefab location to the dest tile
 								unit.setAction(UnitActionType.CapturingEnemy);
-								villageManager.takeOverTile(dest);
+								villageManager.takeoverTile(srcVillage,dest);
 								performMove(unit,dest);
 								villageManager.MergeAlliedRegions(dest);
 								originalLocation.setOccupyingUnit(null);
 							}
 						}
 					}
-				}*/
+				}
 			}
 		}
 
@@ -136,7 +135,7 @@ public class UnitManager : MonoBehaviour {
 				srcVillage.addWood(1);
 				dest.setLandType(LandType.Grass);
 			}
-			else if (destLandType == LandType.TombStone)
+			else if (destLandType == LandType.Tombstone)
 			{
 				unit.setAction(UnitActionType.ClearingTombstone);
 				dest.setLandType(LandType.Grass);

@@ -22,7 +22,7 @@ public class TurnManager : MonoBehaviour {
 		foreach (Tile tile in controlledRegion)
 		{
 			LandType type = tile.getLandType();
-			if (type == LandType.TombStone)
+			if (type == LandType.Tombstone)
 			{
 				tile.setLandType(LandType.Trees);
 			}
