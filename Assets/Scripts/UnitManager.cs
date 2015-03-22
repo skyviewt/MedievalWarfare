@@ -63,12 +63,10 @@ public class UnitManager : MonoBehaviour {
 				//TODO this part of the code needs network components
 				else if (srcUnitType != UnitType.PEASANT)
 				{
-					print ("made it here");
 					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
 					print(isGuardSurrounding);
 					if (isGuardSurrounding == false)
 					{
-						print ("made it here 2");
 						if (destUnit != null)
 						{
 							print ("made it here 3");
