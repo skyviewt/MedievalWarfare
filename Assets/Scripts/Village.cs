@@ -101,9 +101,6 @@ public class Village : MonoBehaviour {
 		supportedUnits = new List<Unit> ();
 		//need to be set over network: controlledRegion, controlledBy, locatedAt.Replace(), locatedAt, locatedAt.setVillage(), pdateControlledRegionNet()
 		controlledRegion = new List<Tile> ();
-
-
-
 		myAction = VillageActionType.ReadyForOrders;
 		gold = 0;
 		wood = 0;

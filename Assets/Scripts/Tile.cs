@@ -65,11 +65,15 @@ public class Tile : MonoBehaviour
 
 	public bool checkVillagePrefab()
 	{
-		if (this.prefab.CompareTag("Hovel"))
+		if (prefab == null) 
+		{
+			return false;
+		} 
+		else if (this.prefab.CompareTag ("Hovel")) 
 		{
 			return true;
-		}
-		else
+		} 
+		else 
 		{
 			return false;
 		}

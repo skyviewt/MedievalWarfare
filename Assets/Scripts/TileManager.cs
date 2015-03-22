@@ -14,9 +14,9 @@ public class TileManager : MonoBehaviour {
 	public bool checkNeighboursForGuards(Tile center, Unit unit)
 	{
 		List<Tile> neighbours = center.getNeighbours ();
-		UnitType centerUnitType = unit.getUnitType ();
-		Village centerUnitVillage = unit.getVillage ();
-		Player centerVillagePlayer = centerUnitVillage.getPlayer ();
+		UnitType unitType = unit.getUnitType();
+		Village unitVillage = unit.getVillage ();
+		Player unitVillagePlayer = unitVillage.getPlayer ();
 
 		foreach (Tile n in neighbours) 
 		{
@@ -26,11 +26,10 @@ public class TileManager : MonoBehaviour {
 				UnitType neighbourUnitType = neighbouringUnit.getUnitType();
 				Village neighbourVillage = neighbouringUnit.getVillage ();
 				Player neighbourPlayer = neighbourVillage.getPlayer ();
-				if(centerUnitType < neighbourUnitType && centerVillagePlayer != neighbourPlayer)
+				if(unitType < neighbourUnitType && unitVillagePlayer != neighbourPlayer)
 				{
 					return true;
 				}
-
 			}
 		}
 		return false;

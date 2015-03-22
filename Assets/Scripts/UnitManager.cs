@@ -60,17 +60,21 @@ public class UnitManager : MonoBehaviour {
 				}
 
 				// taking over enemy tiles
+				//TODO this part of the code needs network components
 				else if (srcUnitType != UnitType.PEASANT)
 				{
+					print ("made it here");
 					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
+					print(isGuardSurrounding);
 					if (isGuardSurrounding == false)
 					{
+						print ("made it here 2");
 						if (destUnit != null)
 						{
+							print ("made it here 3");
 							UnitType destUnitType = destUnit.getUnitType();
 							if (srcUnitType > destUnitType)
 							{
-								unit.setAction(UnitActionType.CapturingEnemy);
 								villageManager.removeUnitFromVillage(destVillage,destUnit); // remove relationship between V and U
 								villageManager.removeTileFromVillage(destVillage,dest);		// remove relationship vetween V and T
 								tileManager.removeUnitFromTile(dest,destUnit);				// remove relationship between T and U
@@ -78,20 +82,26 @@ public class UnitManager : MonoBehaviour {
 								//TODO create a tombstone prefab ontop of Tile
 								villageManager.takeoverTile(srcVillage,dest);
 								performMove(unit,dest);
+								unit.setAction(UnitActionType.CapturingEnemy);
 								villageManager.MergeAlliedRegions(dest);
 								originalLocation.setOccupyingUnit(null);
 							}
-							
-							else if (destUnit == null)
+							else if(srcUnitType <= destUnitType)
 							{
-								//move unit prefab location to the dest tile
-								unit.setAction(UnitActionType.CapturingEnemy);
-								villageManager.takeoverTile(srcVillage,dest);
-								performMove(unit,dest);
-								villageManager.MergeAlliedRegions(dest);
-								originalLocation.setOccupyingUnit(null);
+								print("your unit is equal or weaker than the unit on the tile");
 							}
 						}
+						else if (destUnit == null)
+						{
+							print ("made it here 4");
+							//move unit prefab location to the dest tile
+							villageManager.takeoverTile(srcVillage,dest);
+							performMove(unit,dest);
+							unit.setAction(UnitActionType.CapturingEnemy);
+							villageManager.MergeAlliedRegions(dest);
+							originalLocation.setOccupyingUnit(null);
+						}
+						print ("after");
 					}
 				}
 			}
@@ -146,17 +156,26 @@ public class UnitManager : MonoBehaviour {
 
 	private bool canUnitMove(UnitType type, Tile dest)
 	{
-		if (dest.getStructure () == null && dest.getOccupyingUnit () == null && dest.getLandType () != LandType.Trees) {
+		if (dest.getStructure () == null && dest.getOccupyingUnit () == null && dest.getLandType () != LandType.Trees) 
+		{
 			return true;
-		} else if(dest.getLandType () == LandType.Trees && type != UnitType.KNIGHT){
+		} 
+		else if(dest.getLandType () == LandType.Trees && type != UnitType.KNIGHT)
+		{
 			return true;
-		} else if (dest.getStructure () != null) {
+		} 
+		else if (dest.getStructure () != null) 
+		{
 			gameGUI.displayError (@"The tower doesn't want you to stand ontop of it. ¯\(°_o)/¯");
 			return false;
-		} else if (type == UnitType.KNIGHT && dest.getLandType () == LandType.Trees) {
+		} 
+		else if (type == UnitType.KNIGHT && dest.getLandType () == LandType.Trees) 
+		{
 			gameGUI.displayError (@"Your Knight is out of shape. It cannot cut down this tree. ¯\(°_o)/¯");
 			return false;
-		} else if (dest.getOccupyingUnit () != null) {
+		} 
+		else if (dest.getOccupyingUnit () != null) 
+		{
 			gameGUI.displayError (@"There is a unit already standing there!!! ¯\(°_o)/¯");
 			return false;
 		}
