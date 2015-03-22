@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+[System.Serializable]
 public enum LandType
 {
 	Grass,
 	Trees,
 	Meadow,
-	TombStone
+	Tombstone
 }
 
 //Tile Data Structure for building Graphs
@@ -18,14 +19,15 @@ public class Tile : MonoBehaviour
 	public List<Tile> neighbours;
 	private LandType myType;
 	private Unit occupyingUnit;
+	private Structure occupyingStructure;
+	private Village myVillage;
 	private bool visited;
 	private int color;
 	private bool isRoad;
-	private Village myVillage;
 	public Shader outline;
 	public System.Random rand = new System.Random();
 	public GameObject prefab;
-	private Structure occupyingStructure;
+
 
 
 	//This function should not be used, the Tile component is now always attached to a Grass Tile
@@ -61,6 +63,21 @@ public class Tile : MonoBehaviour
 		this.setLandType( LandType.Trees );
 	}
 
+	public bool checkVillagePrefab()
+	{
+		if (prefab == null) 
+		{
+			return false;
+		} 
+		else if (this.prefab.CompareTag ("Hovel")) 
+		{
+			return true;
+		} 
+		else 
+		{
+			return false;
+		}
+	}
 
 	//This method shouldn't be called
 	public void InstantiateMeadow( GameObject MeadowPrefab )

@@ -1,21 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
+[System.Serializable]
 public enum VillageActionType
 {
 	ReadyForOrders,
 	BuildStageOne
 };
 
+[System.Serializable]
 public enum VillageType
 {
 	Hovel,
 	Town,
-	Fort
+	Fort,
+	Castle
 }
 
-
+[System.Serializable]
 public class Village : MonoBehaviour {
 
 	private List<Tile> controlledRegion;
@@ -97,9 +101,6 @@ public class Village : MonoBehaviour {
 		supportedUnits = new List<Unit> ();
 		//need to be set over network: controlledRegion, controlledBy, locatedAt.Replace(), locatedAt, locatedAt.setVillage(), pdateControlledRegionNet()
 		controlledRegion = new List<Tile> ();
-
-
-
 		myAction = VillageActionType.ReadyForOrders;
 		gold = 0;
 		wood = 0;
@@ -184,9 +185,19 @@ public class Village : MonoBehaviour {
 		return controlledRegion;
 	}
 
+	public int getRegionSize()
+	{
+		return this.controlledRegion.Count;
+	}
+
 	public List<Unit> getControlledUnits()
 	{
 		return supportedUnits;
+	}
+
+	public int getUnitSize()
+	{
+		return this.getControlledUnits().Count;
 	}
 
 	public void setLocation(Tile t)
@@ -226,20 +237,18 @@ public class Village : MonoBehaviour {
 		supportedUnits.Add (u);
 		u.setVillage (this);
 	}
-	//needs unit's setters and getters along with the Tombstone Landtype
-	/*
+
+
 	public void removeUnit(Unit u)
 	{
-		Tile unitLocation = u.getLocation ();
-		unitLocation.setOccupyingUnit (null);
-		u.setLocation (null);
-		u.setVillage(null);
-		unitLocation.setLandType(LandType.Tombstone);
 		supportedUnits.Remove(u);
+		u.setVillage(null);
 	}
-*/
 
-	//Needs setVillage in Tile. Remove comment once setVillage is implemented
+	/*
+	 * Function adds t to village region and colors.
+	 * this function does NOT remove the tile from the old village.
+	 */
 	public void addTile(Tile t)
 	{
 		controlledRegion.Add(t);
@@ -264,7 +273,7 @@ public class Village : MonoBehaviour {
 
 			//if there is a unit on the tile
 			Unit u = t.getOccupyingUnit();
-			if(u != null){
+			if(u != null && u.getVillage()!=this){
 				u.setVillage(this);
 				supportedUnits.Add(u);
 			}
@@ -291,7 +300,7 @@ public class Village : MonoBehaviour {
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.setOccupyingUnit(null);
-			unitLocation.setLandType(LandType.TombStone);
+			unitLocation.setLandType(LandType.Tombstone);
 			u.setLocation(null);
 			u.setVillage(null);
 			supportedUnits.Remove(u);

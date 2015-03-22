@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+[System.Serializable]
 public class TurnManager : MonoBehaviour {
 
 	public void beginTurn(Game g, Player p)
@@ -21,7 +22,7 @@ public class TurnManager : MonoBehaviour {
 		foreach (Tile tile in controlledRegion)
 		{
 			LandType type = tile.getLandType();
-			if (type == LandType.TombStone)
+			if (type == LandType.Tombstone)
 			{
 				tile.setLandType(LandType.Trees);
 			}
