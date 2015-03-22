@@ -32,7 +32,6 @@ public class UnitManager : MonoBehaviour {
 		Village srcVillage = unit.getVillage ();
 		
 		Unit destUnit = dest.getOccupyingUnit ();
-		LandType destLandType = dest.getLandType ();
 		UnitType srcUnitType = unit.getUnitType();
 		
 		bool unitPermitted = canUnitMove (srcUnitType, dest);

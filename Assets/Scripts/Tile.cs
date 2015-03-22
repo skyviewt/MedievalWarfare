@@ -16,7 +16,7 @@ public enum LandType
 public class Tile : MonoBehaviour
 {
 	public Vector2 point;
-	public List<Tile> neighbours;
+	private List<Tile> neighbours;
 	private LandType myType;
 	private Unit occupyingUnit;
 	private Structure occupyingStructure;

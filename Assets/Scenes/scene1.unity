@@ -538,8 +538,8 @@ MonoBehaviour:
   TreePrefab: {fileID: 126030, guid: bd74097a43dd548b0ae6323a66bb8952, type: 2}
   HovelPrefab: {fileID: 164132, guid: 32744c9f3c5c23d49834ce1d47d4f310, type: 2}
   minimap: 0
-  numTiles: 400
-  removeTiles: 100
+  numTiles: 10
+  removeTiles: 0
 --- !u!114 &197624458
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -259,7 +259,7 @@ public class InGameGUI : MonoBehaviour {
 			Tile selection = _Tile.GetComponent<Tile> ();
 			print (selection != null);
 			//Debug.Log (_Unit.GetComponent<Unit> ().getLocation ().neighbours);
-			if (_Unit.GetComponent<Unit> ().getLocation ().neighbours.Contains (selection)) {
+			if (_Unit.GetComponent<Unit> ().getLocation ().getNeighbours().Contains (selection)) {
 					_move = selection;
 			}
 			//Debug.LogWarning (_move);
