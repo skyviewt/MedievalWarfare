@@ -45,7 +45,7 @@ public class MapGenerator : MonoBehaviour {
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
 
-		int maxNumberTile = rand.Next (Mathf.FloorToInt(numTiles * .9f), Mathf.FloorToInt(numTiles * 1.1f));
+		int maxNumberTile = rand.Next (Mathf.FloorToInt(numTiles * .8f), Mathf.FloorToInt(numTiles * 1.2f));
 		
 		while(map.getVertices().Count < maxNumberTile)
 		{
@@ -161,7 +161,7 @@ public class MapGenerator : MonoBehaviour {
 		int tileRemoved = 0;
 		int index = 0, count = 0;
 
-		int tilesToRemove = rand.Next (Mathf.FloorToInt(removeTiles*.9f),Mathf.FloorToInt(removeTiles*1.1f));
+		int tilesToRemove = rand.Next (Mathf.FloorToInt(removeTiles*.8f),Mathf.FloorToInt(removeTiles*1.2f));
 		while(tileRemoved < tilesToRemove)
 		{
 			if(count > tilesToRemove)
@@ -247,6 +247,10 @@ public class MapGenerator : MonoBehaviour {
 
 	public void initializeVillagesOnMap(List<Player> players)
 	{
+		//stop here for minimaps
+		if (minimap){
+			return;
+		}
 		foreach ( Tile t in this.map.getVertices() )
 		{
 			// player.count is the neutral color.
