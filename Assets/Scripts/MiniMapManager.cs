@@ -5,24 +5,18 @@ using System.Collections.Generic;
 [System.Serializable]
 public class MiniMapManager : MonoBehaviour {
 
-	public List<GameObject> minimaps;
 	public GameObject miniPrefab;
+
+	public bool isMap1;
 
 	void Start(){
 
-		for (int i=0; i<5; i++) {
-			GameObject mini = Instantiate (miniPrefab) as GameObject;
-			mini.transform.parent = transform;
-			minimaps.Add (mini);
-			MapGenerator m1 = mini.GetComponent<MapGenerator> ();
-			m1.minimap = true;
-			m1.initMap ();
-
-			mini.SetActive(false);
-		}
+		GameObject mini = Instantiate (miniPrefab) as GameObject;
+		mini.transform.parent = transform;
+		MapGenerator m1 = mini.GetComponent<MapGenerator> ();
+		m1.minimap = true;
+		m1.isMap1 = isMap1;
+		m1.initMap ();
 
 	} 
-
-
-
 }

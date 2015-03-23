@@ -1053,7 +1053,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!223 &578522666
 Canvas:
   m_ObjectHideFlags: 0
@@ -1643,6 +1643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
+  hovelPrefab: {fileID: 0}
 --- !u!4 &800187053
 Transform:
   m_ObjectHideFlags: 0
@@ -2508,7 +2509,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1107421448
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3295,7 +3296,7 @@ MonoBehaviour:
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 0
   m_FillOrigin: 0

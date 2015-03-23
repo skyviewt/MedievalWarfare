@@ -15,7 +15,8 @@ public class MapGenerator : MonoBehaviour {
 
 	public int numTiles;
 	public int removeTiles;
-	
+	public bool isMap1;
+
 	private Graph map;
 	private List<Tile> unvisited_vertices;
 	private System.Random rand = new System.Random();
@@ -24,6 +25,7 @@ public class MapGenerator : MonoBehaviour {
 	{
 		return this.map;
 	}
+
 	// Use this for initialization
 	//Changed to public functon
 	public void initMap () 
@@ -34,6 +36,7 @@ public class MapGenerator : MonoBehaviour {
 		GrassPrefab.tag = "Grass";
 
 		GameObject firstPref = Network.Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation, 0) as GameObject;
+		firstPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, isMap1);
 		//no longer static
 		//Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), firstPref);
 		Tile firstTile = firstPref.GetComponent<Tile> ();
@@ -53,36 +56,44 @@ public class MapGenerator : MonoBehaviour {
 			Tile up = upPref.GetComponent<Tile>();
 			//Vector2 uPos = new Vector2(curr.point.x+1, curr.point.y);
 			upPref.networkView.RPC("setPointN", RPCMode.AllBuffered, new Vector3(curr.point.x+1, 0, curr.point.y));
+			upPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, isMap1);
 			
 			GameObject downPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
 			Tile down = downPref.GetComponent<Tile>();
 			//Vector2 dPos = new Vector2(curr.point.x-1, curr.point.y);
 			downPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x-1, 0, curr.point.y));
-			
+			downPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, isMap1);
+
 			GameObject leftupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
 			Tile leftup = leftupPref.GetComponent<Tile>();
 			//Vector2 luPos =new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f);
 			leftupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f));
-			
+			leftupPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, isMap1);
+
 			GameObject rightupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
 			Tile rightup = rightupPref.GetComponent<Tile>();
 			//Vector2 ruPos =new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f);
 			rightupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f));
-			
+			rightupPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, isMap1);
+
+
 			GameObject leftdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), leftdownPref);
 			Tile leftdown = leftdownPref.GetComponent<Tile>();
 			//Vector2 ldPos =new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f);
 			leftdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f));
-			
+			leftdownPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, isMap1);
+
+
 			GameObject rightdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile rightdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f), rightdownPref);
 			Tile rightdown = rightdownPref.GetComponent<Tile>();
 			//Vector2 rdPos =new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f);
 			rightdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f));
+			rightdownPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, isMap1);
 			unvisited_vertices.RemoveAt(0);
 			
 			insertTile(curr, up);
@@ -161,7 +172,7 @@ public class MapGenerator : MonoBehaviour {
 
 			//its a little tricky here. we want to remove tiles that are on the outer outer, so <4 is more outer
 			//than <6.
-			List<Tile> sideTiles = map.vertices.Where (t =>t.neighbours.Count<5 ).ToList();
+			List<Tile> sideTiles = map.vertices.Where (t =>t.neighbours.Count<4 ).ToList();
 
 			if(sideTiles.Count == 0)
 			{

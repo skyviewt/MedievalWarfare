@@ -257,4 +257,16 @@ public class Tile : MonoBehaviour
 		myVillage = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
 	}
 
+	[RPC]
+	void changeMapLayer( bool isMap1)
+	{
+		if( isMap1 )
+		{
+			this.gameObject.layer = LayerMask.NameToLayer( "map1" );
+		}else{
+			this.gameObject.layer = LayerMask.NameToLayer( "map2" );
+		}
+
+	}
+
 }
