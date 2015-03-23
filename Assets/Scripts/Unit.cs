@@ -31,7 +31,7 @@ public enum UnitActionType
 [System.Serializable]
 public class Unit : MonoBehaviour {
 
-	public Tile locatedAt;
+	private Tile locatedAt;
 	public UnitActionType myAction;
 	public UnitType myType;
 	private Village myVillage;
@@ -46,7 +46,7 @@ public class Unit : MonoBehaviour {
 	public static Unit CreateComponent ( UnitType unitType, Tile location, Village v, GameObject PeasantPrefab ) 
 	{
 		Tile toplace = null;
-		foreach (Tile a in location.neighbours) 
+		foreach (Tile a in location.getNeighbours()) 
 		{
 			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
 			{
@@ -97,7 +97,7 @@ public class Unit : MonoBehaviour {
 
 		//CreateComponent
 		Tile toplace = null;
-		foreach (Tile a in location.neighbours) 
+		foreach (Tile a in location.getNeighbours()) 
 		{
 			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
 			{

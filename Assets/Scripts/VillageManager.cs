@@ -137,17 +137,16 @@ public class VillageManager : MonoBehaviour {
 		{
 			randomTileIndex = rand.Next (0, v.getRegionSize());
 			respawnLocation = validTiles[randomTileIndex];
+			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
 			v.setLocation(respawnLocation);
-			// TODO destroy whatever prefab is at respawnLocation and
-			// create hovel prefab on respawnLocation instead
+			// do we need to set tile's occupying structure? or does village not count?
 		}
 		else
 		{
 			randomTileIndex = rand.Next (0, validTiles.Count);
 			respawnLocation = validTiles[randomTileIndex];
+			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
 			v.setLocation(respawnLocation);
-			// TODO destroy whatever prefab is at respawnLocation and
-			// create hovel prefab on respawnLocation instead
 		}
 	}
 	//TODO needs networking component
@@ -180,13 +179,16 @@ public class VillageManager : MonoBehaviour {
 			splitGoldTracker = ZERO;
 			splitWoodTracker = ZERO;
 			tempVillage = n.getVillage();
-			isVisited = visitedDictionary[n];
+			visitedDictionary.TryGetValue(n,out isVisited);
 			if(tempVillage == villageToSplit && isVisited == false)
 			{
+				print ("before bfs: "+tilesToReturn.Count);
 				splitBFS(n,visitedDictionary,tilesToReturn);
+				print ("after bfs: "+tilesToReturn.Count);
 			}
 			if(tilesToReturn.Count >= THREE)
 			{
+				print ("tilesToReturn >= 3");
 				List<Tile> temp = getValidTilesForRespawn(tilesToSplit);
 				randomTileIndex = rand.Next(0, villageToSplit.getRegionSize());
 				respawnLocation = tilesToReturn[randomTileIndex];
@@ -212,6 +214,7 @@ public class VillageManager : MonoBehaviour {
 			//if the new size is <  3
 			else if(tilesToReturn.Count < THREE) //&& tilesToReturn.Count > ZERO)
 			{
+				print ("tilesToReturn < 3");
 				foreach(Tile t in tilesToReturn)
 				{
 					Unit u = t.getOccupyingUnit();
@@ -242,7 +245,7 @@ public class VillageManager : MonoBehaviour {
 		bool isVisited;
 		foreach(Tile n in neighbours)
 		{
-			isVisited = visitedDictionary[n];
+			visitedDictionary.TryGetValue(n,out isVisited);
 			if(isVisited == false)
 			{
 				visitedDictionary[n] = true;
