@@ -49,10 +49,10 @@ public class Tile : MonoBehaviour
 
 	public void addNeighbour(Tile t)
 	{
-		if(this.neighbours.Where(
+		if(this.getNeighbours().Where(
 			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
 		{
-			this.neighbours.Add(t);
+			this.getNeighbours().Add(t);
 		}
 	}
 	//This method shouldn't be called
@@ -238,10 +238,10 @@ public class Tile : MonoBehaviour
 	public void addNeighbourN(NetworkViewID tileID)
 	{
 		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
-		if(this.neighbours.Where(
+		if(this.getNeighbours().Where(
 			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
 		{
-			this.neighbours.Add(t);
+			this.getNeighbours().Add(t);
 		}
 	}
 	[RPC]
