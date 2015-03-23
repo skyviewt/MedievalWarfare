@@ -69,7 +69,7 @@ public class Tile : MonoBehaviour
 		{
 			return false;
 		} 
-		else if (this.prefab.CompareTag ("Hovel")) 
+		else if (this.prefab.CompareTag ("Town")) 
 		{
 			return true;
 		} 

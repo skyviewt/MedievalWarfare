@@ -118,7 +118,7 @@ public class VillageManager : MonoBehaviour {
 		List<Tile> validTiles = new List<Tile> ();
 		foreach (Tile t in region) 
 		{
-			if(t.getStructure() != null)
+			if(t.getStructure() == null)
 			{
 				validTiles.Add(t);
 			}
@@ -129,6 +129,7 @@ public class VillageManager : MonoBehaviour {
 	//TODO needs networking component
 	private void respawnHovel(Village v)
 	{
+		print ("made it to respawnhovel");
 		List<Tile> validTiles = getValidTilesForRespawn (v.getControlledRegion ());
 		System.Random rand = new System.Random();
 		int randomTileIndex;
@@ -245,12 +246,13 @@ public class VillageManager : MonoBehaviour {
 		bool isVisited;
 		foreach(Tile n in neighbours)
 		{
-			visitedDictionary.TryGetValue(n,out isVisited);
-			if(isVisited == false)
-			{
-				visitedDictionary[n] = true;
-				tilesToReturn.Add(n);
-				splitBFS(n,visitedDictionary,tilesToReturn);
+			if (visitedDictionary.TryGetValue(n,out isVisited)){
+				if(isVisited == false)
+				{
+					visitedDictionary[n] = true;
+					tilesToReturn.Add(n);
+					splitBFS(n,visitedDictionary,tilesToReturn);
+				}
 			}
 		}
 	}

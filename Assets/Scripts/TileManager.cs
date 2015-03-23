@@ -26,7 +26,7 @@ public class TileManager : MonoBehaviour {
 				UnitType neighbourUnitType = neighbouringUnit.getUnitType();
 				Village neighbourVillage = neighbouringUnit.getVillage ();
 				Player neighbourPlayer = neighbourVillage.getPlayer ();
-				if(unitType < neighbourUnitType && unitVillagePlayer != neighbourPlayer)
+				if(unitType <= neighbourUnitType && unitVillagePlayer != neighbourPlayer)
 				{
 					return true;
 				}

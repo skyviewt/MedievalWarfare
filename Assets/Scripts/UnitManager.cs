@@ -63,7 +63,7 @@ public class UnitManager : MonoBehaviour {
 				else if (srcUnitType != UnitType.PEASANT)
 				{
 					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
-					print(isGuardSurrounding);
+					print("Guard surrounding is " + isGuardSurrounding);
 					if (isGuardSurrounding == false)
 					{
 						if (destUnit != null)
@@ -94,6 +94,8 @@ public class UnitManager : MonoBehaviour {
 							//move unit prefab location to the dest tile
 							villageManager.takeoverTile(srcVillage,dest);
 							performMove(unit,dest);
+							print ("made it here 5");
+
 							unit.setAction(UnitActionType.CapturingEnemy);
 							villageManager.MergeAlliedRegions(dest);
 							originalLocation.setOccupyingUnit(null);
