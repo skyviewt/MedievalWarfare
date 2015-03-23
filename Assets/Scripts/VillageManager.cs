@@ -137,17 +137,16 @@ public class VillageManager : MonoBehaviour {
 		{
 			randomTileIndex = rand.Next (0, v.getRegionSize());
 			respawnLocation = validTiles[randomTileIndex];
+			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
 			v.setLocation(respawnLocation);
-			// TODO destroy whatever prefab is at respawnLocation and
-			// create hovel prefab on respawnLocation instead
+			// do we need to set tile's occupying structure? or does village not count?
 		}
 		else
 		{
 			randomTileIndex = rand.Next (0, validTiles.Count);
 			respawnLocation = validTiles[randomTileIndex];
+			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
 			v.setLocation(respawnLocation);
-			// TODO destroy whatever prefab is at respawnLocation and
-			// create hovel prefab on respawnLocation instead
 		}
 	}
 	//TODO needs networking component
