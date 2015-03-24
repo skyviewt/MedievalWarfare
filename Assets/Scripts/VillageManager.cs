@@ -14,6 +14,7 @@ public class VillageManager : MonoBehaviour {
 	public readonly int TWENTY = 20;
 	public readonly int THIRTY = 30;
 	public readonly int FOURTY = 40;
+	public readonly int NEUTRAL = 2;
 	private InGameGUI gameGUI;
 	// Use this for initialization
 	public GameObject meadowPrefab;
@@ -95,21 +96,27 @@ public class VillageManager : MonoBehaviour {
 		}
 	}
 
+	public void plunderVillage (Village pluderingVillage, Village plunderedVillage, Tile dest)
+	{
+		int pillagedWood = plunderedVillage.getWood ();
+		int pillagedGold = plunderedVillage.getGold ();
+		pluderingVillage.addWood(pillagedWood);
+		pluderingVillage.addGold(pillagedGold);
+		dest.replace (meadowPrefab); // if a village is invaded, it is supposed to turn into a meadow
+		while(plunderedVillage.getLocatedAt() == dest)
+		{
+			respawnHovel(plunderedVillage);
+		}
+	}
+
 	/*
 	 * Function adds village to invader. If the dest had a village prefab on it, then we take all resources
 	 */ 
 	public void takeoverTile(Village invader, Tile dest)
 	{
 		Village invadedVillage = dest.getVillage ();
-		if(dest.checkVillagePrefab())
-		{
-			int pillagedWood = invadedVillage.getWood ();
-			int pillagedGold = invadedVillage.getGold ();
-			invader.addWood(pillagedWood);
-			invader.addGold(pillagedGold);
-			respawnHovel (invadedVillage);
-		}
 		invader.addTile(dest);
+		invadedVillage.removeTile(dest);
 		splitRegion(dest, invadedVillage);
 	}
 	//TODO network component ?
@@ -150,108 +157,104 @@ public class VillageManager : MonoBehaviour {
 			v.setLocation(respawnLocation);
 		}
 	}
+
 	//TODO needs networking component
 	private void splitRegion(Tile splitTile, Village villageToSplit)
-	{
-		Player villageToSplitPlayer = villageToSplit.getPlayer();
-		List<Tile> neighbours = splitTile.getNeighbours();
-		List<Tile> tilesToSplit = villageToSplit.getControlledRegion();
-		int tilesToSplitSize = villageToSplit.getRegionSize();
-		int villageToSplitTotalGold = villageToSplit.getGold();
-		int villageToSplitTotalWood = villageToSplit.getWood();
+	{	
+		List<List<Tile>> splitUpRegions = new List<List<Tile>>(); // horrible variable name 8^)
+		int oldWood = villageToSplit.getWood ();
+		int oldGold = villageToSplit.getGold ();
+		Tile oldVillageLocation = villageToSplit.getLocatedAt ();
+		Player oldPlayer = villageToSplit.getPlayer ();
+		int oldPlayerColor = oldPlayer.getColor ();
 		Dictionary<Tile,bool> visitedDictionary = new Dictionary<Tile,bool> ();
-
-		foreach (Tile t in tilesToSplit) 
-		{
-			visitedDictionary.Add(t,false);
-		}
-
-		int splitGoldTracker, splitWoodTracker;
-		List<Tile> tilesToReturn = new List<Tile>();
-		Village tempVillage;
-		Tile respawnLocation;
-		int randomTileIndex;
-		System.Random rand = new System.Random();
 		bool isVisited;
+		foreach (Tile x in villageToSplit.getControlledRegion()) 
+		{
+			visitedDictionary.Add(x,false);
+		}
+		foreach (Tile n in splitTile.getNeighbours ()) 
+		{
+			if(visitedDictionary.TryGetValue(n,out isVisited))
+			{
+				if(n.getVillage () == villageToSplit && isVisited == false)
+				{
+					List<Tile> newRegion = new List<Tile>();
+					splitBFS (n,villageToSplit,newRegion,visitedDictionary);
+					if(newRegion.Count >= 3)
+					{
+						splitUpRegions.Add (newRegion);
+					}
+					else if(newRegion.Count < 3)
+					{
+						foreach(Tile x in newRegion)
+						{
+							Unit u = x.getOccupyingUnit();
+							Structure s = x.getStructure();
+							//TODO break relationship between tile and unit
+							//destroy the unit gameobject
+							//remove the tile owner
+							//recolor the tile to neutral
+							//TODO break relationship between tile and structure
+							//destroy the structure gameobject
+						}
+					}
 
-		foreach(Tile n in neighbours)
-		{	
-			tilesToReturn.Clear();
-			splitGoldTracker = ZERO;
-			splitWoodTracker = ZERO;
-			tempVillage = n.getVillage();
-			visitedDictionary.TryGetValue(n,out isVisited);
-			if(tempVillage == villageToSplit && isVisited == false)
-			{
-				print ("before bfs: "+tilesToReturn.Count);
-				splitBFS(n,visitedDictionary,tilesToReturn);
-				print ("after bfs: "+tilesToReturn.Count);
-			}
-			if(tilesToReturn.Count >= THREE)
-			{
-				print ("tilesToReturn >= 3");
-				List<Tile> temp = getValidTilesForRespawn(tilesToSplit);
-				randomTileIndex = rand.Next(0, villageToSplit.getRegionSize());
-				respawnLocation = tilesToReturn[randomTileIndex];
-				Vector3 hovelLocation = new Vector3(respawnLocation.point.x, 0, respawnLocation.point.y);
-				GameObject villageObject = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
-				Village newVillage = villageObject.GetComponent<Village>();
-				int newVillageGold = (int)(villageToSplitTotalGold *(tilesToReturn.Count/tilesToSplitSize));
-				int newVillageWood = (int)(villageToSplitTotalWood *(tilesToReturn.Count/tilesToSplitSize));
-				if((splitGoldTracker+newVillageGold)>villageToSplitTotalGold || 
-				   (splitWoodTracker+newVillageWood)>villageToSplitTotalWood)
-				{
-					newVillage.setGold(villageToSplitTotalGold-splitGoldTracker);
-					newVillage.setWood (villageToSplitTotalWood-splitWoodTracker);
-				}
-				else
-				{
-					splitGoldTracker = splitGoldTracker + newVillageGold;
-					splitWoodTracker = splitWoodTracker + newVillageWood;
-					newVillage.setGold(newVillageGold);
-					newVillage.setWood(newVillageWood);
-				}
-			}
-			//if the new size is <  3
-			else if(tilesToReturn.Count < THREE) //&& tilesToReturn.Count > ZERO)
-			{
-				print ("tilesToReturn < 3");
-				foreach(Tile t in tilesToReturn)
-				{
-					Unit u = t.getOccupyingUnit();
-					Structure s = t.getStructure();
-					if(u !=  null)
-					{
-						//TODO break relationship between tile and unit
-						//destroy the unit gameobject
-						//remove the tile owner
-						//recolor the tile to neutral
-					}
-					if(s != null)
-					{
-						//TODO break relationship between tile and structure
-						//destroy the structure gameobject
-					}
 				}
 			}
 		}
-		//TODO destroy villagetoSplit and all of its relationships
+		//recolor every tile to null/set their village to null
+		foreach (Tile old in villageToSplit.getControlledRegion()) 
+		{
+			//villageToSplit.removeTile (old);
+			old.setVillage (null);
+			old.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2);	
+
+		}
+		oldVillageLocation.replace (null); // destroy the old village prefab
+		if (splitUpRegions.Count == 0) 
+		{
+			return;
+		}
+
+		foreach (List<Tile> newRegion in splitUpRegions) 
+		{
+			if( newRegion.Contains (oldVillageLocation))
+			{
+				Vector3 hovelLocation = new Vector3(oldVillageLocation.point.x, 0, oldVillageLocation.point.y);
+				GameObject hovel = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
+				Village newVillage = hovel.GetComponent<Village>();
+				hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, oldPlayerColor);
+				oldVillageLocation.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, hovel.networkView.viewID);
+				hovel.networkView.RPC("setLocatedAtNet", RPCMode.AllBuffered, oldVillageLocation.networkView.viewID);
+				oldVillageLocation.networkView.RPC("setVillageNet", RPCMode.AllBuffered, hovel.networkView.viewID);
+				hovel.networkView.RPC ("updateControlledRegionNet", RPCMode.AllBuffered);
+				hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gameObject.networkView.viewID, oldPlayerColor);
+				hovel.networkView.RPC("addGoldNet", RPCMode.AllBuffered, 200);
+				hovel.networkView.RPC("addWoodNet", RPCMode.AllBuffered, 200);
+				oldPlayer.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
+			}
+			else
+			{
+
+			}
+		}
+
 		//TODO implement PlayerManager.checkLoss(villageToSplitPlayer)
 		//TODO implement PlayerManager.checkWin();
 	}
 
-	private void splitBFS (Tile tiletoSearch, Dictionary<Tile, bool> visitedDictionary, List<Tile> tilesToReturn)
+	private void splitBFS (Tile tiletoSearch, Village villageToSplit,List<Tile> tilesToReturn, Dictionary<Tile, bool> visitedDictionary)
 	{
-		List<Tile> neighbours = tiletoSearch.getNeighbours();
+		visitedDictionary [tiletoSearch] = true;
+		tilesToReturn.Add (tiletoSearch);
 		bool isVisited;
-		foreach(Tile n in neighbours)
+		foreach (Tile n in tiletoSearch.getNeighbours())
 		{
 			if (visitedDictionary.TryGetValue(n,out isVisited)){
-				if(isVisited == false)
+				if(n.getVillage () == villageToSplit && isVisited == false)
 				{
-					visitedDictionary[n] = true;
-					tilesToReturn.Add(n);
-					splitBFS(n,visitedDictionary,tilesToReturn);
+					splitBFS(n,villageToSplit,tilesToReturn,visitedDictionary);
 				}
 			}
 		}

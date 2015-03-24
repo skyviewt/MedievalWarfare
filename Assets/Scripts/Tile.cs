@@ -21,13 +21,14 @@ public class Tile : MonoBehaviour
 	private Unit occupyingUnit;
 	private Structure occupyingStructure;
 	private Village myVillage;
-	private bool visited;
 	private int color;
-	private bool isRoad;
 	public Shader outline;
 	public System.Random rand = new System.Random();
 	public GameObject prefab;
 
+	private bool isRoad; // NEEDS TO GET IMPLEMENTED
+
+	private bool visited;
 
 
 	//This function should not be used, the Tile component is now always attached to a Grass Tile
@@ -107,6 +108,10 @@ public class Tile : MonoBehaviour
 		else if ( this.color == 1 )
 		{
 			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+		}
+		else
+		{
+			gameObject.renderer.material.color = Color.white;
 		}
 	}
 	

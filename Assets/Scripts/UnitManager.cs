@@ -90,12 +90,23 @@ public class UnitManager : MonoBehaviour {
 						}
 						else if (destUnit == null)
 						{
-							print ("made it here 4");
-							//move unit prefab location to the dest tile
-							villageManager.takeoverTile(srcVillage,dest);
-							performMove(unit,dest);
-							print ("made it here 5");
-
+							bool destHasVillagePrefab = dest.checkVillagePrefab();
+							if(destHasVillagePrefab && srcUnitType <= UnitType.INFANTRY)
+							{
+								print("infantry is not brave enough to invade a village");
+								return;
+							}
+							else if(destHasVillagePrefab && srcUnitType > UnitType.INFANTRY)
+							{
+								villageManager.plunderVillage(srcVillage, destVillage,dest);
+								performMove(unit,dest);
+								villageManager.takeoverTile(srcVillage,dest);
+							}
+							else
+							{
+								performMove(unit,dest);
+								villageManager.takeoverTile(srcVillage,dest);
+							}
 							unit.setAction(UnitActionType.CapturingEnemy);
 							villageManager.MergeAlliedRegions(dest);
 							originalLocation.setOccupyingUnit(null);
@@ -107,7 +118,12 @@ public class UnitManager : MonoBehaviour {
 		}
 
 	}
-								                         
+
+	private void movePrefab(Unit u, Vector3 vector)
+	{
+		u.transform.localPosition = vector;
+	}
+
 	private void performMove(Unit unit, Tile dest)
 	{
 		dest.setOccupyingUnit(unit);
@@ -115,8 +131,7 @@ public class UnitManager : MonoBehaviour {
 		Village srcVillage = unit.getVillage ();
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
-//		print ("--------------landtype of the tile below------------------");		
-//		print (destLandType);
+
 		if (srcUnitType == UnitType.KNIGHT) 
 		{
 			bool destHasRoad = dest.checkRoad ();
@@ -126,8 +141,6 @@ public class UnitManager : MonoBehaviour {
 				Destroy (dest.prefab);
 			}
 			unit.setAction (UnitActionType.Moved);
-			//unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
-
 		} 
 		else
 		{
@@ -150,7 +163,7 @@ public class UnitManager : MonoBehaviour {
 				dest.setLandType(LandType.Grass);
 			}
 		}
-		unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
+		movePrefab (unit, new Vector3 (dest.point.x, 0.15f,dest.point.y));
 	}
 
 	private bool canUnitMove(UnitType type, Tile dest)
