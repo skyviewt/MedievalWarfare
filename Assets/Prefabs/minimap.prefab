@@ -87,6 +87,8 @@ MonoBehaviour:
   minimap: 0
   numTiles: 300
   removeTiles: 100
+  isMap1: 0
+  positionList: []
 --- !u!148 &14854366
 NetworkView:
   m_ObjectHideFlags: 1

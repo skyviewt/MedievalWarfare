@@ -7,6 +7,7 @@ public class mainMenu : MonoBehaviour {
 
 	public Canvas ExitCanvas;
 	public Canvas JoinGameCanvas;
+	public Canvas MiniMapCanvas;
 	public Transform HostText;
 	public Transform JoinText;
 	public Transform StatsText;
@@ -33,6 +34,7 @@ public class mainMenu : MonoBehaviour {
 		ExitCanvas = ExitCanvas.GetComponent<Canvas> ();
 		ExitCanvas.enabled = false;
 		JoinGameCanvas.enabled = false;
+		MiniMapCanvas.enabled = false;
 	}
 
 	public void quitTextPressed()

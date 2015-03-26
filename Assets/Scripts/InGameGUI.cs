@@ -258,7 +258,7 @@ public class InGameGUI : MonoBehaviour {
 			_Tile = hit.collider.gameObject;
 			Tile selection = _Tile.GetComponent<Tile> ();
 			print (selection != null);
-			//Debug.Log (_Unit.GetComponent<Unit> ().getLocation ().getNeighbours());
+			//Debug.Log (_Unit.GetComponent<Unit> ().getLocation ().neighbours);
 			if (_Unit.GetComponent<Unit> ().getLocation ().getNeighbours().Contains (selection)) {
 					_move = selection;
 			}

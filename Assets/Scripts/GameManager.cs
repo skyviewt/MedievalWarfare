@@ -6,7 +6,6 @@ using System.Linq;
 [System.Serializable]
 public class GameManager : MonoBehaviour {
 
-	public GameObject pp;
 	public string ipAddress;
 	public int port = 25000;
 	public bool isServer = true;
@@ -18,25 +17,41 @@ public class GameManager : MonoBehaviour {
 	}
 	public void initGame(string ip, int pPort)
 	{
+		print ("in initGame");
 		if (isServer) {
-			
+
 			Network.InitializeServer (32, port);
-			
-			//Player p1 = Player.CreateComponent ("Sky", "123", gameObject);
-			//p1.setColor(0);
-			//Player p2 = Player.CreateComponent ("Joerg", "456", gameObject);
-			//p2.setColor(1);
+			print ("in isServer----"); 
+			Player p1 = Player.CreateComponent ("Sky", "123", gameObject);
+			p1.setColor(0);
+			Player p2 = Player.CreateComponent ("Joerg", "456", gameObject);
+			p2.setColor(1);
 
-			gameObject.networkView.RPC ("initPlayers", RPCMode.AllBuffered);
+//			gameObject.networkView.RPC ("initPlayers", RPCMode.AllBuffered);
 
-			Player[] pls = gameObject.GetComponents<Player>();
+//			Player[] pls = gameObject.GetComponents<Player>();
 			List<Player> participants = new List<Player> ();
-			participants.Add (pls[0]);
-			participants.Add (pls[1]);
-			
+//			participants.Add (pls[0]);
+//			participants.Add (pls[1]);
+
+			participants.Add (p1);
+			participants.Add (p2);
+
 			MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
-			gen.initMap ();
-			gen.initializeVillagesOnMap (participants);
+			for ( int i = 0; i<participants.Count; i++)
+			{
+				gen.initMap (i);
+//				gen.initializeVillagesOnMap (participants,i);
+				print ("the i: "+i);
+			}
+			Debug.Log ("-------------here for maps---------------");
+			for(int i = 0; i<gen.maps.Count; ++i)
+			{
+			
+				Debug.Log (gen.getMap(i));
+			}
+			Debug.Log ("-----------------------------------------");
+
 		} else {
 			Network.Connect (ip, pPort);
 		}
