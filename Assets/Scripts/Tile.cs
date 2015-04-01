@@ -16,19 +16,17 @@ public enum LandType
 public class Tile : MonoBehaviour
 {
 	public Vector2 point;
-	private List<Tile> neighbours;
-	private LandType myType;
-	private Unit occupyingUnit;
-	private Structure occupyingStructure;
-	private Village myVillage;
-	private int color;
+	public List<Tile> neighbours;
+	public LandType myType;
+	public Unit occupyingUnit;
+	public Structure occupyingStructure;
+	public Village myVillage;
+	public int color;
 	public Shader outline;
 	public System.Random rand = new System.Random();
-	public GameObject prefab;
-
-	private bool isRoad; // NEEDS TO GET IMPLEMENTED
-
-	private bool visited;
+	public GameObject prefab; //holds decoration (tree/meadow)
+	public bool isRoad; // NEEDS TO GET IMPLEMENTED
+	public bool visited; // for BFS
 
 
 	//This function should not be used, the Tile component is now always attached to a Grass Tile
@@ -46,7 +44,6 @@ public class Tile : MonoBehaviour
 		visited = false;
 		neighbours = new List<Tile>();
 	}
-	
 
 	public void addNeighbour(Tile t)
 	{
@@ -56,20 +53,17 @@ public class Tile : MonoBehaviour
 			this.getNeighbours().Add(t);
 		}
 	}
-	//This method shouldn't be called
+	/*This method shouldn't be called
 	public void InstantiateTree( GameObject TreePrefab)
 	{
 		Debug.Log ("------Tile.InstanciateTree------");
 		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0.15f, this.point.y), TreePrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Trees );
-	}
+	}*/
 
 	public bool checkVillagePrefab()
 	{
-		if (prefab == null) 
-		{
-			return false;
-		} 
+		if (prefab == null) return false; 
 		else if (this.prefab.CompareTag ("Town")) 
 		{
 			return true;

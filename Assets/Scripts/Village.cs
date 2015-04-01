@@ -22,16 +22,16 @@ public enum VillageType
 [System.Serializable]
 public class Village : MonoBehaviour {
 
-	private List<Tile> controlledRegion;
-	private Player controlledBy;
-	private Tile locatedAt;
-	private List<Unit> supportedUnits;
-	private VillageType myType;
-	private VillageActionType myAction;
-	private int gold;
-	private int wood;
-	private Shader outline;
-	private VillageManager vm;
+	public List<Tile> controlledRegion;
+	public Player controlledBy;
+	public Tile locatedAt;
+	public List<Unit> supportedUnits;
+	public VillageType myType;
+	public VillageActionType myAction;
+	public int gold;
+	public int wood;
+	public Shader outline;
+	public VillageManager vm;
 	
 	// Use this for initialization
 	void Start()
