@@ -9,7 +9,7 @@ public class TurnManager : MonoBehaviour {
 	public void beginTurn(Game g, Player p)
 	{
 		g.setTurn (p);
-		List<Village> villagesToUpdate = p.getVillages ();
+		List<Village> villagesToUpdate = p.myVillages;
 		foreach (Village v in villagesToUpdate)
 		{
 			this.updateVillages(v);
@@ -18,50 +18,50 @@ public class TurnManager : MonoBehaviour {
 
 	public void updateVillages(Village v)
 	{
-		List<Tile> controlledRegion = v.getControlledRegion ();
+		List<Tile> controlledRegion = v.controlledRegion;
 		foreach (Tile tile in controlledRegion)
 		{
-			LandType type = tile.getLandType();
+			LandType type = tile.myType;
 			if (type == LandType.Tombstone)
 			{
-				tile.setLandType(LandType.Trees);
+				tile.myType=(LandType.Trees);
 			}
 
-			Unit unitOnTile = tile.getOccupyingUnit(); //grabs the occupying unit on tile
+			Unit unitOnTile = tile.occupyingUnit; //grabs the occupying unit on tile
 			if (unitOnTile != null)
 			{
-				UnitActionType action = unitOnTile.getAction(); //get the action of the unit on tile
+				UnitActionType action = unitOnTile.myAction; //get the action of the unit on tile
 
 				if (action == UnitActionType.StartCultivating)
 				{
-					unitOnTile.setAction(UnitActionType.FinishCultivating);
+					unitOnTile.myAction=(UnitActionType.FinishCultivating);
 				}
 				if (action == UnitActionType.FinishCultivating)
 				{
-					unitOnTile.setAction(UnitActionType.ReadyForOrders);
-					tile.setLandType(LandType.Meadow);
+					unitOnTile.myAction=(UnitActionType.ReadyForOrders);
+					tile.myType=(LandType.Meadow);
 				}
 				if (action == UnitActionType.BuildingRoad)
 				{
-					unitOnTile.setAction(UnitActionType.ReadyForOrders);
-					tile.buildRoad();
+					unitOnTile.myAction=(UnitActionType.ReadyForOrders);
+					tile.hasRoad=true;
 				}
 			}
 
 			if (type == LandType.Grass)
 			{
-				v.addGold(1); //add gold by 1
+				v.gold+=1; //add gold by 1
 
 			}
 			if (type == LandType.Meadow)
 			{
 
-				v.addGold(2); //add gold by 2
+				v.gold+=(2); //add gold by 2
 			}
 		}
 
 		int totalWages = v.getTotalWages ();
-		int villageGold = v.getGold ();
+		int villageGold = v.gold;
 		if (villageGold >= totalWages) { //means have enough money to pay units
 			villageGold = villageGold - totalWages;
 		} 

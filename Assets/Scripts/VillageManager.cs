@@ -5,16 +5,7 @@ using System.Linq;
 
 [System.Serializable]
 public class VillageManager : MonoBehaviour {
-	
-	public readonly int ZERO = 0;
-	public readonly int ONE = 1;
-	public readonly int THREE = 3;
-	public readonly int EIGHT = 8;
-	public readonly int TEN = 10;
-	public readonly int TWENTY = 20;
-	public readonly int THIRTY = 30;
-	public readonly int FOURTY = 40;
-	public readonly int NEUTRAL = 2;
+
 	private InGameGUI gameGUI;
 	// Use this for initialization
 	public GameObject meadowPrefab;
@@ -26,9 +17,9 @@ public class VillageManager : MonoBehaviour {
 	
 	public void upgradeVillage(Village v)
 	{
-		int vWood = v.getWood ();
-		VillageType vType = v.getMyType ();
-		VillageActionType vAction = v.getAction ();
+		int vWood = v.wood;
+		VillageType vType = v.myType;
+		VillageActionType vAction = v.myAction;
 		if (vType == VillageType.Fort) 
 		{
 			gameGUI.displayError(@"The Fort is your strongest village! ¯\(°_o)/¯");
@@ -47,10 +38,10 @@ public class VillageManager : MonoBehaviour {
 	
 	public void MergeAlliedRegions(Tile newTile)
 	{
-		Village myVillage = newTile.getVillage ();
-		List<Tile> neighbours = newTile.getNeighbours();
-		int mySize = myVillage.getRegionSize ();
-		Player myPlayer = myVillage.getPlayer ();
+		Village myVillage = newTile.myVillage;
+		List<Tile> neighbours = newTile.neighbours;
+		int mySize = myVillage.controlledRegion.Count();
+		Player myPlayer = myVillage.controlledBy;
 		List<Village> villagesToMerge = new List<Village>();
 		villagesToMerge.Add (myVillage);
 		Village biggestVillage = myVillage;
@@ -58,20 +49,20 @@ public class VillageManager : MonoBehaviour {
 
 		foreach (Tile neighbour in neighbours) 
 		{
-			Village neighbourVillage = neighbour.getVillage ();
+			Village neighbourVillage = neighbour.myVillage;
 			if( neighbourVillage != null )
 			{
-				Player neighbourPlayer = neighbourVillage.getPlayer ();
+				Player neighbourPlayer = neighbourVillage.controlledBy;
 				if((myPlayer == neighbourPlayer) && !(villagesToMerge.Contains(neighbourVillage)))
 				{
 					villagesToMerge.Add(neighbourVillage);
-					VillageType neighbourType = neighbourVillage.getMyType();
-					int neighbourSize = neighbourVillage.getRegionSize();
-					if (neighbourType>biggestVillage.getMyType())
+					VillageType neighbourType = neighbourVillage.myType;
+					int neighbourSize = neighbourVillage.controlledRegion.Count();
+					if (neighbourType>biggestVillage.myType)
 					{
 						biggestVillage = neighbourVillage;
 					} 
-					else if (neighbourType==biggestVillage.getMyType()&&neighbourSize>biggestVillage.getRegionSize())
+					else if (neighbourType==biggestVillage.myType&&neighbourSize>biggestVillage.controlledRegion.Count())
 					{
 						biggestVillage = neighbourVillage;
 					}
@@ -81,16 +72,16 @@ public class VillageManager : MonoBehaviour {
 
 		foreach (Village village in villagesToMerge) {
 			if (village != biggestVillage) {
-				biggestVillage.addGold (village.getGold ());
-				biggestVillage.addWood (village.getWood ());
-				biggestVillage.addRegion(village.getControlledRegion ());
+				biggestVillage.gold += village.gold;
+				biggestVillage.wood += village.wood;
+				biggestVillage.addRegion(village.controlledRegion);
 				//foreach (Unit u in village.getControlledUnits ()){
 				//	biggestVillage.addUnit (u);
 				//}
 				// remove prefab
-				Tile villageLocation = village.getLocatedAt();
+				Tile villageLocation = village.locatedAt;
 				Destroy (villageLocation.prefab);
-				villageLocation.setLandType (LandType.Meadow);
+				villageLocation.myType = LandType.Meadow;
 				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.2f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 			}
 		}
@@ -98,12 +89,14 @@ public class VillageManager : MonoBehaviour {
 
 	public void plunderVillage (Village pluderingVillage, Village plunderedVillage, Tile dest)
 	{
-		int pillagedWood = plunderedVillage.getWood ();
-		int pillagedGold = plunderedVillage.getGold ();
-		pluderingVillage.addWood(pillagedWood);
-		pluderingVillage.addGold(pillagedGold);
+		pluderingVillage.wood += plunderedVillage.wood;
+		pluderingVillage.gold += plunderedVillage.gold;
+		plunderedVillage.wood = 0;
+		plunderedVillage.gold = 0;
 		dest.replace (meadowPrefab); // if a village is invaded, it is supposed to turn into a meadow
-		while(plunderedVillage.getLocatedAt() == dest)
+		//TODO this needs to occur AFTER split region finishes
+		// tho i think split respawns the hovel anyways
+		while(plunderedVillage.locatedAt == dest)
 		{
 			respawnHovel(plunderedVillage);
 		}
@@ -114,10 +107,10 @@ public class VillageManager : MonoBehaviour {
 	 */ 
 	public void takeoverTile(Village invader, Tile dest)
 	{
-		Village invadedVillage = dest.getVillage ();
+		Village invadedVillage = dest.myVillage;
 		invader.addTile(dest);
-		invadedVillage.removeTile(dest);
-		splitRegion(dest, invadedVillage);
+		invadedVillage.controlledRegion.Remove(dest);
+		splitRegion(dest, invadedVillage); //the big sheblamo
 	}
 	//TODO network component ?
 	private List<Tile> getValidTilesForRespawn(List<Tile> region)
@@ -125,7 +118,7 @@ public class VillageManager : MonoBehaviour {
 		List<Tile> validTiles = new List<Tile> ();
 		foreach (Tile t in region) 
 		{
-			if(t.getStructure() == null)
+			if(t.occupyingStructure == null)
 			{
 				validTiles.Add(t);
 			}
@@ -137,16 +130,16 @@ public class VillageManager : MonoBehaviour {
 	private void respawnHovel(Village v)
 	{
 		print ("made it to respawnhovel");
-		List<Tile> validTiles = getValidTilesForRespawn (v.getControlledRegion ());
+		List<Tile> validTiles = getValidTilesForRespawn (v.controlledRegion);
 		System.Random rand = new System.Random();
 		int randomTileIndex;
 		Tile respawnLocation;
 		if(validTiles.Count == 0)
 		{
-			randomTileIndex = rand.Next (0, v.getRegionSize());
+			randomTileIndex = rand.Next (0, v.controlledRegion.Count());
 			respawnLocation = validTiles[randomTileIndex];
 			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
-			v.setLocation(respawnLocation);
+			v.locatedAt = respawnLocation;
 			// do we need to set tile's occupying structure? or does village not count?
 		}
 		else
@@ -154,7 +147,7 @@ public class VillageManager : MonoBehaviour {
 			randomTileIndex = rand.Next (0, validTiles.Count);
 			respawnLocation = validTiles[randomTileIndex];
 			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
-			v.setLocation(respawnLocation);
+			v.locatedAt=respawnLocation;
 		}
 	}
 
@@ -162,22 +155,22 @@ public class VillageManager : MonoBehaviour {
 	private void splitRegion(Tile splitTile, Village villageToSplit)
 	{	
 		List<List<Tile>> splitUpRegions = new List<List<Tile>>(); // horrible variable name 8^)
-		int oldWood = villageToSplit.getWood ();
-		int oldGold = villageToSplit.getGold ();
-		Tile oldVillageLocation = villageToSplit.getLocatedAt ();
-		Player oldPlayer = villageToSplit.getPlayer ();
-		int oldPlayerColor = oldPlayer.getColor ();
+		int oldWood = villageToSplit.wood;
+		int oldGold = villageToSplit.gold;
+		Tile oldVillageLocation = villageToSplit.locatedAt;
+		Player oldPlayer = villageToSplit.controlledBy;
+		int oldPlayerColor = oldPlayer.color;
 		Dictionary<Tile,bool> visitedDictionary = new Dictionary<Tile,bool> ();
 		bool isVisited;
-		foreach (Tile x in villageToSplit.getControlledRegion()) 
+		foreach (Tile x in villageToSplit.controlledRegion) 
 		{
 			visitedDictionary.Add(x,false);
 		}
-		foreach (Tile n in splitTile.getNeighbours ()) 
+		foreach (Tile n in splitTile.neighbours) 
 		{
 			if(visitedDictionary.TryGetValue(n,out isVisited))
 			{
-				if(n.getVillage () == villageToSplit && isVisited == false)
+				if(n.myVillage == villageToSplit && isVisited == false)
 				{
 					List<Tile> newRegion = new List<Tile>();
 					splitBFS (n,villageToSplit,newRegion,visitedDictionary);
@@ -189,8 +182,8 @@ public class VillageManager : MonoBehaviour {
 					{
 						foreach(Tile x in newRegion)
 						{
-							Unit u = x.getOccupyingUnit();
-							Structure s = x.getStructure();
+							Unit u = x.occupyingUnit;
+							Structure s = x.occupyingStructure;
 							//TODO break relationship between tile and unit
 							//destroy the unit gameobject
 							//remove the tile owner
@@ -204,10 +197,10 @@ public class VillageManager : MonoBehaviour {
 			}
 		}
 		//recolor every tile to null/set their village to null
-		foreach (Tile old in villageToSplit.getControlledRegion()) 
+		foreach (Tile old in villageToSplit.controlledRegion) 
 		{
 			//villageToSplit.removeTile (old);
-			old.setVillage (null);
+			old.myVillage = null;
 			old.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2);	
 
 		}
@@ -249,10 +242,10 @@ public class VillageManager : MonoBehaviour {
 		visitedDictionary [tiletoSearch] = true;
 		tilesToReturn.Add (tiletoSearch);
 		bool isVisited;
-		foreach (Tile n in tiletoSearch.getNeighbours())
+		foreach (Tile n in tiletoSearch.neighbours)
 		{
 			if (visitedDictionary.TryGetValue(n,out isVisited)){
-				if(n.getVillage () == villageToSplit && isVisited == false)
+				if(n.myVillage == villageToSplit && isVisited == false)
 				{
 					splitBFS(n,villageToSplit,tilesToReturn,visitedDictionary);
 				}
@@ -269,14 +262,14 @@ public class VillageManager : MonoBehaviour {
 	//TODO needs networking component
 	public void removeTileFromVillage(Village v, Tile t)
 	{
-		v.removeTile (t);
-		t.setVillage (null);
+		v.controlledRegion.Remove(t);
+		t.myVillage = null;
 	}
 
 	public void hirePeasant(Village v,GameObject unitPrefab)
 	{
-		Tile tileAt = v.getLocatedAt ();
-		int villageGold = v.getGold ();
+		Tile tileAt = v.locatedAt;
+		int villageGold = v.gold;
 		if (villageGold >= 10) 
 		{
 			//Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, unitPrefab);
@@ -302,22 +295,18 @@ public class VillageManager : MonoBehaviour {
 
 	public void hireInfantry(Village v,GameObject unitPrefab)
 	{
-		Tile tileAt = v.getLocatedAt ();
-		int villageGold = v.getGold ();
+		Tile tileAt = v.locatedAt;
+		int villageGold = v.gold;
 		if (villageGold >= 20) {
 			//Unit p = Unit.CreateComponent (UnitType.INFANTRY, tileAt, v, unitPrefab);
 			GameObject newInfantry = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
 			newInfantry.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.INFANTRY, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
-
 			//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
 			//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (true);
 			//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
 			//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
 			newInfantry.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Infantry");
-
-			//v.setGold (villageGold - TWENTY);
 			v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -20);
-
 			//v.addUnit (p);
 			v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newInfantry.networkView.viewID);
 		} else {
@@ -327,20 +316,18 @@ public class VillageManager : MonoBehaviour {
 
 	public void hireSoldier(Village v, GameObject unitPrefab)
 	{
-		Tile tileAt = v.getLocatedAt ();
-		int villageGold = v.getGold ();
+		Tile tileAt = v.locatedAt;
+		int villageGold = v.gold;
 		if (villageGold >= 30) {
-			if(v.getMyType() >= VillageType.Town)
+			if(v.myType >= VillageType.Town)
 			{
 				//Unit p = Unit.CreateComponent (UnitType.SOLDIER, tileAt, v, unitPrefab);
 				GameObject newSoldier = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
 				newSoldier.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.SOLDIER, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
-
 				//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
 				//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
 				//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (true);
 				//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
-
 				newSoldier.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Soldier");
 				//v.setGold (villageGold - THIRTY);
 				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -30);
@@ -357,10 +344,10 @@ public class VillageManager : MonoBehaviour {
 	}
 	public void hireKnight(Village v, GameObject unitPrefab)
 	{
-		Tile tileAt = v.getLocatedAt ();
-		int villageGold = v.getGold ();
+		Tile tileAt = v.locatedAt;
+		int villageGold = v.gold;
 		if (villageGold >= 40) {
-			if(v.getMyType() == VillageType.Fort)
+			if(v.myType == VillageType.Fort)
 			{
 				//Unit p = Unit.CreateComponent (UnitType.KNIGHT, tileAt, v, unitPrefab);
 				GameObject newKnight = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;

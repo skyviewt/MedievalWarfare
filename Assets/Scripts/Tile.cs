@@ -22,22 +22,11 @@ public class Tile : MonoBehaviour
 	public Structure occupyingStructure;
 	public Village myVillage;
 	public int color;
-	public Shader outline;
+	private Shader outline;
 	public System.Random rand = new System.Random();
 	public GameObject prefab; //holds decoration (tree/meadow)
-	public bool isRoad; // NEEDS TO GET IMPLEMENTED
+	public bool hasRoad; // NEEDS TO GET IMPLEMENTED
 	public bool visited; // for BFS
-
-
-	//This function should not be used, the Tile component is now always attached to a Grass Tile
-	public static Tile CreateComponent (Vector2 pt, GameObject g) {
-		Debug.Log ("----------Tile.CreateComponent() ran--------------");
-		Tile myTile = g.AddComponent<Tile>();
-		myTile.point = pt;
-		myTile.visited = false;
-		myTile.neighbours = new List<Tile>();
-		return myTile;
-	}
 
 	//newly created constructor. This will be called whenever a gameobject containing Tile.cs gets instantiated
 	public Tile (){
@@ -47,39 +36,19 @@ public class Tile : MonoBehaviour
 
 	public void addNeighbour(Tile t)
 	{
-		if(this.getNeighbours().Where(
+		if(this.neighbours.Where(
 			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
 		{
-			this.getNeighbours().Add(t);
+			this.neighbours.Add(t);
 		}
 	}
-	/*This method shouldn't be called
-	public void InstantiateTree( GameObject TreePrefab)
-	{
-		Debug.Log ("------Tile.InstanciateTree------");
-		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0.15f, this.point.y), TreePrefab.transform.rotation) as GameObject;
-		this.setLandType( LandType.Trees );
-	}*/
 
 	public bool checkVillagePrefab()
 	{
-		if (prefab == null) return false; 
-		else if (this.prefab.CompareTag ("Town")) 
-		{
+		if (this.myVillage.locatedAt = this)
 			return true;
-		} 
 		else 
-		{
 			return false;
-		}
-	}
-
-	//This method shouldn't be called
-	public void InstantiateMeadow( GameObject MeadowPrefab )
-	{
-		Debug.Log ("-----Tile.InstanciateMeadow------");
-		prefab = Instantiate(MeadowPrefab, new Vector3(this.point.x, 0.15f, this.point.y), MeadowPrefab.transform.rotation) as GameObject;
-		this.setLandType( LandType.Meadow );
 	}
 
 	void Start()
@@ -96,17 +65,11 @@ public class Tile : MonoBehaviour
 	public void colorTile()
 	{
 		if( this.color == 0 )
-		{
 			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
-		}
 		else if ( this.color == 1 )
-		{
 			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
-		}
 		else
-		{
 			gameObject.renderer.material.color = Color.white;
-		}
 	}
 	
 	void OnMouseEnter()
@@ -118,41 +81,7 @@ public class Tile : MonoBehaviour
 	{
 		this.renderer.material.shader = Shader.Find("Diffuse");
 	}
-
-	public void setLandType(LandType type)
-	{
-		this.myType = type;
-	}
-	public LandType getLandType()
-	{
-		return this.myType;
-	}
-	
-	public Unit getOccupyingUnit()
-	{
-		return this.occupyingUnit;
-	}
-
-	public void setOccupyingUnit(Unit u)
-	{
-		this.occupyingUnit = u;
-	}
-
-	public Village getVillage()
-	{
-		return myVillage;
-	}
-
-	public void setVillage(Village v)
-	{
-		this.myVillage = v;
-	}
-
-	public Structure getStructure()
-	{
-		return this.occupyingStructure;
-	}
-
+	/* Is this method needed? Sure towers, but they act as "decoration prefabs" in place of trees and meadows
 	public void setStructure(bool b)
 	{
 		if (b == true) {
@@ -160,41 +89,9 @@ public class Tile : MonoBehaviour
 		} else {
 			//destroy/remove occupyingSructure
 		}
-	}
-	public List<Tile> getNeighbours()
-	{
-		return neighbours;
-	}
+	}*/
 
-	public int getColor()
-	{
-		return color;
-	}
-	
-	public void setColor(int i)
-	{
-		this.color = i;
-	}
-
-	public bool getVisited()
-	{
-		return this.visited;
-	}
-	
-	public void setVisited(bool isVisited)
-	{
-		this.visited = isVisited;
-	}
-
-	public void buildRoad()
-	{
-		this.isRoad = true;
-	}
-
-	public bool checkRoad()
-	{
-		return this.isRoad;
-	}
+	// DID NOT WANT TO MESS WITH RPC CALLS
 
 	[RPC]
 	public void setLandTypeNet(int type)
@@ -237,10 +134,10 @@ public class Tile : MonoBehaviour
 	public void addNeighbourN(NetworkViewID tileID)
 	{
 		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
-		if(this.getNeighbours().Where(
+		if(this.neighbours.Where(
 			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
 		{
-			this.getNeighbours().Add(t);
+			this.neighbours.Add(t);
 		}
 	}
 	[RPC]

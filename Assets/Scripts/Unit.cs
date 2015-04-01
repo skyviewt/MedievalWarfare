@@ -31,14 +31,10 @@ public enum UnitActionType
 [System.Serializable]
 public class Unit : MonoBehaviour {
 
-	private Tile locatedAt;
+	public Tile locatedAt;
 	public UnitActionType myAction;
 	public UnitType myType;
-	private Village myVillage;
-	private readonly int TWO = 2;
-	private readonly int SIX = 6;
-	private readonly int EIGHTEEN = 18;
-	private readonly int FIFTY_FOUR = 54;
+	public Village myVillage;
 
 	private Shader outline;
 
@@ -46,9 +42,9 @@ public class Unit : MonoBehaviour {
 	public static Unit CreateComponent ( UnitType unitType, Tile location, Village v, GameObject PeasantPrefab ) 
 	{
 		Tile toplace = null;
-		foreach (Tile a in location.getNeighbours()) 
+		foreach (Tile a in location.neighbours) 
 		{
-			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
+			if(a.prefab == null && a.occupyingUnit == null && a.color == location.color)
 			{
 				toplace = a;
 			}
@@ -65,7 +61,7 @@ public class Unit : MonoBehaviour {
 		theUnit.myVillage = v;
 		theUnit.myAction = UnitActionType.ReadyForOrders;
 
-		location.setOccupyingUnit (theUnit);
+		location.occupyingUnit = theUnit;
 		return theUnit;
 	}
 
@@ -97,9 +93,9 @@ public class Unit : MonoBehaviour {
 
 		//CreateComponent
 		Tile toplace = null;
-		foreach (Tile a in location.getNeighbours()) 
+		foreach (Tile a in location.neighbours) 
 		{
-			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
+			if(a.prefab == null && a.occupyingUnit == null && a.color == location.color)
 			{
 				toplace = a;
 			}
@@ -115,7 +111,7 @@ public class Unit : MonoBehaviour {
 		myType = unitType;
 		myVillage = v;
 		myAction = UnitActionType.ReadyForOrders;
-		locatedAt.setOccupyingUnit (this);
+		locatedAt.occupyingUnit = this;
 	}
 	
 	// Use this for initialization
@@ -134,65 +130,18 @@ public class Unit : MonoBehaviour {
 		this.renderer.material.shader = Shader.Find("Diffuse");
 	}
 
-	// Update is called once per frame
-	void Update () 
-	{
-		
-	}
-	
-	public void setVillage(Village v)
-	{
-		this.myVillage = v;
-	}
-	
-	public Village getVillage()
-	{
-		return this.myVillage;
-	}
-	
-	public Tile getLocation()
-	{
-		return this.locatedAt;
-	}
-	
-	public UnitType getUnitType()
-	{
-		return this.myType;
-	}
-	
-	public void setLocation(Tile t)
-	{
-		this.locatedAt = t;
-	}
-	
-	public void setAction(UnitActionType action)
-	{
-		this.myAction = action;
-	}
-	
-	public UnitActionType getAction()
-	{
-		return this.myAction;
-	}
 	public int getWage()
 	{
-		if(this.myType == UnitType.PEASANT)
-		{
-			return TWO;
-		}
-		else if(this.myType == UnitType.INFANTRY)
-		{
-			return SIX;
-		}
-		else if(this.myType == UnitType.SOLDIER)
-		{
-			return EIGHTEEN;
-		}
-		else
-		{
-			return FIFTY_FOUR;
+		switch (myType) {
+		
+		case UnitType.PEASANT: return 2;
+		case UnitType.INFANTRY: return 6;
+		case UnitType.SOLDIER: return 18;
+		case UnitType.KNIGHT: return 54;
+		default: return 0;
 		}
 	}
+
 	public void upgrade(UnitType newLevel)
 	{
 		this.myType = newLevel;

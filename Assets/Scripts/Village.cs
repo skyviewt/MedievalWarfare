@@ -41,11 +41,7 @@ public class Village : MonoBehaviour {
 		vm = go.GetComponent<VillageManager> ();
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 	void OnMouseEnter()
 	{
 		this.renderer.material.shader = outline;
@@ -73,7 +69,7 @@ public class Village : MonoBehaviour {
 	}
 
 	//constructor
-	public static Village CreateComponent ( Player p, List<Tile> regions, Tile locatedAt, GameObject locationPrefab ) 
+	public static Village CreateComponent ( Player p, List<Tile> regions, Tile location, GameObject locationPrefab ) 
 	{
 		Debug.Log ("-----Village.CreateComponent() CALLED--------");
 		Village myVillage = locationPrefab.AddComponent<Village>();
@@ -83,14 +79,14 @@ public class Village : MonoBehaviour {
 		myVillage.supportedUnits = new List<Unit> ();
 		locatedAt.replace (locationPrefab);//to check : Set in Mapgenerator
 		myVillage.locatedAt = locatedAt;//done
-		locatedAt.setVillage (myVillage);//done
+		locatedAt = location;//done
 		myVillage.myAction = VillageActionType.ReadyForOrders;
 		myVillage.gold = 0;
 		myVillage.wood = 0;
 		//TODO: set controlledRegions in tiles : Call updateControlledRegionNet()
 		foreach (Tile t in myVillage.controlledRegion) 
 		{
-			t.setVillage(myVillage);
+			t.myVillage = myVillage;
 		}
 		return myVillage;
 	}
@@ -125,7 +121,7 @@ public class Village : MonoBehaviour {
 	void updateControlledRegionNet(){
 		foreach (Tile t in controlledRegion) 
 		{
-			t.setVillage(this);
+			t.myVillage=this;
 		}
 	}
 
@@ -140,109 +136,17 @@ public class Village : MonoBehaviour {
 		wood += woodToAdd;
 	}
 	
-	//setters and getters
-	public void setGold(int goldValue)
-	{
-		gold = goldValue;
-	}
-
-	public int getGold()
-	{
-		return gold;
-	}
-
-	public void setWood(int woodValue)
-	{
-		wood = woodValue;
-	}
-	
-	public int getWood(){
-		return wood;
-	}
-
-	public VillageType getMyType()
-	{
-		return myType;
-	}
-
-	public void setMyType(VillageType vt)
-	{
-		myType = vt;
-	}
-
-	public VillageActionType getAction()
-	{
-		return this.myAction;
-	}
-
-	public Player getPlayer()
-	{
-		return controlledBy;
-	}
-
-	public List<Tile> getControlledRegion()
-	{
-		return controlledRegion;
-	}
-
-	public int getRegionSize()
-	{
-		return this.controlledRegion.Count;
-	}
-
-	public List<Unit> getControlledUnits()
-	{
-		return supportedUnits;
-	}
-
-	public int getUnitSize()
-	{
-		return this.getControlledUnits().Count;
-	}
-
-	public void setLocation(Tile t)
-	{
-		locatedAt = t;
-	}
-
-	public Tile getLocatedAt()
-	{
-		return locatedAt;
-	}
-
-
-	//increment / decrement
-
-	public void addGold(int i)
-	{
-		gold += i;
-	}
-	public void removeGold(int i)
-	{
-		gold -= i;
-	}
-	public void addWood(int i)
-	{
-		wood += i;
-	}
-
-	public void removeWood(int i)
-	{
-		wood -= i;
-	}
-
-
 	public void addUnit(Unit u)
 	{
 		supportedUnits.Add (u);
-		u.setVillage (this);
+		u.myVillage = this;
 	}
 
 
 	public void removeUnit(Unit u)
 	{
 		supportedUnits.Remove(u);
-		u.setVillage(null);
+		u.myVillage = null;
 	}
 
 	/*
@@ -252,36 +156,28 @@ public class Village : MonoBehaviour {
 	public void addTile(Tile t)
 	{
 		controlledRegion.Add(t);
-		t.setVillage(this);
-		int color = this.getPlayer ().getColor ();
-		t.setColor( color );
+		t.myVillage = this;
+		int color = this.controlledBy.color;
+		t.color = color;
 		t.colorTile ();
 	}
-
-	public void removeTile(Tile t)
-	{
-		controlledRegion.Remove (t);
-	}
-
-
-	public void addRegion(List<Tile> regions)
+	
+	public void addRegion(List<Tile> region)
 	{	
 		//doing exactly what the gameManager.addregion(List<Tile>, Village village) is doing
-		foreach (Tile t in regions) {
-			t.setVillage(this);
+		foreach (Tile t in region) {
+			t.myVillage = this;
 			controlledRegion.Add(t);
 
 			//if there is a unit on the tile
-			Unit u = t.getOccupyingUnit();
-			if(u != null && u.getVillage()!=this){
-				u.setVillage(this);
+			Unit u = t.occupyingUnit;
+			if(u != null && u.myVillage!=this){
+				u.myVillage = this;
 				supportedUnits.Add(u);
 			}
 		}
 	}
-
-	//needs getWage in Units
-
+	
 	public int getTotalWages()
 	{
 		int totalWage = 0;
@@ -291,18 +187,15 @@ public class Village : MonoBehaviour {
 		}
 		return totalWage;
 	}
-
-
-	//needs setLocation and setVillage and setOccupyingUnit in Tile
-
+	
 	public void retireAllUnits()
 	{
 		foreach (Unit u in supportedUnits) {
-			Tile unitLocation = u.getLocation();
-			unitLocation.setOccupyingUnit(null);
-			unitLocation.setLandType(LandType.Tombstone);
-			u.setLocation(null);
-			u.setVillage(null);
+			Tile unitLocation = u.locatedAt;
+			unitLocation.occupyingUnit = null;
+			unitLocation.myType = LandType.Tombstone;
+			u.locatedAt = null;
+			u.myVillage = null;
 			supportedUnits.Remove(u);
 		}
 	}
@@ -318,39 +211,21 @@ public class Village : MonoBehaviour {
 		{
 			this.transform.FindChild("Hovel").gameObject.SetActive (false);
 			this.transform.FindChild("Town").gameObject.SetActive (true);
-			setMyType (VillageType.Town);
+			myType = VillageType.Town;
 		}
 		else if (myType == VillageType.Town) 
 		{
 			transform.FindChild("Town").gameObject.SetActive (false);
 			transform.FindChild("Fort").gameObject.SetActive (true);
-			setMyType (VillageType.Fort);
+			myType = VillageType.Fort;
 		}
-	}
-	//sets gold to 0 and returns the previous gold value
-	public int pillageGold()
-	{
-		int previousGoldValue = gold;
-		gold = 0;
-		return previousGoldValue;
-	}
-	//sets wood to 0 and returns the previous wood value
-	public int pillagewood()
-	{
-		int previousWoodValue = wood;
-		wood = 0;
-		return previousWoodValue;
-	}
-
-	public void setControlledBy(Player p){
-		controlledBy = p;
 	}
 
 	[RPC]
 	void addUnitNet(NetworkViewID unitID){
 		Unit unitToAdd = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
 		supportedUnits.Add (unitToAdd);
-		unitToAdd.setVillage (this);
+		unitToAdd.myVillage = this;
 	}
 
 	[RPC]

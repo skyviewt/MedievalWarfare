@@ -28,23 +28,23 @@ public class UnitManager : MonoBehaviour {
 	public void moveUnit(Unit unit, Tile dest)
 	{
 		//print ("----in move unit----");
-		Village destVillage = dest.getVillage ();
-		Village srcVillage = unit.getVillage ();
+		Village destVillage = dest.myVillage;
+		Village srcVillage = unit.myVillage;
 		
-		Unit destUnit = dest.getOccupyingUnit ();
-		UnitType srcUnitType = unit.getUnitType();
+		Unit destUnit = dest.occupyingUnit;
+		UnitType srcUnitType = unit.myType;
 		
 		bool unitPermitted = canUnitMove (srcUnitType, dest);
 		
 		//if the move is allowed to move onto the tile
 		if (unitPermitted == true ) 	
 		{
-			Tile originalLocation = unit.getLocation ();
+			Tile originalLocation = unit.locatedAt;
 			// moving within your region
 			if (srcVillage == destVillage)
 			{
 				performMove(unit,dest);
-				originalLocation.setOccupyingUnit(null);
+				originalLocation.occupyingUnit = null;
 			}
 			else if (srcVillage != destVillage)
 			{
@@ -54,8 +54,8 @@ public class UnitManager : MonoBehaviour {
 					srcVillage.addTile(dest);
 					performMove(unit,dest);
 					villageManager.MergeAlliedRegions(dest);
-					unit.setAction(UnitActionType.CapturingNeutral);
-					originalLocation.setOccupyingUnit(null);
+					unit.myAction = (UnitActionType.CapturingNeutral);
+					originalLocation.occupyingUnit = null;
 				}
 
 				// taking over enemy tiles
@@ -69,7 +69,7 @@ public class UnitManager : MonoBehaviour {
 						if (destUnit != null)
 						{
 							print ("made it here 3");
-							UnitType destUnitType = destUnit.getUnitType();
+							UnitType destUnitType = destUnit.myType;
 							if (srcUnitType > destUnitType)
 							{
 								villageManager.removeUnitFromVillage(destVillage,destUnit); // remove relationship between V and U
@@ -79,9 +79,9 @@ public class UnitManager : MonoBehaviour {
 								//TODO create a tombstone prefab ontop of Tile
 								villageManager.takeoverTile(srcVillage,dest);
 								performMove(unit,dest);
-								unit.setAction(UnitActionType.CapturingEnemy);
+								unit.myAction = (UnitActionType.CapturingEnemy);
 								villageManager.MergeAlliedRegions(dest);
-								originalLocation.setOccupyingUnit(null);
+								originalLocation.occupyingUnit = null;
 							}
 							else if(srcUnitType <= destUnitType)
 							{
@@ -107,9 +107,9 @@ public class UnitManager : MonoBehaviour {
 								performMove(unit,dest);
 								villageManager.takeoverTile(srcVillage,dest);
 							}
-							unit.setAction(UnitActionType.CapturingEnemy);
+							unit.myType = (UnitActionType.CapturingEnemy);
 							villageManager.MergeAlliedRegions(dest);
-							originalLocation.setOccupyingUnit(null);
+							originalLocation.occupyingUnit = null;
 						}
 						print ("after");
 					}
@@ -126,21 +126,20 @@ public class UnitManager : MonoBehaviour {
 
 	private void performMove(Unit unit, Tile dest)
 	{
-		dest.setOccupyingUnit(unit);
-		unit.setLocation(dest);
-		Village srcVillage = unit.getVillage ();
-		UnitType srcUnitType = unit.getUnitType();
-		LandType destLandType = dest.getLandType ();
+		dest.occupyingUnit = (unit);
+		unit.locatedAt = (dest);
+		Village srcVillage = unit.myVillage;
+		UnitType srcUnitType = unit.myType;
+		LandType destLandType = dest.myType;
 
 		if (srcUnitType == UnitType.KNIGHT) 
 		{
-			bool destHasRoad = dest.checkRoad ();
-			if (destLandType == LandType.Meadow && destHasRoad == false) 
+			if (destLandType == LandType.Meadow && !dest.hasRoad) 
 			{
-				dest.setLandType (LandType.Grass);
+				dest.myType=LandType.Grass;
 				Destroy (dest.prefab);
 			}
-			unit.setAction (UnitActionType.Moved);
+			unit.myAction = (UnitActionType.Moved);
 		} 
 		else
 		{
@@ -148,19 +147,19 @@ public class UnitManager : MonoBehaviour {
 			if (destLandType == LandType.Trees)
 			{
 				//print ("entered cutting trees");
-				unit.setAction(UnitActionType.ChoppingTree);
+				unit.myAction=(UnitActionType.ChoppingTree);
 				//unit.animation.CrossFade("attack");
 				Destroy (dest.prefab);
 				dest.prefab = null;
 
 				//unit.animation.CrossFade("idle");
-				srcVillage.addWood(1);
-				dest.setLandType(LandType.Grass);
+				srcVillage.wood++;
+				dest.myType=LandType.Grass;
 			}
 			else if (destLandType == LandType.Tombstone)
 			{
-				unit.setAction(UnitActionType.ClearingTombstone);
-				dest.setLandType(LandType.Grass);
+				unit.myAction=(UnitActionType.ClearingTombstone);
+				dest.myType=LandType.Grass;
 			}
 		}
 		movePrefab (unit, new Vector3 (dest.point.x, 0.15f,dest.point.y));
@@ -168,25 +167,25 @@ public class UnitManager : MonoBehaviour {
 
 	private bool canUnitMove(UnitType type, Tile dest)
 	{
-		if (dest.getStructure () == null && dest.getOccupyingUnit () == null && dest.getLandType () != LandType.Trees) 
+		if (dest.occupyingStructure == null && dest.occupyingUnit == null && dest.myType != LandType.Trees) 
 		{
 			return true;
 		} 
-		else if(dest.getLandType () == LandType.Trees && type != UnitType.KNIGHT)
+		else if(dest.myType == LandType.Trees && type != UnitType.KNIGHT)
 		{
 			return true;
 		} 
-		else if (dest.getStructure () != null) 
+		else if (dest.occupyingStructure != null) 
 		{
 			gameGUI.displayError (@"The tower doesn't want you to stand ontop of it. ¯\(°_o)/¯");
 			return false;
 		} 
-		else if (type == UnitType.KNIGHT && dest.getLandType () == LandType.Trees) 
+		else if (type == UnitType.KNIGHT && dest.myType==LandType.Trees) 
 		{
 			gameGUI.displayError (@"Your Knight is out of shape. It cannot cut down this tree. ¯\(°_o)/¯");
 			return false;
 		} 
-		else if (dest.getOccupyingUnit () != null) 
+		else if (dest.occupyingUnit != null) 
 		{
 			gameGUI.displayError (@"There is a unit already standing there!!! ¯\(°_o)/¯");
 			return false;
@@ -197,11 +196,11 @@ public class UnitManager : MonoBehaviour {
 
 	public void upgradeUnit(Unit u, UnitType newLevel)
 	{
-		Village unitVillage = u.getVillage();
-		VillageType unitVillageLevel = unitVillage.getMyType();
-		UnitType unitType = u.getUnitType();
-		UnitActionType unitAction = u.getAction();
-		int goldAvailable = unitVillage.getGold();
+		Village unitVillage = u.myVillage;
+		VillageType unitVillageLevel = unitVillage.myType;
+		UnitType unitType = u.myType;
+		UnitActionType unitAction = u.myAction;
+		int goldAvailable = unitVillage.gold;
 		int goldRequired = (newLevel - unitType) * TEN;
 		if (unitType == UnitType.KNIGHT) {
 			gameGUI.displayError (@"The Knight is already your strongest warrior! ¯\(°_o)/¯");
@@ -218,7 +217,7 @@ public class UnitManager : MonoBehaviour {
 			}
 			else
 			{
-				unitVillage.setGold (goldAvailable - goldRequired);
+				unitVillage.gold = (goldAvailable - goldRequired);
 				u.upgrade(newLevel);
 			}
 		}
