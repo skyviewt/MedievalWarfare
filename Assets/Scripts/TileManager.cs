@@ -34,11 +34,11 @@ public class TileManager : MonoBehaviour {
 		}
 		return false;
 	}
-
+	/* DEPRECATED
 	public void removeUnitFromTile(Tile t, Unit u)
 	{
 		t.setOccupyingUnit (null);
 		u.setLocation (null);
 		t.setLandType(LandType.Tombstone);
-	}
+	}*/
 }

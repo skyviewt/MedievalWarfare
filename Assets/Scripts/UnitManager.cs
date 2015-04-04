@@ -24,7 +24,8 @@ public class UnitManager : MonoBehaviour {
 		Tile dest = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
 		moveUnit (unitToMove, dest);
 	}
-	
+
+	// needs networking
 	public void moveUnit(Unit unit, Tile dest)
 	{
 		//print ("----in move unit----");
@@ -37,7 +38,7 @@ public class UnitManager : MonoBehaviour {
 		bool unitPermitted = canUnitMove (srcUnitType, dest);
 		
 		//if the move is allowed to move onto the tile
-		if (unitPermitted == true ) 	
+		if (unitPermitted == true) 	
 		{
 			Tile originalLocation = unit.getLocation ();
 			// moving within your region
@@ -58,62 +59,47 @@ public class UnitManager : MonoBehaviour {
 					originalLocation.setOccupyingUnit(null);
 				}
 
-				// taking over enemy tiles
-				//TODO this part of the code needs network components
+				// TODO taking over enemy tiles and networking it
 				else if (srcUnitType != UnitType.PEASANT)
 				{
-					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
-					print("Guard surrounding is " + isGuardSurrounding);
-					if (isGuardSurrounding == false)
-					{
-						if (destUnit != null)
-						{
-							print ("made it here 3");
-							UnitType destUnitType = destUnit.getUnitType();
-							if (srcUnitType > destUnitType)
-							{
-								villageManager.removeUnitFromVillage(destVillage,destUnit); // remove relationship between V and U
-								villageManager.removeTileFromVillage(destVillage,dest);		// remove relationship vetween V and T
-								tileManager.removeUnitFromTile(dest,destUnit);				// remove relationship between T and U
-								//TODO destroy the unit prefab
-								//TODO create a tombstone prefab ontop of Tile
-								villageManager.takeoverTile(srcVillage,dest);
-								performMove(unit,dest);
-								unit.setAction(UnitActionType.CapturingEnemy);
-								villageManager.MergeAlliedRegions(dest);
-								originalLocation.setOccupyingUnit(null);
-							}
-							else if(srcUnitType <= destUnitType)
-							{
-								print("your unit is equal or weaker than the unit on the tile");
-							}
+					// if there is any enemy unit
+					//Unit destUnit = dest.getOccupyingUnit;
+					if (destUnit!=null){
+						if(srcUnitType>destUnit.getUnitType()){
+							// kill enemy unit, remove it from tile, remove it from village
+							// perform move? nope, perform move is shit
+							destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
+							dest.setOccupyingUnit(null);
+							Destroy (destUnit.gameObject);
+						} else {
+							print ("The enemy is too strong! I dont want to die!");
+							return;
 						}
-						else if (destUnit == null)
-						{
-							bool destHasVillagePrefab = dest.checkVillagePrefab();
-							if(destHasVillagePrefab && srcUnitType <= UnitType.INFANTRY)
-							{
-								print("infantry is not brave enough to invade a village");
-								return;
-							}
-							else if(destHasVillagePrefab && srcUnitType > UnitType.INFANTRY)
-							{
-								villageManager.plunderVillage(srcVillage, destVillage,dest);
-								performMove(unit,dest);
-								villageManager.takeoverTile(srcVillage,dest);
-							}
-							else
-							{
-								performMove(unit,dest);
-								villageManager.takeoverTile(srcVillage,dest);
-							}
-							unit.setAction(UnitActionType.CapturingEnemy);
-							villageManager.MergeAlliedRegions(dest);
-							originalLocation.setOccupyingUnit(null);
-						}
-						print ("after");
 					}
-				}
+					// if the tile contains the enemy village
+						// pillage, then move the hovel
+					if (destVillage.getLocatedAt()==dest){
+						if (srcUnitType > UnitType.INFANTRY){
+							// plunder village will handle stealing resources
+							villageManager.plunderVillage (srcVillage, destVillage, dest);
+							// it also calls respawn hovel and creating a meadow
+						} else {
+							print ("This unit is too weak to plunder villages");
+							return;
+						}
+					}
+					// TODO knights destroying towers
+					// You take over the tile and merge regions
+					// Enemy removes tile and splits region
+					// finally move onto tile and set action
+
+					villageManager.takeoverTile(srcVillage,dest); //also splits region
+					villageManager.MergeAlliedRegions(dest);
+					//performMove(unit,dest); more complicated than what we need
+					unit.setAction(UnitActionType.CapturingEnemy);
+					originalLocation.setOccupyingUnit(null);
+
+				} 
 			}
 		}
 

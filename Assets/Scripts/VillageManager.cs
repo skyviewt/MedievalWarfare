@@ -98,11 +98,18 @@ public class VillageManager : MonoBehaviour {
 
 	public void plunderVillage (Village pluderingVillage, Village plunderedVillage, Tile dest)
 	{
-		int pillagedWood = plunderedVillage.getWood ();
-		int pillagedGold = plunderedVillage.getGold ();
-		pluderingVillage.addWood(pillagedWood);
-		pluderingVillage.addGold(pillagedGold);
+		//determine amount to steal
+		int wood = plunderedVillage.getWood ();
+		int gold = plunderedVillage.getGold ();
+		// remove from enemy village
+		plunderedVillage.addGold(-gold);
+		plunderedVillage.addWood(-wood);
+		// add to yours
+		pluderingVillage.addWood(wood);
+		pluderingVillage.addGold(gold);
+
 		dest.replace (meadowPrefab); // if a village is invaded, it is supposed to turn into a meadow
+		// respawn enemy hovel
 		while(plunderedVillage.getLocatedAt() == dest)
 		{
 			respawnHovel(plunderedVillage);
@@ -111,15 +118,19 @@ public class VillageManager : MonoBehaviour {
 
 	/*
 	 * Function adds village to invader. If the dest had a village prefab on it, then we take all resources
+	 * Already plundered!
 	 */ 
 	public void takeoverTile(Village invader, Tile dest)
 	{
 		Village invadedVillage = dest.getVillage ();
+		dest.setVillage (invader);
 		invader.addTile(dest);
 		invadedVillage.removeTile(dest);
 		splitRegion(dest, invadedVillage);
 	}
-	//TODO network component ?
+
+	// network component ?
+		// shouldnt need to be networked, this is just a helper function
 	private List<Tile> getValidTilesForRespawn(List<Tile> region)
 	{
 		List<Tile> validTiles = new List<Tile> ();
@@ -141,13 +152,13 @@ public class VillageManager : MonoBehaviour {
 		System.Random rand = new System.Random();
 		int randomTileIndex;
 		Tile respawnLocation;
-		if(validTiles.Count == 0)
+		if(validTiles.Count == 0) // all tiles occupied by structures, then "repurpose" one of them
 		{
 			randomTileIndex = rand.Next (0, v.getRegionSize());
 			respawnLocation = validTiles[randomTileIndex];
 			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
+			// replace destroys the current prefab and sets the new one
 			v.setLocation(respawnLocation);
-			// do we need to set tile's occupying structure? or does village not count?
 		}
 		else
 		{
