@@ -37,11 +37,8 @@ public class MapGenerator : MonoBehaviour {
 
 		Vector3 vec = new Vector3 (0, 0, 0);
 		GameObject firstPref = Network.Instantiate(GrassPrefab, new Vector3(0, 0, 0), GrassPrefab.transform.rotation, 0) as GameObject;
-		Debug.Log (firstPref);
-//		GameObject firstPref = Instantiate(GrassPrefab, vec, GrassPrefab.transform.rotation, 0) as GameObject;
-//		positionList.Add(vec);
 		
-		firstPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+//		firstPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 		//no longer static
 		//Tile firstTile = Tile.CreateComponent(new Vector2 (0, 0), firstPref);
 		Tile firstTile = firstPref.GetComponent<Tile> ();
@@ -56,7 +53,7 @@ public class MapGenerator : MonoBehaviour {
 		
 		while(map.getVertices().Count < maxNumberTile)
 		{
-			Debug.Log (unvisited_vertices.Count);
+//			Debug.Log (unvisited_vertices.Count);
 			Tile curr = unvisited_vertices[0];
 
 			GameObject upPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x+1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
@@ -64,28 +61,28 @@ public class MapGenerator : MonoBehaviour {
 			Tile up = upPref.GetComponent<Tile>();
 			//Vector2 uPos = new Vector2(curr.point.x+1, curr.point.y);
 			upPref.networkView.RPC("setPointN", RPCMode.AllBuffered, new Vector3(curr.point.x+1, 0, curr.point.y));
-			upPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+//			upPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 			
 			GameObject downPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
 			Tile down = downPref.GetComponent<Tile>();
 			//Vector2 dPos = new Vector2(curr.point.x-1, curr.point.y);
 			downPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x-1, 0, curr.point.y));
-			downPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+//			downPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 
 			GameObject leftupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
 			Tile leftup = leftupPref.GetComponent<Tile>();
 			//Vector2 luPos =new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f);
 			leftupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f));
-			leftupPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+//			leftupPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 
 			GameObject rightupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
 			Tile rightup = rightupPref.GetComponent<Tile>();
 			//Vector2 ruPos =new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f);
 			rightupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f));
-			rightupPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+//			rightupPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 
 
 			GameObject leftdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
@@ -93,7 +90,7 @@ public class MapGenerator : MonoBehaviour {
 			Tile leftdown = leftdownPref.GetComponent<Tile>();
 			//Vector2 ldPos =new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f);
 			leftdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f));
-			leftdownPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+//			leftdownPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 
 
 			GameObject rightdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
@@ -101,7 +98,7 @@ public class MapGenerator : MonoBehaviour {
 			Tile rightdown = rightdownPref.GetComponent<Tile>();
 			//Vector2 rdPos =new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f);
 			rightdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f));
-			rightdownPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+//			rightdownPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 			unvisited_vertices.RemoveAt(0);
 			
 			insertTile(curr, up, i);
@@ -207,27 +204,10 @@ public class MapGenerator : MonoBehaviour {
 			
 			count++;
 		}
-		/* there are now a few lone tiles around the edges, but they are no longer considered part of map
-		 * thus, they should not affect further map generation...
-		// the lone tiles are no longer considered part of map?
-		foreach(Tile n in map.getVertices()){
-			n.gameObject.renderer.material.color = Color.red;
-			//if (n.getNeighbours().Count<=0){
-				//map.getVertices().Remove(n);
-				//n.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, n.gameObject.networkView.viewID);
-				//Destroy (this.gameObject);
-			//}
-		} */
 
-		//stop here for minimaps
-//		if (minimap){
-//			return;
-//		}
 
 		foreach(Tile n in map.getVertices())
 		{
-			//TODO: hardcoded to 2 players color
-			int color = rand.Next(0,3);
 			int probability = rand.Next(0,101);
 			if( probability > 0 && probability <= 20)
 			{
@@ -239,24 +219,30 @@ public class MapGenerator : MonoBehaviour {
 			}
 			else if( probability > 20 && probability <=30)
 			{
-				//n.InstantiateMeadow(MeadowPrefab);
+
 				GameObject mpref = Network.Instantiate(MeadowPrefab, new Vector3(n.point.x, 0.2f, n.point.y), MeadowPrefab.transform.rotation, 0) as GameObject;
 				n.networkView.RPC ("setPrefab", RPCMode.AllBuffered, mpref.networkView.viewID);
 				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Meadow);
 
 			}
-			//n.setColor(color);
-			//n.colorTile();
-			n.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
+
+			n.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+
 		}
 	}
 
 
-	public void initializeVillagesOnMap(List<Player> players, int i)
+	public void initializeColorAndVillagesOnMap(List<Player> players, int i)
 	{
-
+	
 		Graph map;
 		maps.TryGetValue (i, out map);
+		foreach ( Tile t in map.getVertices() )
+		{
+			int color = rand.Next(0,players.Count+1);
+			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
+		}
+
 		foreach ( Tile t in map.getVertices() )
 		{
 			// player.count is the neutral color.
@@ -317,7 +303,7 @@ public class MapGenerator : MonoBehaviour {
 			{
 				//t.setColor(players.Count);
 				//t.gameObject.renderer.material.color = Color.white;
-				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2);
+				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, players.Count+1);
 			}
 		}
 

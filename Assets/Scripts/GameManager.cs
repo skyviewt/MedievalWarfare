@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		this.initGame (ipAddress, port);
+//		this.initGame (ipAddress, port);
 	}
 	public void initGame(string ip, int pPort)
 	{
@@ -38,10 +38,10 @@ public class GameManager : MonoBehaviour {
 			participants.Add (p2);
 
 			MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
-			for ( int i = 0; i<participants.Count; i++)
+			for ( int i = 0; i<2; i++)
 			{
 				gen.initMap (i);
-//				gen.initializeVillagesOnMap (participants,i);
+//				gen.initializeColorAndVillagesOnMap (participants,i);
 				print ("the i: "+i);
 			}
 			Debug.Log ("-------------here for maps---------------");

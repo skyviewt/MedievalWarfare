@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Linq;
 
 [System.Serializable]
 public class mainMenu : MonoBehaviour {
@@ -8,13 +9,18 @@ public class mainMenu : MonoBehaviour {
 	public Canvas ExitCanvas;
 	public Canvas JoinGameCanvas;
 	public Canvas MiniMapCanvas;
+	public Canvas BackgroundCanvas;
+	public Canvas MainMenuCanvas;
 	public Transform HostText;
 	public Transform JoinText;
 	public Transform StatsText;
 	public Transform QuitText;
 
-//	private Text _ipPlaceholder;
-//	private Text _portPlaceholder;
+	public Camera cam1;
+	public Camera cam2;
+
+	public int[] countMapChoices = new int[2];
+	
 	public Text _ipInput;
 	public Text _portInput;
 
@@ -27,73 +33,102 @@ public class mainMenu : MonoBehaviour {
 	void Start () {
 		Instantiate(PrefabFire);
 		Instantiate(PrefabLight);
-//		_ipPlaceholder = GameObject.Find ("JoinGameCanvas").transform.Find ("ipPlaceholder").GetComponent<Text>();
-//		_portPlaceholder = GameObject.Find ("JoinGameCanvas").transform.Find ("portPlaceholder").GetComponent<Text>();
 		GM = GameObject.Find("mainMenu").GetComponent<GameManager>();
-		JoinGameCanvas = JoinGameCanvas.GetComponent<Canvas>();
-		ExitCanvas = ExitCanvas.GetComponent<Canvas> ();
+		MainMenuCanvas.enabled = true;
 		ExitCanvas.enabled = false;
 		JoinGameCanvas.enabled = false;
 		MiniMapCanvas.enabled = false;
+		BackgroundCanvas.enabled = false;
+		cam1.enabled = false;
+		cam2.enabled = false;
 	}
 
 	public void quitTextPressed()
 	{
 		ExitCanvas.enabled = true;
-		HostText.GetComponent<Button>().enabled = false;
-		JoinText.GetComponent<Button>().enabled = false;
-		StatsText.GetComponent<Button>().enabled = false;
-		QuitText.GetComponent<Button>().enabled = false;
+		MainMenuCanvas.enabled = false;
+		hideStartGameButtons ();
 	}
 
 	public void doNotQuitPressed()
 	{
 		ExitCanvas.enabled = false;
-		HostText.GetComponent<Button>().enabled = true;
-		JoinText.GetComponent<Button>().enabled = true;
-		StatsText.GetComponent<Button>().enabled = true;
-		QuitText.GetComponent<Button>().enabled = true;
+		MainMenuCanvas.enabled = true;
+		showStartGameButtons ();
 	}
-	public void returnFromJoinCanvas()
-	{
-		JoinGameCanvas.enabled = false;
-		HostText.GetComponent<Button>().enabled = true;
-		JoinText.GetComponent<Button>().enabled = true;
-		StatsText.GetComponent<Button>().enabled = true;
-		QuitText.GetComponent<Button>().enabled = true;
-		GM.setIsServer (true);
-//		_ipPlaceholder.text = "Enter IP  ...";
-//		_portPlaceholder.text = "Enter port...";
 
-	}
-	public void joinGameButtonPressed()
+	public void showStartGameButtons()
 	{
-		JoinGameCanvas.enabled = true;
-		GM.setIsServer (false);
+		HostText.GetComponent<Button>().enabled = true;
+		JoinText.GetComponent<Button>().enabled = true;
+		StatsText.GetComponent<Button>().enabled = true;
+		QuitText.GetComponent<Button>().enabled = true;
+	}
+
+	public void hideStartGameButtons()
+	{
 		HostText.GetComponent<Button>().enabled = false;
 		JoinText.GetComponent<Button>().enabled = false;
 		StatsText.GetComponent<Button>().enabled = false;
 		QuitText.GetComponent<Button>().enabled = false;
+	}
+
+	public void returnFromJoinCanvas()
+	{
+		JoinGameCanvas.enabled = false;
+		MainMenuCanvas.enabled = false;
+		showStartGameButtons ();
+		GM.setIsServer (true);
+	}
+
+	public void joinGameButtonPressed()
+	{
+		hideStartGameButtons ();
+		MainMenuCanvas.enabled = false;
+		JoinGameCanvas.enabled = true;
+		GM.setIsServer (false);
 	}
 
 	public void connectButtonPressed()
 	{
 		GM.setIpAddress(_ipInput.text);
 		GM.setPort(System.Int32.Parse (_portInput.text));
-		Application.LoadLevel("scene2");
 		GM.initGame(_ipInput.text, System.Int32.Parse (_portInput.text));
+		showMiniMapMenu ();
 	}
+
+	public void hostButtonPressed()
+	{
+		GM.setIsServer (true);
+		GM.initGame (GM.ipAddress, GM.port);
+		showMiniMapMenu ();
+	}
+
+	public void showMiniMapMenu()
+	{
+		JoinGameCanvas.enabled = false;
+		MainMenuCanvas.enabled = false;
+		MiniMapCanvas.enabled = true;
+//		BackgroundCanvas.enabled = true;
+		cam1.enabled = true;
+		cam2.enabled = true;
 	
+	}
+
+	public void increaseMapChoice1()
+	{
+		countMapChoices [0] += 1;
+	}
+
+	public void increaseMapChoice2()
+	{
+		countMapChoices [1] += 1;
+	}
+
 	public void StartLevel()
 	{
 		Application.LoadLevel("scene1");
 	}
-
-	//TODO
-/*	public void OpenStats()
-	{
-		Application.LoadLevel("stats");
-	}*/
 
 	public void ExitGame()
 	{
