@@ -9,11 +9,19 @@ public class GameManager : MonoBehaviour {
 	public string ipAddress;
 	public int port = 25000;
 	public bool isServer = true;
+	public List<Player> players;
 
+	public int finalMapChoice = -1;
+
+	public MapGenerator MapGen;
+
+	public Graph finalMap = null;
+	
 	// Use this for initialization
 	void Start () 
 	{
 	}
+
 	public void initGame(string ip, int pPort)
 	{
 		print ("in initGame");
@@ -35,21 +43,15 @@ public class GameManager : MonoBehaviour {
 
 			participants.Add (p1);
 			participants.Add (p2);
+			// to get hold of the players
+			this.players = participants;
 
-			MapGenerator gen = gameObject.GetComponent<MapGenerator> ();
+			MapGen = gameObject.GetComponent<MapGenerator> ();
+
 			for ( int i = 0; i<2; i++)
 			{
-				gen.initMap (i);
-//				gen.initializeColorAndVillagesOnMap (participants,i);
-				print ("the i: "+i);
+				MapGen.initMap (i);
 			}
-			Debug.Log ("-------------here for maps---------------");
-			for(int i = 0; i<gen.maps.Count; ++i)
-			{
-			
-				Debug.Log (gen.getMap(i));
-			}
-			Debug.Log ("-----------------------------------------");
 
 		} else {
 			Network.Connect (ip, pPort);

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 [System.Serializable]
@@ -16,8 +17,17 @@ public class mainMenu : MonoBehaviour {
 	public Transform StatsText;
 	public Transform QuitText;
 
+	public Transform LaunchText;
 	public Text ErrorLobbyMsg;
+
 	public Text ErrorJoinMsg;
+
+	public List<Text> connectedPlayerText;
+	public List<Text> connectedPlayerMapText;
+
+	public Text map1PlayerCount;
+	public Text map2PlayerCount;
+	public Text chosenMapText;
 
 	public Camera cam1;
 	public Camera cam2;
@@ -26,7 +36,10 @@ public class mainMenu : MonoBehaviour {
 	public Camera resCam2;
 
 	public int[] countMapChoices = new int[2];
-	
+
+	// 1-based
+	public int mapChoice = -1;
+
 	public Text _ipInput;
 	public Text _portInput;
 
@@ -34,12 +47,13 @@ public class mainMenu : MonoBehaviour {
 	public GameObject PrefabFire;
 	public GameObject PrefabLight;
 
-	private GameManager GM;
+	public GameManager GM;
+
 	// Use this for initialization
 	void Start () {
 		Instantiate(PrefabFire);
 		Instantiate(PrefabLight);
-		GM = GameObject.Find("mainMenu").GetComponent<GameManager>();
+		GM = GameObject.Find("perserveGM").GetComponent<GameManager>();
 		MainMenuCanvas.enabled = true;
 		ExitCanvas.enabled = false;
 		JoinGameCanvas.enabled = false;
@@ -51,6 +65,7 @@ public class mainMenu : MonoBehaviour {
 		resCam2.enabled = false;
 		ErrorLobbyMsg.enabled = false;
 		ErrorJoinMsg.enabled = false;
+		LaunchText.GetComponent<Button>().enabled = false;
 	}
 
 	public void quitTextPressed()
@@ -93,6 +108,7 @@ public class mainMenu : MonoBehaviour {
 
 	public void joinGameButtonPressed()
 	{
+		ErrorJoinMsg.enabled = false;
 		hideStartGameButtons ();
 		MainMenuCanvas.enabled = false;
 		JoinGameCanvas.enabled = true;
@@ -114,7 +130,7 @@ public class mainMenu : MonoBehaviour {
 			}
 			else
 			{
-				ErrorJoinMsg.text = "Cannot connect to specified IP. Please check if host is on or if the IP is valid.";
+				ErrorJoinMsg.text = "Cannot connect to specified IP. Please check if host is available or if the IP is valid.";
 				ErrorJoinMsg.enabled = true;
 				return;
 			}
@@ -149,7 +165,7 @@ public class mainMenu : MonoBehaviour {
 	public void increaseMapChoice1()
 	{
 		countMapChoices [0] += 1;
-		print (countMapChoices [0]);
+		mapChoice = 1;
 		MiniMapCanvas.enabled = false;
 		cam1.enabled = false;
 		cam2.enabled = false;
@@ -160,7 +176,7 @@ public class mainMenu : MonoBehaviour {
 	public void increaseMapChoice2()
 	{
 		countMapChoices [1] += 1;
-		print (countMapChoices [1]);
+		mapChoice = 2;
 		MiniMapCanvas.enabled = false;
 		cam1.enabled = false;
 		cam2.enabled = false;
@@ -170,7 +186,6 @@ public class mainMenu : MonoBehaviour {
 	public void showLobby()
 	{
 		LobbyCanvas.enabled = true;
-
 	}
 
 	public void StartLevel()
@@ -188,5 +203,57 @@ public class mainMenu : MonoBehaviour {
 		foreach(GameObject obj in Object.FindObjectsOfType<GameObject>()){
 			Destroy(obj);
 		}
+	}
+
+	public void lauchGamePressed()
+	{
+		if (GM.finalMapChoice != -1) 
+		{
+			GM.finalMap = GM.MapGen.getMap(GM.finalMapChoice);
+			GM.MapGen.initializeColorAndVillagesOnMap(GM.players, GM.finalMapChoice, GM.finalMap);
+			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
+			StartLevel();
+		}
+
+	}
+	
+
+	void Update()
+	{
+		if( LobbyCanvas.enabled == true )
+		{
+			print ("in Update");
+			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
+			if (isMap1Chosen) 
+			{
+				resCam1.enabled = true;	
+				chosenMapText.text = "Map 1";
+				GM.finalMapChoice = 0;
+			} 
+			else 
+			{
+				resCam2.enabled = true;	
+				chosenMapText.text = "Map 2";
+				GM.finalMapChoice = 1;
+			}
+
+			// only counting the joining players.
+			for(int i = 0; i<GM.players.Count; i++)
+			{
+				print (GM.players[i].getName());
+				connectedPlayerText[i].text = GM.players[i].getName();
+
+//				if(Network.player.ipAddress == Network.connections[0].ipAddress)
+//				{
+//					connectedPlayerMapText[i+1].text = "Map " + mapChoice.ToString ();
+//				}
+			}
+		}
+		if (GM.isServer) 
+		{
+			LaunchText.GetComponent<Button>().enabled = true;	
+		}
+		map1PlayerCount.text = countMapChoices [0].ToString () + " players";
+		map2PlayerCount.text = countMapChoices [1].ToString () + " players";
 	}
 }

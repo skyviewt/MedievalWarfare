@@ -61,36 +61,31 @@ public class MapGenerator : MonoBehaviour {
 			Tile up = upPref.GetComponent<Tile>();
 			//Vector2 uPos = new Vector2(curr.point.x+1, curr.point.y);
 			upPref.networkView.RPC("setPointN", RPCMode.AllBuffered, new Vector3(curr.point.x+1, 0, curr.point.y));
-//			upPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
+
 			
 			GameObject downPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x-1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile down =Tile.CreateComponent(new Vector2(curr.point.x-1, curr.point.y), downPref);
 			Tile down = downPref.GetComponent<Tile>();
 			//Vector2 dPos = new Vector2(curr.point.x-1, curr.point.y);
 			downPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x-1, 0, curr.point.y));
-//			downPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 
 			GameObject leftupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile leftup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f), leftupPref);
 			Tile leftup = leftupPref.GetComponent<Tile>();
 			//Vector2 luPos =new Vector2(curr.point.x + 0.5f, curr.point.y + 0.75f);
 			leftupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y + 0.75f));
-//			leftupPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 
 			GameObject rightupPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile rightup = Tile.CreateComponent(new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f), rightupPref);
 			Tile rightup = rightupPref.GetComponent<Tile>();
 			//Vector2 ruPos =new Vector2(curr.point.x + 0.5f, curr.point.y - 0.75f);
 			rightupPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x + 0.5f, 0, curr.point.y - 0.75f));
-//			rightupPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
-
 
 			GameObject leftdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
 			//Tile leftdown = Tile.CreateComponent(new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f), leftdownPref);
 			Tile leftdown = leftdownPref.GetComponent<Tile>();
 			//Vector2 ldPos =new Vector2(curr.point.x - 0.5f, curr.point.y + 0.75f);
 			leftdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y + 0.75f));
-//			leftdownPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 
 
 			GameObject rightdownPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f), GrassPrefab.transform.rotation, 0) as GameObject;
@@ -98,7 +93,6 @@ public class MapGenerator : MonoBehaviour {
 			Tile rightdown = rightdownPref.GetComponent<Tile>();
 			//Vector2 rdPos =new Vector2(curr.point.x - 0.5f, curr.point.y - 0.75f);
 			rightdownPref.networkView.RPC("setPointN", RPCMode.AllBuffered,new Vector3(curr.point.x - 0.5f, 0, curr.point.y - 0.75f));
-//			rightdownPref.networkView.RPC("changeMapLayer", RPCMode.AllBuffered, i);
 			unvisited_vertices.RemoveAt(0);
 			
 			insertTile(curr, up, i);
@@ -232,11 +226,9 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 
-	public void initializeColorAndVillagesOnMap(List<Player> players, int i)
+	public void initializeColorAndVillagesOnMap(List<Player> players, int i, Graph map)
 	{
 	
-		Graph map;
-		maps.TryGetValue (i, out map);
 		foreach ( Tile t in map.getVertices() )
 		{
 			int color = rand.Next(0,players.Count+1);
@@ -358,6 +350,38 @@ public class MapGenerator : MonoBehaviour {
 
 	}
 
+	[RPC]
+	void perserveFinalMap(int mapchoice)
+	{
+		Graph wantedMap;
+		maps.TryGetValue (mapchoice, out wantedMap);
+
+		Graph unwantedMap;
+		maps.TryGetValue (Mathf.Abs(mapchoice-1), out unwantedMap);
+
+		foreach (Tile t in unwantedMap.getVertices()) 
+		{
+			if(t.prefab != null)
+			{
+				Destroy(t.prefab);
+			}
+			Destroy (t.gameObject);
+		}
+
+		unwantedMap = null;
+
+		foreach (Tile t in wantedMap.getVertices()) 
+		{
+			if(t.prefab != null)
+			{
+				DontDestroyOnLoad(t.prefab);
+			}
+			DontDestroyOnLoad(t.gameObject);
+		}
+		DontDestroyOnLoad (gameObject);
+		DontDestroyOnLoad (GameObject.Find ("VillageManager"));
+		DontDestroyOnLoad (GameObject.Find ("TileManager"));
+	}
 	[RPC]
 	void logMsg(string text){
 		Debug.Log (text);
