@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-//		this.initGame (ipAddress, port);
 	}
 	public void initGame(string ip, int pPort)
 	{
@@ -86,15 +85,19 @@ public class GameManager : MonoBehaviour {
 	[RPC]
 	void initPlayers(){
 		Player[] pls = gameObject.GetComponents<Player>();
-		pls [0].initPlayer ("P1", "Pass");
-		pls[0].setColor(0);
-		pls [1].initPlayer ("P2", "Pass");
-		pls [1].setColor (1);
+		pls [0].initPlayer ("P1", "Pass", 0);
+		pls [1].initPlayer ("P2", "Pass", 1);
 
 	}
 
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public bool isConnectable() {
+		return Network.TestConnection () == 
+			ConnectionTesterStatus.PublicIPIsConnectable ?
+			true : false;
 	}
 }

@@ -498,7 +498,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 197624456}
-  - 114: {fileID: 197624457}
   - 114: {fileID: 197624458}
   - 148: {fileID: 197624459}
   - 114: {fileID: 197624461}
@@ -522,24 +521,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &197624457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 197624455}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3a08c66b0d884a7f867b1f935a29b0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GrassPrefab: {fileID: 161544, guid: a05b14bb6a6914215b6cb6c9cd8d797d, type: 2}
-  MeadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
-  TreePrefab: {fileID: 126030, guid: bd74097a43dd548b0ae6323a66bb8952, type: 2}
-  HovelPrefab: {fileID: 164132, guid: 32744c9f3c5c23d49834ce1d47d4f310, type: 2}
-  minimap: 0
-  numTiles: 400
-  removeTiles: 100
 --- !u!114 &197624458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,7 +532,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ef408c563b2e404cb976c3fa162e82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pp: {fileID: 100206, guid: e9c5981fbaf261f4f976333c279b3ffc, type: 3}
   ipAddress: 
   port: 25000
   isServer: 1
