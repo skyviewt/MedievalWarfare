@@ -294,6 +294,7 @@ public class Village : MonoBehaviour {
 			u.setLocation(null);
 			u.setVillage(null);
 			supportedUnits.Remove(u);
+			Destroy (u.gameObject);
 		}
 	}
 
