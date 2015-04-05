@@ -5,7 +5,8 @@ using System.Linq;
 
 [System.Serializable]
 public class VillageManager : MonoBehaviour {
-	
+
+	public bool isInGame = false;
 	public readonly int ZERO = 0;
 	public readonly int ONE = 1;
 	public readonly int THREE = 3;
@@ -21,8 +22,11 @@ public class VillageManager : MonoBehaviour {
 	public GameObject hovelPrefab;
 	public GameObject tombPrefab;
 
-	void Start () {
+	void Update () {
+		if(isInGame)
+		{
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
+		}
 	}
 	
 	public void upgradeVillage(Village v)

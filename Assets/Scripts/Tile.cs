@@ -266,15 +266,41 @@ public class Tile : MonoBehaviour
 	}
 
 	[RPC]
-	void changeMapLayer( bool isMap1)
+	void changeMapLayer( int mapNum )
 	{
-		if( isMap1 )
+		bool hasPref = this.getLandType () != LandType.Grass;
+		switch (mapNum) 
 		{
-			this.gameObject.layer = LayerMask.NameToLayer( "map1" );
-		}else{
-			this.gameObject.layer = LayerMask.NameToLayer( "map2" );
+		case 0:
+			this.gameObject.layer = LayerMask.NameToLayer ("map1");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer ("map1");	
+			break;
+		case 1:
+			this.gameObject.layer = LayerMask.NameToLayer ("map2");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer ("map2");
+			break;
+		case 2:
+			this.gameObject.layer = LayerMask.NameToLayer ("map3");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer ("map3");
+			break;
+		case 3:
+			this.gameObject.layer = LayerMask.NameToLayer ("map4");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer ("map4");
+			break;
+		case 4:
+			this.gameObject.layer = LayerMask.NameToLayer ("map5");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer("map5");
+			break;
+		case 5:
+			this.gameObject.layer = LayerMask.NameToLayer ("map6");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer("map6");
+			break;		
 		}
-
 	}
-
 }
