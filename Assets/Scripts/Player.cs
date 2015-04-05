@@ -10,7 +10,7 @@ public class Player : MonoBehaviour{
 	private string password;
 	private int wins;
 	private int losses;
-	private List<Village> myVillages;
+	public List<Village> myVillages;
 	private Game aGame;
 	private int color;
 

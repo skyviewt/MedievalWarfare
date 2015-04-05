@@ -21,13 +21,14 @@ public class Tile : MonoBehaviour
 	private Unit occupyingUnit;
 	private Structure occupyingStructure;
 	private Village myVillage;
-	private bool visited;
 	private int color;
-	private bool isRoad;
 	public Shader outline;
 	public System.Random rand = new System.Random();
 	public GameObject prefab;
 
+	private bool isRoad; // NEEDS TO GET IMPLEMENTED
+
+	private bool visited;
 
 
 	//This function should not be used, the Tile component is now always attached to a Grass Tile
@@ -69,7 +70,7 @@ public class Tile : MonoBehaviour
 		{
 			return false;
 		} 
-		else if (this.prefab.CompareTag ("Hovel")) 
+		else if (this.prefab.CompareTag ("Town")) 
 		{
 			return true;
 		} 
@@ -92,6 +93,9 @@ public class Tile : MonoBehaviour
 		outline = Shader.Find("Glow");
 	}
 
+	// seriously, what the fuck is this method for?
+	// it doesnt ACTUALLY switch out prefabs...
+	// it just destroys the old and adds a reference to a new one
 	public void replace(GameObject newPref)
 	{
 		Destroy (this.prefab);
@@ -107,6 +111,10 @@ public class Tile : MonoBehaviour
 		else if ( this.color == 1 )
 		{
 			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+		}
+		else
+		{
+			gameObject.renderer.material.color = Color.white;
 		}
 	}
 	
