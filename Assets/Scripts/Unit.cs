@@ -117,9 +117,7 @@ public class Unit : MonoBehaviour {
 		myAction = UnitActionType.ReadyForOrders;
 		locatedAt.setOccupyingUnit (this);
 	}
-
-
-
+	
 	// Use this for initialization
 	void Start () 
 	{
@@ -129,11 +127,6 @@ public class Unit : MonoBehaviour {
 	void OnMouseEnter()
 	{
 		this.renderer.material.shader = outline;
-	}
-
-	public void movePrefab(Vector3 vector)
-	{
-		this.transform.localPosition = vector;
 	}
 
 	void OnMouseExit()

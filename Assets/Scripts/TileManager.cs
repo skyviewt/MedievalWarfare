@@ -10,7 +10,7 @@ public class TileManager : MonoBehaviour {
 	void Start () {
 			
 	}
-
+	// TODO add check for tower
 	public bool checkNeighboursForGuards(Tile center, Unit unit)
 	{
 		List<Tile> neighbours = center.getNeighbours ();
@@ -26,7 +26,7 @@ public class TileManager : MonoBehaviour {
 				UnitType neighbourUnitType = neighbouringUnit.getUnitType();
 				Village neighbourVillage = neighbouringUnit.getVillage ();
 				Player neighbourPlayer = neighbourVillage.getPlayer ();
-				if(unitType < neighbourUnitType && unitVillagePlayer != neighbourPlayer)
+				if(unitType <= neighbourUnitType && unitVillagePlayer != neighbourPlayer)
 				{
 					return true;
 				}
@@ -34,11 +34,11 @@ public class TileManager : MonoBehaviour {
 		}
 		return false;
 	}
-
+	/* DEPRECATED
 	public void removeUnitFromTile(Tile t, Unit u)
 	{
 		t.setOccupyingUnit (null);
 		u.setLocation (null);
 		t.setLandType(LandType.Tombstone);
-	}
+	}*/
 }

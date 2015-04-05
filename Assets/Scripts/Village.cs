@@ -73,15 +73,15 @@ public class Village : MonoBehaviour {
 	}
 
 	//constructor
-	public static Village CreateComponent ( Player p, List<Tile> regions, Tile locatedAt, GameObject locationPrefab ) 
+	public static Village CreateComponent ( Player p, List<Tile> regions, Tile locatedAt, GameObject villagePrefab ) 
 	{
 		Debug.Log ("-----Village.CreateComponent() CALLED--------");
-		Village myVillage = locationPrefab.AddComponent<Village>();
+		Village myVillage = villagePrefab.AddComponent<Village>();
 		myVillage.controlledRegion = regions;//todo
 		myVillage.controlledBy = p;//TODO: Currently set in Mapgenerator
 		myVillage.myType = VillageType.Hovel;
 		myVillage.supportedUnits = new List<Unit> ();
-		locatedAt.replace (locationPrefab);//to check : Set in Mapgenerator
+		locatedAt.replace (villagePrefab);//to check : Set in Mapgenerator
 		myVillage.locatedAt = locatedAt;//done
 		locatedAt.setVillage (myVillage);//done
 		myVillage.myAction = VillageActionType.ReadyForOrders;
@@ -212,25 +212,15 @@ public class Village : MonoBehaviour {
 
 
 	//increment / decrement
-
+	// used only until calling method is networked
 	public void addGold(int i)
 	{
 		gold += i;
-	}
-	public void removeGold(int i)
-	{
-		gold -= i;
 	}
 	public void addWood(int i)
 	{
 		wood += i;
 	}
-
-	public void removeWood(int i)
-	{
-		wood -= i;
-	}
-
 
 	public void addUnit(Unit u)
 	{
@@ -303,7 +293,15 @@ public class Village : MonoBehaviour {
 			unitLocation.setLandType(LandType.Tombstone);
 			u.setLocation(null);
 			u.setVillage(null);
+			GameObject tombPrefab = vm.tombPrefab;
+			GameObject tomb = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 1f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
+			unitLocation.setLandType(LandType.Tombstone);
+			//unitLocation.replace (tomb);
+			//unitLocation.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tomb.networkView.viewID);
+			//unitLocation.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Tombstone);
+
 			supportedUnits.Remove(u);
+			Destroy (u.gameObject);
 		}
 	}
 

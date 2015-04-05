@@ -24,7 +24,8 @@ public class UnitManager : MonoBehaviour {
 		Tile dest = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
 		moveUnit (unitToMove, dest);
 	}
-	
+
+	// needs networking
 	public void moveUnit(Unit unit, Tile dest)
 	{
 		//print ("----in move unit----");
@@ -37,7 +38,7 @@ public class UnitManager : MonoBehaviour {
 		bool unitPermitted = canUnitMove (srcUnitType, dest);
 		
 		//if the move is allowed to move onto the tile
-		if (unitPermitted == true ) 	
+		if (unitPermitted == true) 	
 		{
 			Tile originalLocation = unit.getLocation ();
 			// moving within your region
@@ -58,54 +59,70 @@ public class UnitManager : MonoBehaviour {
 					originalLocation.setOccupyingUnit(null);
 				}
 
-				// taking over enemy tiles
-				//TODO this part of the code needs network components
-				else if (srcUnitType != UnitType.PEASANT)
-				{
-					bool isGuardSurrounding = tileManager.checkNeighboursForGuards(dest,unit);
-					print(isGuardSurrounding);
-					if (isGuardSurrounding == false)
-					{
-						if (destUnit != null)
-						{
-							print ("made it here 3");
-							UnitType destUnitType = destUnit.getUnitType();
-							if (srcUnitType > destUnitType)
-							{
-								villageManager.removeUnitFromVillage(destVillage,destUnit); // remove relationship between V and U
-								villageManager.removeTileFromVillage(destVillage,dest);		// remove relationship vetween V and T
-								tileManager.removeUnitFromTile(dest,destUnit);				// remove relationship between T and U
-								//TODO destroy the unit prefab
-								//TODO create a tombstone prefab ontop of Tile
-								villageManager.takeoverTile(srcVillage,dest);
-								performMove(unit,dest);
-								unit.setAction(UnitActionType.CapturingEnemy);
-								villageManager.MergeAlliedRegions(dest);
-								originalLocation.setOccupyingUnit(null);
-							}
-							else if(srcUnitType <= destUnitType)
-							{
-								print("your unit is equal or weaker than the unit on the tile");
-							}
-						}
-						else if (destUnit == null)
-						{
-							print ("made it here 4");
-							//move unit prefab location to the dest tile
-							villageManager.takeoverTile(srcVillage,dest);
-							performMove(unit,dest);
-							unit.setAction(UnitActionType.CapturingEnemy);
-							villageManager.MergeAlliedRegions(dest);
-							originalLocation.setOccupyingUnit(null);
-						}
-						print ("after");
-					}
+				// TODO taking over enemy tiles and networking it
+				else if (srcUnitType == UnitType.PEASANT)
+				{ 
+					print ("A peasant is too weak to invade!");
+					return;
 				}
+				else
+				{
+					// quit if tile is guarded
+					//TODO check for watch towers
+					bool guarded = tileManager.checkNeighboursForGuards(dest, unit);
+					if (guarded){
+						print ("The enemy is too strong! I dont want to die!");
+						return;
+					}
+
+					// if there is any enemy unit
+					//Unit destUnit = dest.getOccupyingUnit;
+					if (destUnit!=null){
+						if(srcUnitType>destUnit.getUnitType()){
+							// kill enemy unit, remove it from tile, remove it from village
+							// perform move? nope, perform move is shit
+							destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
+							dest.setOccupyingUnit(null);
+							Destroy (destUnit.gameObject);
+						} else {
+							print ("The enemy is too strong! I dont want to die!");
+							return;
+						}
+					}
+					// if the tile contains the enemy village
+						// pillage, then move the hovel
+					if (destVillage.getLocatedAt()==dest){
+						if (srcUnitType > UnitType.INFANTRY){
+							// plunder village will handle stealing resources
+							villageManager.plunderVillage (srcVillage, destVillage, dest);
+							// it also calls respawn hovel and creating a meadow
+						} else {
+							print ("This unit is too weak to plunder villages");
+							return;
+						}
+					}
+					// TODO knights destroying towers
+					// You take over the tile and merge regions
+					// Enemy removes tile and splits region
+					// finally move onto tile and set action
+
+					villageManager.takeoverTile(srcVillage,dest); //also splits region
+					villageManager.MergeAlliedRegions(dest);
+					//performMove(unit,dest); more complicated than what we need
+					unit.setAction(UnitActionType.CapturingEnemy);
+					//originalLocation.setOccupyingUnit(null);
+
+				} 
 			}
 		}
 
 	}
-								                         
+
+	private void movePrefab(Unit u, Vector3 vector)
+	{
+		u.transform.localPosition = vector;
+	}
+
 	private void performMove(Unit unit, Tile dest)
 	{
 		dest.setOccupyingUnit(unit);
@@ -113,8 +130,7 @@ public class UnitManager : MonoBehaviour {
 		Village srcVillage = unit.getVillage ();
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
-//		print ("--------------landtype of the tile below------------------");		
-//		print (destLandType);
+
 		if (srcUnitType == UnitType.KNIGHT) 
 		{
 			bool destHasRoad = dest.checkRoad ();
@@ -124,8 +140,6 @@ public class UnitManager : MonoBehaviour {
 				Destroy (dest.prefab);
 			}
 			unit.setAction (UnitActionType.Moved);
-			//unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
-
 		} 
 		else
 		{
@@ -148,7 +162,7 @@ public class UnitManager : MonoBehaviour {
 				dest.setLandType(LandType.Grass);
 			}
 		}
-		unit.movePrefab (new Vector3 (dest.point.x, 0.15f,dest.point.y));
+		movePrefab (unit, new Vector3 (dest.point.x, 0.15f,dest.point.y));
 	}
 
 	private bool canUnitMove(UnitType type, Tile dest)
@@ -171,6 +185,9 @@ public class UnitManager : MonoBehaviour {
 			gameGUI.displayError (@"Your Knight is out of shape. It cannot cut down this tree. ¯\(°_o)/¯");
 			return false;
 		} 
+		// FUUU this shouldnt be here
+		//TODO this needs to apply ONLY to your own units in your own region
+		//same with most of these
 		else if (dest.getOccupyingUnit () != null) 
 		{
 			gameGUI.displayError (@"There is a unit already standing there!!! ¯\(°_o)/¯");
