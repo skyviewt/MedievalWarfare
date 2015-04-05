@@ -232,6 +232,7 @@ public class MapGenerator : MonoBehaviour {
 		foreach ( Tile t in map.getVertices() )
 		{
 			int color = rand.Next(0,players.Count+1);
+			print ("color: "+color);
 			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
 		}
 

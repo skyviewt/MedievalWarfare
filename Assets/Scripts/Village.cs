@@ -39,7 +39,7 @@ public class Village : MonoBehaviour {
 		outline = Shader.Find("Glow");
 		GameObject go = GameObject.Find("VillageManager");
 		vm = go.GetComponent<VillageManager> ();
-
+		Debug.Log (vm);
 	}
 	
 	// Update is called once per frame

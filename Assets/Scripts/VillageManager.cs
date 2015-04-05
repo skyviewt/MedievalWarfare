@@ -23,9 +23,11 @@ public class VillageManager : MonoBehaviour {
 	public GameObject tombPrefab;
 
 	void Update () {
-		if(isInGame)
+		if( isInGame && gameGUI == null )
 		{
-		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
+			Debug.Log ("finding attachingGUI");
+			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
+			Debug.Log (gameGUI);
 		}
 	}
 	

@@ -330,7 +330,7 @@ public class InGameGUI : MonoBehaviour {
 				{
 					case "Town":
 					{
-						
+					Debug.Log("inTown");
 						_Village = hit.collider.gameObject;
 						Village v = _Village.GetComponent<Village>();
 						int redrawWood = v.getWood();
@@ -379,6 +379,7 @@ public class InGameGUI : MonoBehaviour {
 							_Tile = hit.collider.gameObject;
 							Tile t = _Tile.GetComponent<Tile>();
 							Village v = t.getVillage ();
+							Debug.Log(v);
 							int redrawWood = v.getWood();
 							int redrawGold = v.getGold();
 							int redrawRegion = v.getRegionSize();

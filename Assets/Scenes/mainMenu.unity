@@ -10938,6 +10938,7 @@ MonoBehaviour:
   isInGame: 0
   meadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
   hovelPrefab: {fileID: 107634, guid: f5c2c1845db0d49f288a3b96f33cdc0f, type: 2}
+  tombPrefab: {fileID: 194458, guid: b215a2f23ae10499d8104a83046896cb, type: 2}
 --- !u!4 &1385500323
 Transform:
   m_ObjectHideFlags: 0
