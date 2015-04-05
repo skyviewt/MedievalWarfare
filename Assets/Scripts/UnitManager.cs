@@ -60,8 +60,21 @@ public class UnitManager : MonoBehaviour {
 				}
 
 				// TODO taking over enemy tiles and networking it
-				else if (srcUnitType != UnitType.PEASANT)
+				else if (srcUnitType == UnitType.PEASANT)
+				{ 
+					print ("A peasant is too weak to invade!");
+					return;
+				}
+				else
 				{
+					// quit if tile is guarded
+					//TODO check for watch towers
+					bool guarded = tileManager.checkNeighboursForGuards(dest, unit);
+					if (guarded){
+						print ("The enemy is too strong! I dont want to die!");
+						return;
+					}
+
 					// if there is any enemy unit
 					//Unit destUnit = dest.getOccupyingUnit;
 					if (destUnit!=null){
@@ -97,7 +110,7 @@ public class UnitManager : MonoBehaviour {
 					villageManager.MergeAlliedRegions(dest);
 					//performMove(unit,dest); more complicated than what we need
 					unit.setAction(UnitActionType.CapturingEnemy);
-					originalLocation.setOccupyingUnit(null);
+					//originalLocation.setOccupyingUnit(null);
 
 				} 
 			}
@@ -172,6 +185,9 @@ public class UnitManager : MonoBehaviour {
 			gameGUI.displayError (@"Your Knight is out of shape. It cannot cut down this tree. ¯\(°_o)/¯");
 			return false;
 		} 
+		// FUUU this shouldnt be here
+		//TODO this needs to apply ONLY to your own units in your own region
+		//same with most of these
 		else if (dest.getOccupyingUnit () != null) 
 		{
 			gameGUI.displayError (@"There is a unit already standing there!!! ¯\(°_o)/¯");

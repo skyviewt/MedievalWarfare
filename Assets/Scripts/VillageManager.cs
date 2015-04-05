@@ -190,15 +190,15 @@ public class VillageManager : MonoBehaviour {
 				t.setVisited(true);
 				newRegion.Add (t);
 				splitBFS (t,villageToSplit,newRegion);
-				//if (newRegion.Count<3){
-					//Neutralize (newRegion);
-				//} else{
+				if (newRegion.Count<3){
+					Neutralize (newRegion);
+				} else{
 					lstRegions.Add (newRegion);
-				//}
+				}
 			}
 		}
 		print ("after the bfs");
-		/* THE BFS FUCKING WORKS, WHY WONT THE REST OF IT?!?!
+		// working test methods color each new region a different color
 		Color[] lstColors = {Color.black, Color.gray, Color.green, Color.magenta};
 		int i = 0;
 		foreach (List<Tile> region in lstRegions){
@@ -208,7 +208,18 @@ public class VillageManager : MonoBehaviour {
 				t.gameObject.renderer.material.color = RandomColor;
 			}
 		}
-		*/
+
+		if (lstRegions.Count <= 0) {
+			Destroy (oldLocation.prefab);
+			oldLocation.setLandType (LandType.Meadow);
+			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0.2f, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+
+			villageToSplit.retireAllUnits();
+			// remove village from player if not already done so
+			p.myVillages.Remove (villageToSplit);
+			print ("Village destroyed completely");
+			return; //stop here if no region is big enough
+		}
 
 		/*
 		//remove old region, cuz its easier to scrap and rebuild....
@@ -253,18 +264,19 @@ public class VillageManager : MonoBehaviour {
 	}
 
 	// de-color, kill units, destroy structures, etc
+	// WORKING
 	private void Neutralize (List<Tile> region){
+		Village v = region[0].getVillage();
 		foreach (Tile t in region) {
-			Village v = t.getVillage();
 			t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2);	
-			//t.setColor (2); // hardcoded neutral
-			//t.colorTile (); // replace with setAndColor RPC
 			v.removeTile(t);
 			t.setVillage (null);
 			Unit u = t.getOccupyingUnit ();
 			if (u!=null){
 				v.removeUnit(u); // also u.setVillage(null)
-				t.replace (tombPrefab);
+				Destroy (u.gameObject);
+				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 1f, t.point.y), tombPrefab.transform.rotation) as GameObject;
+				t.setLandType(LandType.Tombstone);
 			}
 			t.setStructure(false); // method needs to be finished
 		}

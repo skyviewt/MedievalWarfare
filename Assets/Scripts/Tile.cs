@@ -93,6 +93,9 @@ public class Tile : MonoBehaviour
 		outline = Shader.Find("Glow");
 	}
 
+	// seriously, what the fuck is this method for?
+	// it doesnt ACTUALLY switch out prefabs...
+	// it just destroys the old and adds a reference to a new one
 	public void replace(GameObject newPref)
 	{
 		Destroy (this.prefab);
