@@ -108,9 +108,9 @@ public class UnitManager : MonoBehaviour {
 
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
 					villageManager.MergeAlliedRegions(dest);
-					//performMove(unit,dest); more complicated than what we need
+					performMove(unit,dest);
 					unit.setAction(UnitActionType.CapturingEnemy);
-					//originalLocation.setOccupyingUnit(null);
+					originalLocation.setOccupyingUnit(null);
 
 				} 
 			}
