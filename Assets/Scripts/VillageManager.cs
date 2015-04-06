@@ -98,7 +98,7 @@ public class VillageManager : MonoBehaviour {
 				Tile villageLocation = village.getLocatedAt();
 				Destroy (villageLocation.prefab);
 				villageLocation.setLandType (LandType.Meadow);
-				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.2f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 
 				myPlayer.myVillages.Remove (village);
 				Destroy (village.gameObject);
@@ -120,7 +120,7 @@ public class VillageManager : MonoBehaviour {
 		pluderingVillage.addGold(gold);
 
 		Destroy (dest.prefab); // destroy the village, create a meadow
-		dest.prefab = Instantiate (meadowPrefab, new Vector3 (dest.point.x, 0.2f, dest.point.y), meadowPrefab.transform.rotation) as GameObject;
+		dest.prefab = Instantiate (meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation) as GameObject;
 		dest.replace (meadowPrefab);
 
 		/*/ respawn enemy hovel happens during the split
@@ -248,7 +248,7 @@ public class VillageManager : MonoBehaviour {
 			Destroy (oldLocation.prefab);
 			oldLocation.replace (null);
 			oldLocation.setLandType (LandType.Meadow);
-			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0.2f, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 
 			villageToSplit.retireAllUnits();
 			// remove village from player if not already done so
