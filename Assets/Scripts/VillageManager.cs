@@ -277,17 +277,34 @@ public class VillageManager : MonoBehaviour {
 				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);
 			}
 
-			GameObject hovel = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
-			Village v = hovel.GetComponent<Village>();
+			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
+			Village v = newTown.GetComponent<Village>();
 			v.addRegion (region); //adds T<>V and any U<>V
 			v.setLocation (tileLocation);
 			p.addVillage(v);
 			v.setControlledBy(p);
 
 			if (region.Contains (oldLocation)){
-				v.setMyType(villageToSplit.getMyType());
-				v.upgrade (); // switches active prefab to current type
-				v.addWood (8); // just cuz upgrade removes wood
+				VillageType vType = villageToSplit.getMyType();
+				v.setMyType(vType);
+				if (vType == VillageType.Hovel) 
+				{
+					newTown.transform.FindChild("Hovel").gameObject.SetActive (true);
+					newTown.transform.FindChild("Town").gameObject.SetActive (false);
+					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
+				}
+				else if (vType == VillageType.Town) 
+				{
+					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
+					newTown.transform.FindChild("Town").gameObject.SetActive (true);
+					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
+				}
+				else if (vType == VillageType.Fort) 
+				{					
+					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
+					newTown.transform.FindChild("Town").gameObject.SetActive (false);
+					newTown.transform.FindChild("Fort").gameObject.SetActive (true);
+				}
 			}
 
 			v.addGold(splitGold);
