@@ -6,10 +6,13 @@ using System.Linq;
 [System.Serializable]
 public class UnitManager : MonoBehaviour {
 
-	private VillageManager villageManager;
-	private TileManager tileManager;
-	private InGameGUI gameGUI;
-	private readonly int TEN = 10;
+	public GameObject curEffect;
+	public GameObject attackEffect1;
+	public GameObject attackEffect2;
+	public VillageManager villageManager;
+	public TileManager tileManager;
+	public InGameGUI gameGUI;
+	public readonly int TEN = 10;
 	// Use this for initialization
 
 	void Start () {
@@ -79,11 +82,16 @@ public class UnitManager : MonoBehaviour {
 					//Unit destUnit = dest.getOccupyingUnit;
 					if (destUnit!=null){
 						if(srcUnitType>destUnit.getUnitType()){
+							unit.animation.CrossFade("attack");
 							// kill enemy unit, remove it from tile, remove it from village
-							// perform move? nope, perform move is shit
+							//perform move gets called after.
 							destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
-							dest.setOccupyingUnit(null);
+							dest.setOccupyingUnit(unit);
 							Destroy (destUnit.gameObject);
+							//adding an attack effect
+							curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y));
+							unit.animation.CrossFadeQueued("idle");
+
 						} else {
 							print ("The enemy is too strong! I dont want to die!");
 							return;
@@ -136,6 +144,7 @@ public class UnitManager : MonoBehaviour {
 			bool destHasRoad = dest.checkRoad ();
 			if (destLandType == LandType.Meadow && destHasRoad == false) 
 			{
+				// detroying the meadow by knight
 				dest.setLandType (LandType.Grass);
 				Destroy (dest.prefab);
 			}
@@ -143,16 +152,15 @@ public class UnitManager : MonoBehaviour {
 		} 
 		else
 		{
-			//Debug.LogError("HERREEE in else");
 			if (destLandType == LandType.Trees)
 			{
 				//print ("entered cutting trees");
 				unit.setAction(UnitActionType.ChoppingTree);
-				//unit.animation.CrossFade("attack");
+				unit.animation.CrossFade("attack");
 				Destroy (dest.prefab);
 				dest.prefab = null;
 
-				//unit.animation.CrossFade("idle");
+				unit.animation.CrossFadeQueued("idle");
 				srcVillage.addWood(1);
 				dest.setLandType(LandType.Grass);
 			}
@@ -185,7 +193,7 @@ public class UnitManager : MonoBehaviour {
 			gameGUI.displayError (@"Your Knight is out of shape. It cannot cut down this tree. ¯\(°_o)/¯");
 			return false;
 		} 
-		// FUUU this shouldnt be here
+
 		//TODO this needs to apply ONLY to your own units in your own region
 		//same with most of these
 		else if (dest.getOccupyingUnit () != null) 
