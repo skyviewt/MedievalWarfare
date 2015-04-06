@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour {
 	{
 	}
 
-	public void initGame(string ip, int pPort)
+	public NetworkConnectionError initGame(string ip, int pPort)
 	{
 		print ("in initGame");
 		if (isServer) {
@@ -52,9 +52,9 @@ public class GameManager : MonoBehaviour {
 			{
 				MapGen.initMap (i);
 			}
-
+			return NetworkConnectionError.NoError;
 		} else {
-			Network.Connect (ip, pPort);
+			return Network.Connect (ip, pPort);
 		}
 	}
 	public void setIsServer(bool b)
@@ -95,11 +95,5 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-	}
-
-	public bool isConnectable() {
-		return Network.TestConnection () == 
-			ConnectionTesterStatus.PublicIPIsConnectable ?
-			true : false;
 	}
 }

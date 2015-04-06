@@ -122,15 +122,14 @@ public class mainMenu : MonoBehaviour {
 		print(_ipInput.text);
 		if (_ipInput.text != "")
 		{
-			if(GM.isConnectable())
+	
+			GM.setIpAddress(_ipInput.text);
+			GM.setPort(System.Int32.Parse (_portInput.text));
+			NetworkConnectionError res = GM.initGame (_ipInput.text, System.Int32.Parse (_portInput.text));
+
+			if(res != NetworkConnectionError.NoError)
 			{
-				GM.setIpAddress(_ipInput.text);
-				GM.setPort(System.Int32.Parse (_portInput.text));
-				GM.initGame (_ipInput.text, System.Int32.Parse (_portInput.text));
-			}
-			else
-			{
-				ErrorJoinMsg.text = "Cannot connect to specified IP. Please check if host is available or if the IP is valid.";
+				ErrorJoinMsg.text = res.ToString();
 				ErrorJoinMsg.enabled = true;
 				return;
 			}
