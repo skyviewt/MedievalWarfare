@@ -75,14 +75,13 @@ public class UnitManager : MonoBehaviour {
 						return;
 					}
 
+					// unit on unit combat!!
 					// if there is any enemy unit
-					//Unit destUnit = dest.getOccupyingUnit;
 					if (destUnit!=null){
 						if(srcUnitType>destUnit.getUnitType()){
 							// kill enemy unit, remove it from tile, remove it from village
-							// perform move? nope, perform move is shit
 							destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
-							dest.setOccupyingUnit(null);
+							dest.setOccupyingUnit(unit);
 							Destroy (destUnit.gameObject);
 						} else {
 							gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
