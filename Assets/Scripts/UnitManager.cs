@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +38,7 @@ public class UnitManager : MonoBehaviour {
 		Unit destUnit = dest.getOccupyingUnit ();
 		UnitType srcUnitType = unit.getUnitType();
 		
-		bool unitPermitted = canUnitMove (srcUnitType, dest);
+		bool unitPermitted = canUnitMove (unit, dest);
 		
 		//if the move is allowed to move onto the tile
 		if (unitPermitted == true) 	
@@ -65,7 +65,7 @@ public class UnitManager : MonoBehaviour {
 				// TODO taking over enemy tiles and networking it
 				else if (srcUnitType == UnitType.PEASANT)
 				{ 
-					print ("A peasant is too weak to invade!");
+					gameGUI.displayError (@"A peasant is too weak to invade!");
 					return;
 				}
 				else
@@ -74,12 +74,12 @@ public class UnitManager : MonoBehaviour {
 					//TODO check for watch towers
 					bool guarded = tileManager.checkNeighboursForGuards(dest, unit);
 					if (guarded){
-						print ("The enemy is too strong! I dont want to die!");
+						gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
 						return;
 					}
 
+					// unit on unit combat!!
 					// if there is any enemy unit
-					//Unit destUnit = dest.getOccupyingUnit;
 					if (destUnit!=null){
 						if(srcUnitType>destUnit.getUnitType()){
 							unit.animation.CrossFade("attack");
@@ -93,7 +93,7 @@ public class UnitManager : MonoBehaviour {
 							unit.animation.CrossFadeQueued("idle");
 
 						} else {
-							print ("The enemy is too strong! I dont want to die!");
+							gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
 							return;
 						}
 					}
@@ -105,20 +105,17 @@ public class UnitManager : MonoBehaviour {
 							villageManager.plunderVillage (srcVillage, destVillage, dest);
 							// it also calls respawn hovel and creating a meadow
 						} else {
-							print ("This unit is too weak to plunder villages");
+							gameGUI.displayError (@"This unit is too weak to plunder villages");
 							return;
 						}
 					}
 					// TODO knights destroying towers
-					// You take over the tile and merge regions
-					// Enemy removes tile and splits region
-					// finally move onto tile and set action
 
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
 					villageManager.MergeAlliedRegions(dest);
-					//performMove(unit,dest); more complicated than what we need
+					performMove(unit,dest);
 					unit.setAction(UnitActionType.CapturingEnemy);
-					//originalLocation.setOccupyingUnit(null);
+					originalLocation.setOccupyingUnit(null);
 
 				} 
 			}
@@ -139,7 +136,7 @@ public class UnitManager : MonoBehaviour {
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
 
-		if (srcUnitType == UnitType.KNIGHT) 
+		if (srcUnitType == UnitType.KNIGHT || srcUnitType == UnitType.SOLDIER) 
 		{
 			bool destHasRoad = dest.checkRoad ();
 			if (destLandType == LandType.Meadow && destHasRoad == false) 
@@ -170,38 +167,44 @@ public class UnitManager : MonoBehaviour {
 				dest.setLandType(LandType.Grass);
 			}
 		}
-		movePrefab (unit, new Vector3 (dest.point.x, 0.15f,dest.point.y));
+		unit.transform.localPosition = new Vector3 (dest.point.x, 0.15f,dest.point.y);
 	}
 
-	private bool canUnitMove(UnitType type, Tile dest)
+	private bool canUnitMove(Unit u, Tile t)
 	{
-		if (dest.getStructure () == null && dest.getOccupyingUnit () == null && dest.getLandType () != LandType.Trees) 
-		{
-			return true;
+		// friendly checks
+		if (t.getVillage ()==null || t.getVillage ().controlledBy == u.getVillage ().controlledBy) {
+			if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && u.getUnitType() == UnitType.KNIGHT){
+				gameGUI.displayError (@"Knights are too fancy to do manual labour. ¯\(°_o)/¯");
+				return false;
+			} else if (t.getStructure ()!=null){
+				gameGUI.displayError (@"The tower doesn't want you to stand ontop of it. ¯\(°_o)/¯");
+				return false;
+			} else if (t.getOccupyingUnit () != null) {
+				gameGUI.displayError (@"There is a unit already standing there!!! ¯\(°_o)/¯");
+				return false;
+			} else {
+				return true;
+			}
+		// enemy checks
+		} else if (t.getVillage ().controlledBy != u.getVillage ().controlledBy){
+			if (u.getUnitType()==UnitType.PEASANT){
+				gameGUI.displayError (@"Peasants cant attack! ¯\(°_o)/¯");
+				return false;
+			} else if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && u.getUnitType() == UnitType.KNIGHT){
+				gameGUI.displayError (@"Knights are too fancy to do manual labour. ¯\(°_o)/¯");
+				return false;
+			} else if (t.getStructure ()!=null && u.getUnitType()!= UnitType.KNIGHT){
+				gameGUI.displayError (@"Only a knight can take a tower. ¯\(°_o)/¯");
+				return false;
+			} else if (t.getOccupyingUnit()!=null && u.getUnitType()<=t.getOccupyingUnit().getUnitType()){
+				gameGUI.displayError (@"Your unit cant fight theirs. ¯\(°_o)/¯");
+				return false;
+			} else {
+				return true;
+			}
 		} 
-		else if(dest.getLandType () == LandType.Trees && type != UnitType.KNIGHT)
-		{
-			return true;
-		} 
-		else if (dest.getStructure () != null) 
-		{
-			gameGUI.displayError (@"The tower doesn't want you to stand ontop of it. ¯\(°_o)/¯");
-			return false;
-		} 
-		else if (type == UnitType.KNIGHT && dest.getLandType () == LandType.Trees) 
-		{
-			gameGUI.displayError (@"Your Knight is out of shape. It cannot cut down this tree. ¯\(°_o)/¯");
-			return false;
-		} 
-
-		//TODO this needs to apply ONLY to your own units in your own region
-		//same with most of these
-		else if (dest.getOccupyingUnit () != null) 
-		{
-			gameGUI.displayError (@"There is a unit already standing there!!! ¯\(°_o)/¯");
-			return false;
-		}
-
+		//default
 		return false;
 	}
 

@@ -206,7 +206,8 @@ public class MapGenerator : MonoBehaviour {
 			if( probability > 0 && probability <= 20)
 			{
 				//n.InstantiateTree(TreePrefab);
-				GameObject tpref = Network.Instantiate(TreePrefab, new Vector3(n.point.x, 0.2f, n.point.y), TreePrefab.transform.rotation, 0) as GameObject;
+				GameObject tpref = Network.Instantiate(TreePrefab, new Vector3(n.point.x, 0, n.point.y), TreePrefab.transform.rotation, 0) as GameObject;
+				tpref.transform.eulerAngles = new Vector3(0,Random.Range (0,360),0); //give it a random rotation
 				n.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tpref.networkView.viewID);
 				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Trees);
 	
@@ -214,7 +215,8 @@ public class MapGenerator : MonoBehaviour {
 			else if( probability > 20 && probability <=30)
 			{
 
-				GameObject mpref = Network.Instantiate(MeadowPrefab, new Vector3(n.point.x, 0.2f, n.point.y), MeadowPrefab.transform.rotation, 0) as GameObject;
+				GameObject mpref = Network.Instantiate(MeadowPrefab, new Vector3(n.point.x, 0, n.point.y), MeadowPrefab.transform.rotation, 0) as GameObject;
+				mpref.transform.eulerAngles = new Vector3(0,Random.Range (0,360),0); //give it a random rotation
 				n.networkView.RPC ("setPrefab", RPCMode.AllBuffered, mpref.networkView.viewID);
 				n.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Meadow);
 
@@ -296,7 +298,7 @@ public class MapGenerator : MonoBehaviour {
 			{
 				//t.setColor(players.Count);
 				//t.gameObject.renderer.material.color = Color.white;
-				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, players.Count+1);
+				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, players.Count);
 			}
 		}
 

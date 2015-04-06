@@ -98,7 +98,11 @@ public class VillageManager : MonoBehaviour {
 				Tile villageLocation = village.getLocatedAt();
 				Destroy (villageLocation.prefab);
 				villageLocation.setLandType (LandType.Meadow);
-				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.2f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+
+				myPlayer.myVillages.Remove (village);
+				Destroy (village.gameObject);
+
 			}
 		}
 	}
@@ -115,12 +119,18 @@ public class VillageManager : MonoBehaviour {
 		pluderingVillage.addWood(wood);
 		pluderingVillage.addGold(gold);
 
-		dest.replace (meadowPrefab); // if a village is invaded, it is supposed to turn into a meadow
-		// respawn enemy hovel
-		while(plunderedVillage.getLocatedAt() == dest)
-		{
-			respawnHovel(plunderedVillage);
-		}
+		Destroy (dest.prefab); // destroy the village, create a meadow
+		dest.prefab = Instantiate (meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation) as GameObject;
+		dest.replace (meadowPrefab);
+
+		/*/ respawn enemy hovel happens during the split
+		List<Tile> validTiles = plunderedVillage.getControlledRegion ();
+		Tile respawnLocation = getTileForRespawn (validTiles);
+		respawnLocation.replace (null);
+		Destroy (respawnLocation.prefab);
+		GameObject hovel = Network.Instantiate(hovelPrefab, new Vector3 (respawnLocation.point.x, 0.2f, respawnLocation.point.y), hovelPrefab.transform.rotation, 0) as GameObject;
+		plunderedVillage.setLocation (respawnLocation);
+		*/
 	}
 
 	/*
@@ -135,7 +145,7 @@ public class VillageManager : MonoBehaviour {
 		invadedVillage.removeTile(dest);
 		splitRegion(dest, invadedVillage);
 	}
-
+	/*
 	// network component ?
 		// shouldnt need to be networked, this is just a helper function
 	private List<Tile> getValidTilesForRespawn(List<Tile> region)
@@ -175,6 +185,25 @@ public class VillageManager : MonoBehaviour {
 			v.setLocation(respawnLocation);
 		}
 	}
+	*/
+	private Tile getTileForRespawn(List<Tile> region){
+		System.Random rand = new System.Random();
+		List<Tile> validTiles = new List<Tile>();
+		int randomTileIndex;
+		foreach (Tile t in region) {
+			if (t.getStructure()!=null){
+				validTiles.Add (t);
+			}
+		}
+		if (validTiles.Count <= 0) {
+			randomTileIndex = rand.Next (0, region.Count);
+			return region[randomTileIndex];
+		} else {
+			randomTileIndex = rand.Next (0, validTiles.Count);
+			return validTiles[randomTileIndex];
+		}
+	}
+
 
 	//TODO needs networking component
 	private void splitRegion(Tile splitTile, Village villageToSplit)
@@ -204,7 +233,7 @@ public class VillageManager : MonoBehaviour {
 			}
 		}
 		print ("after the bfs");
-		// working test methods color each new region a different color
+		/*// working test methods color each new region a different color
 		Color[] lstColors = {Color.black, Color.cyan, Color.yellow};
 		int i = 0;
 		foreach (List<Tile> region in lstRegions){
@@ -213,16 +242,18 @@ public class VillageManager : MonoBehaviour {
 			foreach (Tile t in region){
 				t.gameObject.renderer.material.color = RandomColor;
 			}
-		}
+		}*/
 
 		if (lstRegions.Count <= 0) {
 			Destroy (oldLocation.prefab);
+			oldLocation.replace (null);
 			oldLocation.setLandType (LandType.Meadow);
-			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0.2f, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 
 			villageToSplit.retireAllUnits();
 			// remove village from player if not already done so
 			p.myVillages.Remove (villageToSplit);
+			Destroy (villageToSplit.gameObject);
 			print ("Village destroyed completely");
 			return; //stop here if no region is big enough
 		}
@@ -241,7 +272,7 @@ public class VillageManager : MonoBehaviour {
 				tileLocation = oldLocation;
 				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);		
 			} else {
-				tileLocation = region[0]; // TODO call function to find best tile
+				tileLocation = getTileForRespawn(region);
 				tileLocation.replace (null);
 				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);
 			}
@@ -251,6 +282,13 @@ public class VillageManager : MonoBehaviour {
 			v.addRegion (region); //adds T<>V and any U<>V
 			v.setLocation (tileLocation);
 			p.addVillage(v);
+			v.setControlledBy(p);
+
+			if (region.Contains (oldLocation)){
+				v.setMyType(villageToSplit.getMyType());
+				v.upgrade (); // switches active prefab to current type
+				v.addWood (8); // just cuz upgrade removes wood
+			}
 
 			v.addGold(splitGold);
 			v.addWood(splitWood);
@@ -267,7 +305,7 @@ public class VillageManager : MonoBehaviour {
 	private void Neutralize (List<Tile> region){
 		Village v = region[0].getVillage();
 		foreach (Tile t in region) {
-			t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2);	
+			t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2); // TODO hard coded neutral color...
 			v.removeTile(t);
 			t.setVillage (null);
 			Unit u = t.getOccupyingUnit ();
@@ -277,7 +315,7 @@ public class VillageManager : MonoBehaviour {
 				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
 				t.setLandType(LandType.Tombstone);
 			}
-			t.setStructure(false); // method needs to be finished
+			t.setStructure(false); // helper method needs to be finished
 		}
 	}
 
