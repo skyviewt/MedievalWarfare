@@ -253,7 +253,7 @@ public class mainMenu : MonoBehaviour {
 		{
 			LaunchText.GetComponent<Button>().enabled = true;	
 		}
-		map1PlayerCount.text = countMapChoices [0].ToString () + " players";
-		map2PlayerCount.text = countMapChoices [1].ToString () + " players";
+		map1PlayerCount.text = countMapChoices [0].ToString ();
+		map2PlayerCount.text = countMapChoices [1].ToString ();
 	}
 }
