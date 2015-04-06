@@ -284,6 +284,12 @@ public class VillageManager : MonoBehaviour {
 			p.addVillage(v);
 			v.setControlledBy(p);
 
+			if (region.Contains (oldLocation)){
+				v.setMyType(villageToSplit.getMyType());
+				v.upgrade (); // switches active prefab to current type
+				v.addWood (8); // just cuz upgrade removes wood
+			}
+
 			v.addGold(splitGold);
 			v.addWood(splitWood);
 

@@ -100,10 +100,8 @@ public class UnitManager : MonoBehaviour {
 							return;
 						}
 					}
+
 					// TODO knights destroying towers
-					// You take over the tile and merge regions
-					// Enemy removes tile and splits region
-					// finally move onto tile and set action
 
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
 					villageManager.MergeAlliedRegions(dest);
@@ -116,11 +114,11 @@ public class UnitManager : MonoBehaviour {
 		}
 
 	}
-
+	/*
 	private void movePrefab(Unit u, Vector3 vector)
 	{
 		u.transform.localPosition = vector;
-	}
+	}*/
 
 	private void performMove(Unit unit, Tile dest)
 	{
@@ -161,7 +159,7 @@ public class UnitManager : MonoBehaviour {
 				dest.setLandType(LandType.Grass);
 			}
 		}
-		movePrefab (unit, new Vector3 (dest.point.x, 0.15f,dest.point.y));
+		unit.transform.localPosition = new Vector3 (dest.point.x, 0.15f,dest.point.y);
 	}
 
 	private bool canUnitMove(Unit u, Tile t)
@@ -198,10 +196,8 @@ public class UnitManager : MonoBehaviour {
 				return true;
 			}
 		} 
-
 		//default
 		return false;
-
 	}
 
 	public void upgradeUnit(Unit u, UnitType newLevel)
