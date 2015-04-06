@@ -89,7 +89,7 @@ public class UnitManager : MonoBehaviour {
 							dest.setOccupyingUnit(unit);
 							Destroy (destUnit.gameObject);
 							//adding an attack effect
-							curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y));
+							curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y), attackEffect1.transform.rotation);
 							unit.animation.CrossFadeQueued("idle");
 
 						} else {
