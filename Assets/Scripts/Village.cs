@@ -294,7 +294,7 @@ public class Village : MonoBehaviour {
 			u.setLocation(null);
 			u.setVillage(null);
 			GameObject tombPrefab = vm.tombPrefab;
-			GameObject tomb = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 1f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
+			GameObject tomb = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 0.4f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
 			unitLocation.setLandType(LandType.Tombstone);
 			//unitLocation.replace (tomb);
 			//unitLocation.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tomb.networkView.viewID);

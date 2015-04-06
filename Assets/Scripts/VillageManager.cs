@@ -205,7 +205,7 @@ public class VillageManager : MonoBehaviour {
 		}
 		print ("after the bfs");
 		// working test methods color each new region a different color
-		Color[] lstColors = {Color.black, Color.gray, Color.green, Color.magenta};
+		Color[] lstColors = {Color.black, Color.cyan, Color.yellow};
 		int i = 0;
 		foreach (List<Tile> region in lstRegions){
 			Color RandomColor = lstColors[i];
@@ -227,45 +227,38 @@ public class VillageManager : MonoBehaviour {
 			return; //stop here if no region is big enough
 		}
 
-		/*
-		//remove old region, cuz its easier to scrap and rebuild....
-		//p.myVillages.Remove (villageToSplit);
-		foreach (Tile t in villageToSplit.getControlledRegion()) {
-			Village v = t.getVillage();
-			t.setColor (2); // hardcoded neutral
-			t.colorTile (); // replace with setAndColor RPC
-			villageToSplit.removeTile(t);
-			t.setVillage (null);
-			oldLocation.replace(null);
-		}
-
-		if (lstRegions.Count == 0) {
-			oldLocation.replace (meadowPrefab);
-			villageToSplit.retireAllUnits();
-			return; //stop here if no region is big enough
-		}
-
 		int splitWood = oldWood/lstRegions.Count;
 		int splitGold = oldGold/lstRegions.Count;
 
-		// create new villages
+		//create new villages
 		foreach(List<Tile> region in lstRegions){
+
 			print ("creating new village");
-			Vector3 hovelLocation = new Vector3(region[0].point.x, 0, region[0].point.y);
+			Vector3 hovelLocation;
+			Tile tileLocation;
+
+			if (region.Contains (oldLocation)){
+				tileLocation = oldLocation;
+				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);		
+			} else {
+				tileLocation = region[0]; // TODO call function to find best tile
+				tileLocation.replace (null);
+				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);
+			}
+
 			GameObject hovel = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
 			Village v = hovel.GetComponent<Village>();
 			v.addRegion (region); //adds T<>V and any U<>V
-			v.setLocation (region[0]);
+			v.setLocation (tileLocation);
 			p.addVillage(v);
 
-			if (region.Contains (oldLocation)){
-				v.getLocatedAt().replace (null);
-				v.setLocation(oldLocation);
-				v.getLocatedAt().replace (hovelPrefab);
-			}
-		}*/
+			v.addGold(splitGold);
+			v.addWood(splitWood);
 
-
+		}
+		villageToSplit.gameObject.transform.Translate (0, 1, 0);
+		//villageToSplit.gameObject.renderer.material.color = Color.magenta;
+		Destroy (villageToSplit.gameObject);
 
 	}
 
@@ -281,7 +274,7 @@ public class VillageManager : MonoBehaviour {
 			if (u!=null){
 				v.removeUnit(u); // also u.setVillage(null)
 				Destroy (u.gameObject);
-				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 1f, t.point.y), tombPrefab.transform.rotation) as GameObject;
+				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
 				t.setLandType(LandType.Tombstone);
 			}
 			t.setStructure(false); // method needs to be finished
