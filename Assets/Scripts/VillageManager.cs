@@ -270,11 +270,11 @@ public class VillageManager : MonoBehaviour {
 
 			if (region.Contains (oldLocation)){
 				tileLocation = oldLocation;
-				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);		
+				hovelLocation = new Vector3(tileLocation.point.x, 0.2f, tileLocation.point.y);		
 			} else {
 				tileLocation = getTileForRespawn(region);
 				tileLocation.replace (null);
-				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);
+				hovelLocation = new Vector3(tileLocation.point.x, 0.2f, tileLocation.point.y);
 			}
 
 			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;

@@ -82,15 +82,15 @@ public class UnitManager : MonoBehaviour {
 					// if there is any enemy unit
 					if (destUnit!=null){
 						if(srcUnitType>destUnit.getUnitType()){
-							unit.animation.CrossFade("attack");
+							//unit.animation.CrossFade("attack");
 							// kill enemy unit, remove it from tile, remove it from village
 							//perform move gets called after.
 							destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
 							dest.setOccupyingUnit(unit);
 							Destroy (destUnit.gameObject);
 							//adding an attack effect
-							curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y), attackEffect1.transform.rotation) as GameObject;
-							unit.animation.CrossFadeQueued("idle");
+							//curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y), attackEffect1.transform.rotation) as GameObject;
+							//unit.animation.CrossFadeQueued("idle");
 
 						} else {
 							gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
