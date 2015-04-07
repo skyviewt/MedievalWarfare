@@ -31,6 +31,10 @@ public class TileManager : MonoBehaviour {
 					return true;
 				}
 			}
+			Structure tower = n.getStructure();
+			if (tower != null && unitType > UnitType.INFANTRY){
+				return true;
+			}
 		}
 		return false;
 	}

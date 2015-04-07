@@ -72,11 +72,10 @@ public class UnitManager : MonoBehaviour {
 				}
 				else
 				{
-					// quit if tile is guarded
-					//TODO check for watch towers
+					// quit if tile is guarded by unit or tower
 					bool guarded = tileManager.checkNeighboursForGuards(dest, unit);
 					if (guarded){
-						gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
+						gameGUI.displayError (@"That area is being protected");
 						return;
 					}
 
@@ -111,7 +110,11 @@ public class UnitManager : MonoBehaviour {
 							return;
 						}
 					}
-					// TODO knights destroying towers
+					// destroy towers
+					if (dest.getStructure()!=null && srcUnitType>UnitType.INFANTRY){
+						dest.setStructure(false);
+						dest.replace (null);
+					}
 
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
 					villageManager.MergeAlliedRegions(dest);
@@ -147,6 +150,7 @@ public class UnitManager : MonoBehaviour {
 			}
 			else if(tileType == LandType.Grass)
 			{
+				//TODO delay for turn manager
 				uLocation.setLandType(LandType.Meadow);
 				uLocation.prefab = Instantiate (meadowPrefab, new Vector3 (uLocation.point.x, 0, uLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 

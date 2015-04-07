@@ -25,6 +25,7 @@ public class Tile : MonoBehaviour
 	public Shader outline;
 	public System.Random rand = new System.Random();
 	public GameObject prefab;
+	public GameObject roadPrefab;
 
 	private bool isRoad; // NEEDS TO GET IMPLEMENTED
 
@@ -198,6 +199,7 @@ public class Tile : MonoBehaviour
 	public void buildRoad()
 	{
 		this.isRoad = true;
+		prefab = Instantiate(roadPrefab, new Vector3(this.point.x, 0.11f, this.point.y), roadPrefab.transform.rotation) as GameObject;
 	}
 
 	public bool checkRoad()
