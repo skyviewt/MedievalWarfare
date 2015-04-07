@@ -265,13 +265,15 @@ public class mainMenu : MonoBehaviour {
 	public void launchGamePressed()
 	{
 		if (GM.finalMapChoice != -1) 
-		{
+		{	
+			GameObject game = GameObject.Instantiate ();
 			GM.finalMap = GM.MapGen.getMap(GM.finalMapChoice);
 			GM.MapGen.initializeColorAndVillagesOnMap(GM.players, GM.finalMapChoice, GM.finalMap);
 			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
+			GM.players = GM.getPlayers();
+			GM.game = Game.Instantiate(GM.players,GM.finalMap,game);
 			StartLevel();
 		}
-
 	}
 	
 
@@ -306,7 +308,7 @@ public class mainMenu : MonoBehaviour {
 			Debug.Log(Network.connections.Length);
 			if (GM.isServer) 
 			{
-				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).First();
+				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
 				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
 //				connectedPlayerText[0].text = p.getName ();
 				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
@@ -314,11 +316,14 @@ public class mainMenu : MonoBehaviour {
 				// only counting the joining players.
 				for (int i = 1; i<Network.connections.Length; i++) 
 				{
-					//get the player with the same ipAddress
-					Player playa = GM.players.Where(player=> (player.ipAddress == Network.connections[i].ipAddress)).First();
-					this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, 0, playa.getName());
-//					connectedPlayerText[i].text = playa.getName ();
 
+					//get the player with the same ipAddress
+					Player playa = GM.players.Where(player=> (player.ipAddress == Network.connections[i].ipAddress)).FirstOrDefault();
+//					connectedPlayerText[i].text = playa.getName ();
+					if(playa){
+						this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, 0, playa.getName());
+					}
+					
 				}
 			
 				LaunchText.GetComponent<Button> ().enabled = true;	
