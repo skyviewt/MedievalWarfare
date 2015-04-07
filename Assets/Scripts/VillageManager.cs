@@ -487,6 +487,7 @@ public class VillageManager : MonoBehaviour {
 		t.replace (null);
 		Destroy (t.prefab);
 		t.setStructure (s);
+		v.addWood (-5);
 
 		//t.gameObject.renderer.material.color = Color.yellow;
 	}
