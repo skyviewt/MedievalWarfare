@@ -12,6 +12,9 @@ public class mainMenu : MonoBehaviour {
 	public Canvas MiniMapCanvas;
 	public Canvas MainMenuCanvas;
 	public Canvas LobbyCanvas;
+	public Canvas LoginCanvas;
+	public Canvas RegisterCanvas;
+	public Canvas ErrorCanvas;
 	public Transform HostText;
 	public Transform JoinText;
 	public Transform StatsText;
@@ -20,7 +23,7 @@ public class mainMenu : MonoBehaviour {
 	public Transform LaunchText;
 	public Text ErrorLobbyMsg;
 
-	public Text ErrorJoinMsg;
+	public Text ErrorJoinRegisterLoginMsg;
 
 	public List<Text> connectedPlayerText;
 	public List<Text> connectedPlayerMapText;
@@ -35,6 +38,8 @@ public class mainMenu : MonoBehaviour {
 	public Camera resCam1;
 	public Camera resCam2;
 
+	public int curPlayers = 0;
+
 	public int[] countMapChoices = new int[2];
 
 	// 1-based
@@ -42,6 +47,10 @@ public class mainMenu : MonoBehaviour {
 
 	public Text _ipInput;
 	public Text _portInput;
+
+	public Text RegisterUserNameInput;
+	public Text RegisterPassword1;
+	public Text RegisterPassword2;
 
 	// Elements
 	public GameObject PrefabFire;
@@ -54,17 +63,20 @@ public class mainMenu : MonoBehaviour {
 		Instantiate(PrefabFire);
 		Instantiate(PrefabLight);
 		GM = GameObject.Find("perserveGM").GetComponent<GameManager>();
-		MainMenuCanvas.enabled = true;
+		LoginCanvas.enabled = true;
+		MainMenuCanvas.enabled = false;
 		ExitCanvas.enabled = false;
 		JoinGameCanvas.enabled = false;
 		MiniMapCanvas.enabled = false;
 		LobbyCanvas.enabled = false;
+		RegisterCanvas.enabled = false;
+		ErrorCanvas.enabled = true;
 		cam1.enabled = false;
 		cam2.enabled = false;
 		resCam1.enabled = false;
 		resCam2.enabled = false;
 		ErrorLobbyMsg.enabled = false;
-		ErrorJoinMsg.enabled = false;
+		ErrorJoinRegisterLoginMsg.enabled = false;
 		LaunchText.GetComponent<Button>().enabled = false;
 	}
 
@@ -81,6 +93,50 @@ public class mainMenu : MonoBehaviour {
 		MainMenuCanvas.enabled = true;
 		showStartGameButtons ();
 	}
+
+	public void registerButtonRessed()
+	{
+		RegisterCanvas.enabled = true;
+	}
+	public void returnToLoginPressed()
+	{
+		RegisterCanvas.enabled = false;
+		LoginCanvas.enabled = true;
+	}
+
+	public void actualRegistrationPressed()
+	{
+		ErrorJoinRegisterLoginMsg.enabled = false;
+		if( RegisterUserNameInput.text == "" )
+		{
+			ErrorJoinRegisterLoginMsg.text = "Username cannot be null!";
+			ErrorJoinRegisterLoginMsg.enabled = true;
+			return;
+		}
+		else if( RegisterPassword1.text == "" || RegisterPassword2.text == "" )
+		{
+			ErrorJoinRegisterLoginMsg.text = "Password cannot be null!";
+			ErrorJoinRegisterLoginMsg.enabled = true;
+			return;
+		}
+		else if( RegisterPassword1.text != RegisterPassword2.text )
+		{
+			ErrorJoinRegisterLoginMsg.text = "Passwords does not match";
+			ErrorJoinRegisterLoginMsg.enabled = true;
+			return;
+		}
+		Debug.Log (Network.player.ipAddress);
+		Player p = Player.CreateComponent (RegisterUserNameInput.text,
+		                                   RegisterPassword1.text, 
+		                                   Network.player.ipAddress, 
+		                                  GM.players.Count, GM.gameObject);
+		GM.addPlayer (p);
+		RegisterCanvas.enabled = false;
+		LoginCanvas.enabled = false;
+		MainMenuCanvas.enabled = true;
+		showStartGameButtons ();
+	}
+
 
 	public void showStartGameButtons()
 	{
@@ -108,7 +164,7 @@ public class mainMenu : MonoBehaviour {
 
 	public void joinGameButtonPressed()
 	{
-		ErrorJoinMsg.enabled = false;
+		ErrorJoinRegisterLoginMsg.enabled = false;
 		hideStartGameButtons ();
 		MainMenuCanvas.enabled = false;
 		JoinGameCanvas.enabled = true;
@@ -117,7 +173,7 @@ public class mainMenu : MonoBehaviour {
 
 	public void connectButtonPressed()
 	{
-		ErrorJoinMsg.enabled = false;
+		ErrorJoinRegisterLoginMsg.enabled = false;
 
 		print(_ipInput.text);
 		if (_ipInput.text != "")
@@ -129,15 +185,15 @@ public class mainMenu : MonoBehaviour {
 
 			if(res != NetworkConnectionError.NoError)
 			{
-				ErrorJoinMsg.text = res.ToString();
-				ErrorJoinMsg.enabled = true;
+				ErrorJoinRegisterLoginMsg.text = res.ToString();
+				ErrorJoinRegisterLoginMsg.enabled = true;
 				return;
 			}
 		}
 		else 
 		{
-			ErrorJoinMsg.text = "The IP address cannot be null!";
-			ErrorJoinMsg.enabled = true;
+			ErrorJoinRegisterLoginMsg.text = "The IP address cannot be null!";
+			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
 		showMiniMapMenu ();
@@ -204,7 +260,7 @@ public class mainMenu : MonoBehaviour {
 		}
 	}
 
-	public void lauchGamePressed()
+	public void launchGamePressed()
 	{
 		if (GM.finalMapChoice != -1) 
 		{
@@ -219,40 +275,58 @@ public class mainMenu : MonoBehaviour {
 
 	void Update()
 	{
-		if( LobbyCanvas.enabled == true )
+		//updates the lobby
+		if (LobbyCanvas.enabled == true && curPlayers != GM.players.Count) 
 		{
-			print ("in Update");
 			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
-			if (isMap1Chosen) 
+			if (isMap1Chosen) {
+					resCam1.enabled = true;	
+					chosenMapText.text = "Map 1";
+					GM.finalMapChoice = 0;
+			} else {
+					resCam2.enabled = true;	
+					chosenMapText.text = "Map 2";
+					GM.finalMapChoice = 1;
+			}
+			//add all players for all GM
+			for(int i=0; i<GM.players.Count; i++)
 			{
-				resCam1.enabled = true;	
-				chosenMapText.text = "Map 1";
-				GM.finalMapChoice = 0;
-			} 
-			else 
+				Player p = GM.players[i];
+				GM.networkView.RPC ("addPlayerNet", RPCMode.AllBuffered, 
+				                    p.getName (),
+				                    p.getPassword(),
+				                    p.getColor(), 
+				                    p.getLosses(), 
+				                    p.getWins() );
+			}
+			Debug.Log (GM.players.Count);
+			Debug.Log(Network.connections.Length);
+			if (GM.isServer) 
 			{
-				resCam2.enabled = true;	
-				chosenMapText.text = "Map 2";
-				GM.finalMapChoice = 1;
+				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).First();
+				connectedPlayerText[0].text = p.getName ();
+				connectedPlayerMapText[0].text = "Map " + mapChoice.ToString();
+				// only counting the joining players.
+				for (int i = 1; i<Network.connections.Length; i++) 
+				{
+					//get the player with the same ipAddress
+					Player playa = GM.players.Where(player=> (player.ipAddress == Network.connections[i].ipAddress)).First();
+
+				}
+			
+				LaunchText.GetComponent<Button> ().enabled = true;	
+			}
+			else
+			{
+
+				LaunchText.GetComponent<Button> ().enabled = false;	
 			}
 
-			// only counting the joining players.
-			for(int i = 0; i<GM.players.Count; i++)
-			{
-				print (GM.players[i].getName());
-				connectedPlayerText[i].text = GM.players[i].getName();
 
-//				if(Network.player.ipAddress == Network.connections[0].ipAddress)
-//				{
-//					connectedPlayerMapText[i+1].text = "Map " + mapChoice.ToString ();
-//				}
-			}
+			map1PlayerCount.text = countMapChoices [0].ToString ();
+			map2PlayerCount.text = countMapChoices [1].ToString ();
+
+			curPlayers = GM.players.Count;
 		}
-		if (GM.isServer) 
-		{
-			LaunchText.GetComponent<Button>().enabled = true;	
-		}
-		map1PlayerCount.text = countMapChoices [0].ToString ();
-		map2PlayerCount.text = countMapChoices [1].ToString ();
 	}
 }

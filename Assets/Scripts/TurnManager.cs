@@ -6,7 +6,7 @@ using System.Linq;
 [System.Serializable]
 public class TurnManager : MonoBehaviour {
 
-	public void beginTurn(Game g, Player p)
+/*	public void beginTurn(Game g, Player p)
 	{
 		g.setTurn (p);
 		List<Village> villagesToUpdate = p.getVillages ();
@@ -15,6 +15,26 @@ public class TurnManager : MonoBehaviour {
 			this.updateVillages(v);
 		}
 	}
+
+	public Player setNextPlayerInTurnOrder()
+	{
+		for(int i = 0; i < players.Count; i++)
+		{
+			int nextPlayerTurn = currentTurn + i;
+			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
+			{
+				setTurn (nextPlayerTurn);
+				return players[currentTurn];
+			}
+			else
+			{
+				continue;
+			}
+		}
+		print ("if we reach this point then there's a bug somewhere.");
+		return null;
+	}*/
+
 
 	public void updateVillages(Village v)
 	{

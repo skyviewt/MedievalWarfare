@@ -36,10 +36,12 @@ public class InGameGUI : MonoBehaviour {
 	public Text _ErrorText;
 	public Transform EndButton;
 
+	private Game _game;
 	private Tile _move;
 
 	private VillageManager villageManager;
 	private UnitManager unitManager;
+	private TurnManager turnManager;
 
 	private bool menuUp;
 	// Use this for initialization
@@ -49,6 +51,7 @@ public class InGameGUI : MonoBehaviour {
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		villageManager.isInGame = true;
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
+		turnManager = GameObject.Find("TurnManager").GetComponent<TurnManager> ();
 		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
@@ -97,6 +100,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		//turnOrder = (turnOrder+1)%2;
 		//disableAllCanvases ();
+		//turnManager.setNextPlayerInTurnOrder ();
 		gameObject.networkView.RPC ("incrementTurnOrderNet", RPCMode.AllBuffered);
 	}
 	private void disableAllCanvases()

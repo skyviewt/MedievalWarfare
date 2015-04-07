@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -150,6 +150,7 @@ public class UnitManager : MonoBehaviour {
 				uLocation.setLandType(LandType.Meadow);
 				uLocation.prefab = Instantiate (meadowPrefab, new Vector3 (uLocation.point.x, 0, uLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 
+				u.setAction(UnitActionType.StartCultivating);
 			}
 		}
 
