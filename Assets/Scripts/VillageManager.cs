@@ -21,7 +21,6 @@ public class VillageManager : MonoBehaviour {
 	public GameObject meadowPrefab;
 	public GameObject hovelPrefab;
 	public GameObject tombPrefab;
-	public GameObject towerPrefab;
 
 	void Update () {
 		if( isInGame && gameGUI == null )
@@ -474,20 +473,5 @@ public class VillageManager : MonoBehaviour {
 			gameGUI.displayError(@"You don't have enough gold for a knight. ¯\(°_o)/¯");
 		}
 
-	}
-
-	//TODO needs networking
-	public void buildTower(Village v, Tile t){
-
-		GameObject tower = Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity) as GameObject;
-		tower.transform.localScale = new Vector3 (0.03f,0.03f,0.03f);
-		tower.transform.eulerAngles = new Vector3(-90,0,0);
-
-		Structure s = tower.GetComponent<Structure> ();
-		t.replace (null);
-		Destroy (t.prefab);
-		t.setStructure (s);
-
-		//t.gameObject.renderer.material.color = Color.yellow;
 	}
 }

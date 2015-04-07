@@ -153,11 +153,11 @@ public class UnitManager : MonoBehaviour {
 			{
 				//print ("entered cutting trees");
 				unit.setAction(UnitActionType.ChoppingTree);
-				//unit.animation.CrossFade("attack");
+				unit.animation.CrossFade("attack");
 				Destroy (dest.prefab);
 				dest.prefab = null;
 
-				//unit.animation.CrossFadeQueued("idle");
+				unit.animation.CrossFadeQueued("idle");
 				srcVillage.addWood(1);
 				dest.setLandType(LandType.Grass);
 			}

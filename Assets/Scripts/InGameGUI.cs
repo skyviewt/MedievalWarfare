@@ -20,14 +20,13 @@ public class InGameGUI : MonoBehaviour {
 	public GameObject UnitPrefab;
 
 	//selections
-	public GameObject _Village;
-	public GameObject _Unit;
-	public GameObject _Tile;
+	private GameObject _Village;
+	private GameObject _Unit;
+	private GameObject _Tile;
 	private GameObject _WoodValue;
 	private GameObject _GoldValue;
 
-	public bool _isAUnitSelected;
-	public bool _isVillageSelected;
+	private bool _isAUnitSelected;
 
 	public Text _WoodText;
 	public Text _GoldText;
@@ -314,8 +313,6 @@ public class InGameGUI : MonoBehaviour {
 		_move = null;
 		_Tile = null;
 		_isAUnitSelected = false;
-		_Village = null;
-		_isVillageSelected = false;
 	}
 	// Update is called once per frame
 	void Update()
@@ -377,11 +374,8 @@ public class InGameGUI : MonoBehaviour {
 					}
 					case "Grass":
 					{
-						if (_isAUnitSelected == true){
-							validateMove(hit);
-						} else if (_isVillageSelected==true){
-							validateBuild(hit);
-						} else {
+						if(_isAUnitSelected == false)
+						{
 							_Tile = hit.collider.gameObject;
 							Tile t = _Tile.GetComponent<Tile>();
 							Village v = t.getVillage ();
@@ -395,9 +389,8 @@ public class InGameGUI : MonoBehaviour {
 							_RegionText.text = redrawRegion.ToString();
 							_UnitsText.text = redrawUnits.ToString();
 						}
-
-						ErrorCanvas.enabled = true;
-						ClearSelections();
+						ErrorCanvas.enabled = false;
+						validateMove(hit);
 						break;
 					}
 				}
@@ -431,45 +424,6 @@ public class InGameGUI : MonoBehaviour {
 			}
 		}
 
-	}
-
-	public void buildTowerPressed()
-	{
-		VillageCanvas.enabled = false;
-		Village v = _Village.GetComponent<Village> ();
-		if (v.getWood () >= 5) {
-			_isVillageSelected = true;
-			this.displayError ("Please select an empty tile to build on");
-		} else {
-			this.displayError ("You need at least 5 wood to build a tower");
-		}
-		menuUp = false;
-	}
-
-	void validateBuild(RaycastHit hit)
-	{
-		//print ("in validateBuild");
-		//print (_isVillageSelected);
-		if (_isVillageSelected && _Village.GetComponent<Village> ().getAction() == VillageActionType.ReadyForOrders) 
-		{
-			//print ("inside inside validate build");
-			Village v = _Village.GetComponent<Village> ();
-			_Tile = hit.collider.gameObject;
-			Tile selection = _Tile.GetComponent<Tile> ();
-			if (!v.getControlledRegion().Contains (selection)){
-				this.displayError ("You must build inside your controlled region");
-			} else if (selection.getStructure ()!=null){
-				this.displayError ("There is already a tower there");
-			} else if (selection.getOccupyingUnit()!=null){
-				this.displayError ("We arent building homes! A unit is standing there");
-			} else if (selection == v.getLocatedAt()){
-				this.displayError ("Towers go AROUND your village");
-			} else {
-				villageManager.buildTower(v, selection);
-			}
-			//selection.gameObject.renderer.material.color = Color.yellow;
-		}
-		ClearSelections();
 	}
 
 }
