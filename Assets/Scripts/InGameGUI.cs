@@ -400,15 +400,17 @@ public class InGameGUI : MonoBehaviour {
 							_Tile = hit.collider.gameObject;
 							Tile t = _Tile.GetComponent<Tile>();
 							Village v = t.getVillage ();
-							Debug.Log(v);
-							int redrawWood = v.getWood();
-							int redrawGold = v.getGold();
-							int redrawRegion = v.getRegionSize();
-							int redrawUnits = v.getUnitSize();
-							_WoodText.text = redrawWood.ToString();
-							_GoldText.text = redrawGold.ToString();
-							_RegionText.text = redrawRegion.ToString();
-							_UnitsText.text = redrawUnits.ToString();
+							if (v!=null){
+								Debug.Log(v);
+								int redrawWood = v.getWood();
+								int redrawGold = v.getGold();
+								int redrawRegion = v.getRegionSize();
+								int redrawUnits = v.getUnitSize();
+								_WoodText.text = redrawWood.ToString();
+								_GoldText.text = redrawGold.ToString();
+								_RegionText.text = redrawRegion.ToString();
+								_UnitsText.text = redrawUnits.ToString();
+							}
 						}
 
 						ClearSelections();

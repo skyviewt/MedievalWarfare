@@ -72,11 +72,10 @@ public class UnitManager : MonoBehaviour {
 				}
 				else
 				{
-					// quit if tile is guarded
-					//TODO check for watch towers
+					// quit if tile is guarded by unit or tower
 					bool guarded = tileManager.checkNeighboursForGuards(dest, unit);
 					if (guarded){
-						gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
+						gameGUI.displayError (@"That area is being protected");
 						return;
 					}
 
@@ -111,7 +110,11 @@ public class UnitManager : MonoBehaviour {
 							return;
 						}
 					}
-					// TODO knights destroying towers
+					// destroy towers
+					if (dest.getStructure()!=null && srcUnitType>UnitType.INFANTRY){
+						dest.setStructure(false);
+						dest.replace (null);
+					}
 
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
 					villageManager.MergeAlliedRegions(dest);
