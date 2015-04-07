@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour {
 	public string ipAddress;
 	public int port = 25000;
 	public bool isServer = true;
-	public List<Player> players;
+	public List<Player> players = new List<Player>();
 
 	public int finalMapChoice = -1;
 
@@ -29,22 +29,7 @@ public class GameManager : MonoBehaviour {
 
 			Network.InitializeServer (32, port);
 			print ("in isServer----"); 
-			Player p1 = Player.CreateComponent ("Sky", "123", gameObject);
-			p1.setColor(0);
-			Player p2 = Player.CreateComponent ("Joerg", "456", gameObject);
-			p2.setColor(1);
 
-//			gameObject.networkView.RPC ("initPlayers", RPCMode.AllBuffered);
-
-//			Player[] pls = gameObject.GetComponents<Player>();
-			List<Player> participants = new List<Player> ();
-//			participants.Add (pls[0]);
-//			participants.Add (pls[1]);
-
-			participants.Add (p1);
-			participants.Add (p2);
-			// to get hold of the players
-			this.players = participants;
 
 			MapGen = gameObject.GetComponent<MapGenerator> ();
 
@@ -82,14 +67,21 @@ public class GameManager : MonoBehaviour {
 	{
 		return this.port;
 	}
-
+	
+	public void addPlayer(Player p)
+	{
+		this.players.Add (p);
+	}
 
 	[RPC]
-	void initPlayers(){
-		Player[] pls = gameObject.GetComponents<Player>();
-		pls [0].initPlayer ("P1", "Pass", 0);
-		pls [1].initPlayer ("P2", "Pass", 1);
-
+	public void addPlayerNet(string name, string pass, int color, int loss, int win)
+	{
+		bool isExist = (this.players.Where(player => ((player.getName() == name) && (player.getPassword() == pass) )).Count() > 0);
+		if (!isExist) 
+		{
+			Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
+			this.players.Add (p);	
+		}
 	}
 
 	// Update is called once per frame
