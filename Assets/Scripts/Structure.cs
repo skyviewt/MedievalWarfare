@@ -6,8 +6,9 @@ using System.Linq;
 [System.Serializable]
 public class Structure : MonoBehaviour {
 
-	private UnitType myType = UnitType.SOLDIER;
+	private UnitType myType = UnitType.INFANTRY;
 	public GameObject structurePrefab;
+
 	// private Tile locatedAt is the relation to its parent Tile
 	// this is not kept in script, but object hierarchy
 

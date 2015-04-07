@@ -2251,6 +2251,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef6ccdd19c114230975251dd0c342bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meadowPrefab: {fileID: 0}
+  curEffect: {fileID: 0}
+  attackEffect1: {fileID: 0}
+  attackEffect2: {fileID: 0}
+  villageManager: {fileID: 0}
+  tileManager: {fileID: 0}
+  gameGUI: {fileID: 0}
 --- !u!148 &991165825
 NetworkView:
   m_ObjectHideFlags: 0
@@ -4167,7 +4174,7 @@ AudioSource:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2083084092}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_audioClip: {fileID: 8300000, guid: e33e68425df88ba4cbdf1d29cdb13650, type: 3}
   m_PlayOnAwake: 1

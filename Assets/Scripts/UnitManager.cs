@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Linq;
 [System.Serializable]
 public class UnitManager : MonoBehaviour {
 
+	public GameObject meadowPrefab;
 	public GameObject curEffect;
 	public GameObject attackEffect1;
 	public GameObject attackEffect2;
@@ -13,6 +14,7 @@ public class UnitManager : MonoBehaviour {
 	public TileManager tileManager;
 	public InGameGUI gameGUI;
 	public readonly int TEN = 10;
+
 	// Use this for initialization
 
 	void Start () {
@@ -128,6 +130,32 @@ public class UnitManager : MonoBehaviour {
 		u.transform.localPosition = vector;
 	}
 
+	//It's presumed that the unit is already ontop of the tile.
+	//Thus the tile is either grass or meadow.
+	public void cultivateMeadow (Unit u)
+	{
+		if (u.getUnitType() != UnitType.PEASANT) {
+			gameGUI.displayError (@"Only your peasants are willing to cultivate meadows.");
+		} 
+		else 
+		{
+			Tile uLocation = u.getLocation();
+			LandType tileType = uLocation.getLandType();
+			if(tileType == LandType.Meadow)
+			{
+				gameGUI.displayError (@"There is already a lovely meadow here.");
+			}
+			else if(tileType == LandType.Grass)
+			{
+				uLocation.setLandType(LandType.Meadow);
+				uLocation.prefab = Instantiate (meadowPrefab, new Vector3 (uLocation.point.x, 0, uLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+
+				u.setAction(UnitActionType.StartCultivating);
+			}
+		}
+
+	}
+
 	private void performMove(Unit unit, Tile dest)
 	{
 		dest.setOccupyingUnit(unit);
@@ -153,11 +181,11 @@ public class UnitManager : MonoBehaviour {
 			{
 				//print ("entered cutting trees");
 				unit.setAction(UnitActionType.ChoppingTree);
-				unit.animation.CrossFade("attack");
+				//unit.animation.CrossFade("attack");
 				Destroy (dest.prefab);
 				dest.prefab = null;
 
-				unit.animation.CrossFadeQueued("idle");
+				//unit.animation.CrossFadeQueued("idle");
 				srcVillage.addWood(1);
 				dest.setLandType(LandType.Grass);
 			}

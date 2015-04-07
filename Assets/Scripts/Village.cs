@@ -27,7 +27,7 @@ public class Village : MonoBehaviour {
 	private Tile locatedAt;
 	private List<Unit> supportedUnits;
 	private VillageType myType;
-	private VillageActionType myAction;
+	public VillageActionType myAction;
 	private int gold;
 	private int wood;
 	private Shader outline;
