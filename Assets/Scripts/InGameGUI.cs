@@ -391,8 +391,10 @@ public class InGameGUI : MonoBehaviour {
 					case "Grass":
 					{
 						if (_isAUnitSelected == true){
+							ErrorCanvas.enabled = true;
 							validateMove(hit);
 						} else if (_isVillageSelected==true){
+							ErrorCanvas.enabled = true;
 							validateBuild(hit);
 						} else {
 							_Tile = hit.collider.gameObject;
@@ -409,7 +411,6 @@ public class InGameGUI : MonoBehaviour {
 							_UnitsText.text = redrawUnits.ToString();
 						}
 
-						ErrorCanvas.enabled = true;
 						ClearSelections();
 						break;
 					}
@@ -490,14 +491,15 @@ public class InGameGUI : MonoBehaviour {
 		Unit u = _Unit.GetComponent<Unit>();
 		Village v = u.getVillage();
 		Tile t = u.getLocation ();
-
+		ErrorCanvas.enabled = true;
 		if (u.getUnitType () != UnitType.PEASANT) {
 			this.displayError ("Only peasants can build roads");
 		} else if (t.checkRoad ()) {
 			this.displayError ("This tile already has a road");
 		} else {
-			//TODO RPC this
+			//TODO RPC this, delay until next turn
 			t.buildRoad ();
+			u.setAction(UnitActionType.BuildingRoad);
 		}
 
 		UnitCanvas.enabled = false;
