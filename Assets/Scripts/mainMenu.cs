@@ -204,7 +204,7 @@ public class mainMenu : MonoBehaviour {
 		}
 	}
 
-	public void lauchGamePressed()
+	public void launchGamePressed()
 	{
 		if (GM.finalMapChoice != -1) 
 		{

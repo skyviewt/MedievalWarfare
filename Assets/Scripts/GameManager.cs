@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
 
 	public MapGenerator MapGen;
 
+	public Game theGame;
 	public Graph finalMap = null;
 	
 	// Use this for initialization
