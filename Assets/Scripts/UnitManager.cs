@@ -14,7 +14,6 @@ public class UnitManager : MonoBehaviour {
 	public TileManager tileManager;
 	public InGameGUI gameGUI;
 	public readonly int TEN = 10;
-
 	// Use this for initialization
 
 	void Start () {
@@ -154,7 +153,6 @@ public class UnitManager : MonoBehaviour {
 		}
 
 	}
-
 	private void performMove(Unit unit, Tile dest)
 	{
 		dest.setOccupyingUnit(unit);

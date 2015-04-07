@@ -176,15 +176,6 @@ public class InGameGUI : MonoBehaviour {
 	}
 
 	//Functions for when a Unit is selected
-	public void cultivatePressed()
-	{
-		Unit u = _Unit.GetComponent<Unit>();
-
-		unitManager.cultivateMeadow(u);
-
-		UnitCanvas.enabled = false;
-		menuUp = false;
-	}
 	public void unitPressed()
 	{
 		UnitCanvas.enabled = true;
