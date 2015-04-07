@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
 	public bool isServer = true;
 	public List<Player> players = new List<Player>();
 
+	public Player curPlayer;
 	public int finalMapChoice = -1;
 
 	public MapGenerator MapGen;
@@ -83,7 +84,7 @@ public class GameManager : MonoBehaviour {
 			this.players.Add (p);	
 		}
 	}
-
+	
 	// Update is called once per frame
 	void Update () {
 	

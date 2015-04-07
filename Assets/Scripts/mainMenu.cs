@@ -39,6 +39,7 @@ public class mainMenu : MonoBehaviour {
 	public Camera resCam2;
 
 	public int curPlayers = 0;
+	public bool updatedLobby = false;
 
 	public int[] countMapChoices = new int[2];
 
@@ -131,6 +132,7 @@ public class mainMenu : MonoBehaviour {
 		                                   Network.player.ipAddress, 
 		                                  GM.players.Count, GM.gameObject);
 		GM.addPlayer (p);
+		GM.curPlayer = p;
 		RegisterCanvas.enabled = false;
 		LoginCanvas.enabled = false;
 		MainMenuCanvas.enabled = true;
@@ -276,7 +278,7 @@ public class mainMenu : MonoBehaviour {
 	void Update()
 	{
 		//updates the lobby
-		if (LobbyCanvas.enabled == true && curPlayers != GM.players.Count) 
+		if (LobbyCanvas.enabled == true && (curPlayers != GM.players.Count || !updatedLobby) ) 
 		{
 			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
 			if (isMap1Chosen) {
@@ -292,7 +294,8 @@ public class mainMenu : MonoBehaviour {
 			for(int i=0; i<GM.players.Count; i++)
 			{
 				Player p = GM.players[i];
-				GM.networkView.RPC ("addPlayerNet", RPCMode.AllBuffered, 
+				GM.networkView.RPC ("addPlayerNet", 
+				                    RPCMode.AllBuffered, 
 				                    p.getName (),
 				                    p.getPassword(),
 				                    p.getColor(), 
@@ -304,21 +307,32 @@ public class mainMenu : MonoBehaviour {
 			if (GM.isServer) 
 			{
 				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).First();
-				connectedPlayerText[0].text = p.getName ();
-				connectedPlayerMapText[0].text = "Map " + mapChoice.ToString();
+				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
+//				connectedPlayerText[0].text = p.getName ();
+				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
+//				connectedPlayerMapText[0].text = "Map " + mapChoice.ToString();
 				// only counting the joining players.
 				for (int i = 1; i<Network.connections.Length; i++) 
 				{
 					//get the player with the same ipAddress
 					Player playa = GM.players.Where(player=> (player.ipAddress == Network.connections[i].ipAddress)).First();
+					this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, 0, playa.getName());
+//					connectedPlayerText[i].text = playa.getName ();
 
 				}
 			
 				LaunchText.GetComponent<Button> ().enabled = true;	
+				updatedLobby = true;
 			}
 			else
 			{
-
+				for(int i = 0; i<GM.players.Count; i++)
+				{
+					if(GM.players[i].getName () == connectedPlayerText[i].text)
+					{
+						this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, i, "Map " + mapChoice.ToString());
+					}
+				}
 				LaunchText.GetComponent<Button> ().enabled = false;	
 			}
 
@@ -328,5 +342,17 @@ public class mainMenu : MonoBehaviour {
 
 			curPlayers = GM.players.Count;
 		}
+	}
+
+	[RPC]
+	public void changePlayerTextNet(int i, string s)
+	{
+		this.connectedPlayerText [i].text = s;
+	}
+
+	[RPC]
+	public void changePlayerMapTextNet(int i, string s)
+	{
+		this.connectedPlayerMapText [i].text = s;
 	}
 }

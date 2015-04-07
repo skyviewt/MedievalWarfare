@@ -3360,6 +3360,7 @@ MonoBehaviour:
   port: 25000
   isServer: 1
   players: []
+  curPlayer: {fileID: 0}
   finalMapChoice: -1
   MapGen: {fileID: 0}
 --- !u!224 &358982966
@@ -14897,6 +14898,7 @@ GameObject:
   - 114: {fileID: 1715274787}
   - 114: {fileID: 1715274786}
   - 114: {fileID: 1715274790}
+  - 148: {fileID: 1715274791}
   m_Layer: 5
   m_Name: mainMenu
   m_TagString: Untagged
@@ -15028,6 +15030,7 @@ MonoBehaviour:
   resCam1: {fileID: 1659408200}
   resCam2: {fileID: 2122886179}
   curPlayers: 0
+  updatedLobby: 0
   countMapChoices: 0000000000000000
   mapChoice: -1
   _ipInput: {fileID: 754496120}
@@ -15038,6 +15041,18 @@ MonoBehaviour:
   PrefabFire: {fileID: 100000, guid: f17310149bfc34a12ab6541dcf7f0e07, type: 2}
   PrefabLight: {fileID: 100002, guid: e4346959fc02f4657947aec94532eaba, type: 2}
   GM: {fileID: 0}
+--- !u!148 &1715274791
+NetworkView:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1715274785}
+  m_Enabled: 1
+  m_StateSynchronization: 1
+  m_Observed: {fileID: 1715274789}
+  m_ViewID:
+    m_ID: 4
+    m_Type: 1
 --- !u!1 &1715945586
 GameObject:
   m_ObjectHideFlags: 0
