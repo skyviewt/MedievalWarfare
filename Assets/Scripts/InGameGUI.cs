@@ -485,4 +485,24 @@ public class InGameGUI : MonoBehaviour {
 		ClearSelections();
 	}
 
+	public void buildRoadPressed()
+	{
+		Unit u = _Unit.GetComponent<Unit>();
+		Village v = u.getVillage();
+		Tile t = u.getLocation ();
+
+		if (u.getUnitType () != UnitType.PEASANT) {
+			this.displayError ("Only peasants can build roads");
+		} else if (t.checkRoad ()) {
+			this.displayError ("This tile already has a road");
+		} else {
+			//TODO RPC this
+			t.buildRoad ();
+		}
+
+		UnitCanvas.enabled = false;
+		menuUp = false;
+		ClearSelections();
+	}
+
 }

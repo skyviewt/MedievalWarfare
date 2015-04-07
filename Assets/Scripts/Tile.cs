@@ -198,6 +198,7 @@ public class Tile : MonoBehaviour
 	public void buildRoad()
 	{
 		this.isRoad = true;
+		// TODO change tile texture or something
 	}
 
 	public bool checkRoad()

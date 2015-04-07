@@ -147,6 +147,7 @@ public class UnitManager : MonoBehaviour {
 			}
 			else if(tileType == LandType.Grass)
 			{
+				//TODO delay for turn manager
 				uLocation.setLandType(LandType.Meadow);
 				uLocation.prefab = Instantiate (meadowPrefab, new Vector3 (uLocation.point.x, 0, uLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 

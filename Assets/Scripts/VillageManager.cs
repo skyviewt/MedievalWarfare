@@ -99,7 +99,7 @@ public class VillageManager : MonoBehaviour {
 				Tile villageLocation = village.getLocatedAt();
 				Destroy (villageLocation.prefab);
 				villageLocation.setLandType (LandType.Meadow);
-				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 
 				myPlayer.myVillages.Remove (village);
 				Destroy (village.gameObject);
@@ -271,11 +271,11 @@ public class VillageManager : MonoBehaviour {
 
 			if (region.Contains (oldLocation)){
 				tileLocation = oldLocation;
-				hovelLocation = new Vector3(tileLocation.point.x, 0.2f, tileLocation.point.y);		
+				hovelLocation = new Vector3(tileLocation.point.x, 0.1f, tileLocation.point.y);		
 			} else {
 				tileLocation = getTileForRespawn(region);
 				tileLocation.replace (null);
-				hovelLocation = new Vector3(tileLocation.point.x, 0.2f, tileLocation.point.y);
+				hovelLocation = new Vector3(tileLocation.point.x, 0.1f, tileLocation.point.y);
 			}
 
 			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
@@ -481,7 +481,7 @@ public class VillageManager : MonoBehaviour {
 
 		GameObject tower = Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity) as GameObject;
 		tower.transform.localScale = new Vector3 (0.03f,0.03f,0.03f);
-		tower.transform.eulerAngles = new Vector3(0,0,0);
+		tower.transform.eulerAngles = new Vector3(-90,0,0);
 
 		Structure s = tower.GetComponent<Structure> ();
 		t.replace (null);

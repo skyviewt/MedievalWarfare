@@ -257,7 +257,7 @@ public class MapGenerator : MonoBehaviour {
 					Tile location = TilesToReturn[0];
 					//location.setLandType (LandType.Grass);
 					location.networkView.RPC("setLandTypeNet", RPCMode.AllBuffered, (int) LandType.Grass);
-					Vector3 hovelLocation = new Vector3(location.point.x, 0, location.point.y);
+					Vector3 hovelLocation = new Vector3(location.point.x, 0.1f, location.point.y);
 					GameObject hovel = Network.Instantiate(HovelPrefab, hovelLocation, HovelPrefab.transform.rotation, 0) as GameObject;
 					//Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
 					Village newVillage = hovel.GetComponent<Village>();
