@@ -221,7 +221,7 @@ public class mainMenu : MonoBehaviour {
 
 	public void increaseMapChoice1()
 	{
-		countMapChoices [0] += 1;
+		this.networkView.RPC ("increaseMapChoiceNet", RPCMode.AllBuffered, 0);
 		mapChoice = 1;
 		MiniMapCanvas.enabled = false;
 		cam1.enabled = false;
@@ -230,9 +230,15 @@ public class mainMenu : MonoBehaviour {
 		
 	}
 
+	[RPC]
+	public void increaseMapChoiceNet(int i)
+	{
+		this.countMapChoices [i] += 1;
+	}
+
 	public void increaseMapChoice2()
 	{
-		countMapChoices [1] += 1;
+		this.networkView.RPC ("increaseMapChoiceNet", RPCMode.AllBuffered, 1);
 		mapChoice = 2;
 		MiniMapCanvas.enabled = false;
 		cam1.enabled = false;
@@ -278,7 +284,7 @@ public class mainMenu : MonoBehaviour {
 	void Update()
 	{
 		//updates the lobby
-		if ( LobbyCanvas.enabled == true ) 
+		if ( LobbyCanvas.enabled == true && (!updatedLobby || curPlayers != GM.players.Count) ) 
 		{
 			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
 			if (isMap1Chosen) {
@@ -303,7 +309,7 @@ public class mainMenu : MonoBehaviour {
 				                    p.getWins(),
 				                    Network.player.ipAddress);
 			}
-//			Debug.Log (GM.players.Count);
+			Debug.Log (GM.players.Count);
 //			Debug.Log(Network.connections.Length);
 			if (GM.isServer) 
 			{
@@ -317,6 +323,7 @@ public class mainMenu : MonoBehaviour {
 					print ("-----joining players ip-----");
 					Debug.Log (Network.connections[i].ipAddress);
 					//get the player with the same ipAddress
+					Debug.Log (GM.players.Count);
 					for(int j = 0; i<GM.players.Count; j++)
 					{
 						print ("what is j:"+j);
