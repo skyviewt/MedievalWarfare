@@ -9,18 +9,21 @@ public class GameManager : MonoBehaviour {
 	public string ipAddress;
 	public int port = 25000;
 	public bool isServer = true;
-
+	
 	public List<Player> players = new List<Player>();
+	public Graph finalMap = null;
 
 	public int finalMapChoice = -1;
-	public MapGenerator MapGen;
+	public MapGenerator mapGen;
 
 	public Game game;
-	public Graph finalMap = null;
-	
+
+	private VillageManager villageManager;
+
 	// Use this for initialization
 	void Start () 
 	{
+		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager> ();
 	}
 
 	public NetworkConnectionError initGame(string ip, int pPort)
@@ -32,11 +35,11 @@ public class GameManager : MonoBehaviour {
 			print ("in isServer----"); 
 
 
-			MapGen = gameObject.GetComponent<MapGenerator> ();
+			mapGen = gameObject.GetComponent<MapGenerator> ();
 
 			for ( int i = 0; i<2; i++)
 			{
-				MapGen.initMap (i);
+				mapGen.initMap (i);
 			}
 			return NetworkConnectionError.NoError;
 		} else {
@@ -78,6 +81,52 @@ public class GameManager : MonoBehaviour {
 	{
 		return this.players;
 	}
+
+	public void InitializeFinalMap ()
+	{
+		this.finalMap = mapGen.getMap(finalMapChoice);
+		mapGen.initializeColorAndVillagesOnMap(players, finalMapChoice, this.finalMap); // this needs to be RPC
+		mapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
+	}
+
+	public void createNewGame ()
+	{
+		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
+	}
+
+	private void beginNextTurn()
+	{
+		Player p = game.getCurrentPlayer ();
+		List<Village> villagesToUpdate = p.getVillages ();
+		foreach (Village v in villagesToUpdate)
+		{
+			villageManager.updateVillages(v);
+		}
+	}
+
+	//TODO networking
+	public void setNextPlayerInTurnOrder()
+	{
+		int currentTurn = game.getCurrentTurn();
+		int numberOfPlayers = game.getPlayers().Count;
+		List<PlayerStatus> playerStatuses = game.getPlayerStatuses();
+
+		for(int i = 0; i < numberOfPlayers; i++)
+		{
+			int nextPlayerTurn = (currentTurn + i) % numberOfPlayers;
+			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
+			{
+				game.setTurn (nextPlayerTurn);
+				beginNextTurn();
+				break;
+			}
+			else
+			{
+				continue;
+			}
+		}
+	}
+
 
 	[RPC]
 	public void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)

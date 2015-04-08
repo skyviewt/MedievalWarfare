@@ -15,11 +15,10 @@ public enum PlayerStatus
 public class Game : MonoBehaviour
 {
 	private Graph gameMap;
-	private List<Player> players;							//stores the list of players in the game
-	private List<PlayerStatus> playerStatuses;				//stores the status of players in the game
-	private int numberOfPlayers;
+	private List<Player> players;														//stores the list of players in the game
+	private List<PlayerStatus> playerStatuses = new List<PlayerStatus> ();				//stores the status of players in the game
 	private Player currentPlayer;
-	private int currentTurn;								
+	private int currentTurn;
 	
 	//constructor
 	public static Game CreateComponent ( List<Player> participants, Graph map,  GameObject g) 
@@ -27,35 +26,17 @@ public class Game : MonoBehaviour
 		Game theGame = g.AddComponent<Game>();
 		theGame.players = participants;
 		theGame.gameMap = map;
-		theGame.numberOfPlayers = participants.Count;
-		theGame.playerStatuses = new List<PlayerStatus> ();
-		for (int i = 0; i < theGame.numberOfPlayers; i++) 
+		print (theGame.players.Count);
+		for(int i = 0; i < theGame.players.Count; i++) 
 		{
-			theGame.playerStatuses[i] = PlayerStatus.PLAYING;
+			theGame.playerStatuses.Add(PlayerStatus.PLAYING);
 		}
 
 		theGame.setTurn(0);
 		return theGame;
 	}
 	
-	public Player setNextPlayerInTurnOrder()
-	{
-		for(int i = 0; i < players.Count; i++)
-		{
-			int nextPlayerTurn = currentTurn + i;
-			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
-			{
-				setTurn (nextPlayerTurn);
-				return players[currentTurn];
-			}
-			else
-			{
-				continue;
-			}
-		}
-		print ("if we reach this point then there's a bug somewhere.");
-		return null;
-	}
+
 	/********* GETTERS ****************/
 	public List<Player> getPlayers()
 	{
@@ -65,6 +46,20 @@ public class Game : MonoBehaviour
 	public Graph getMap()
 	{
 		return this.gameMap;
+	}
+
+	public int getCurrentTurn()
+	{
+		return this.currentTurn;
+	}
+	public Player getCurrentPlayer()
+	{
+		return this.currentPlayer;
+	}
+
+	public List<PlayerStatus> getPlayerStatuses()
+	{
+		return this.playerStatuses;
 	}
 
 	//Sets the turn to be Player p

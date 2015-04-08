@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -187,19 +187,19 @@ public class mainMenu : MonoBehaviour {
 		ErrorJoinRegisterLoginMsg.enabled = false;
 		if( RegisterUserNameInput.text == "" )
 		{
-			ErrorJoinRegisterLoginMsg.text = "Username cannot be null!";
+			ErrorJoinRegisterLoginMsg.text = "Username field cannot be empty";
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
 		else if( RegisterPassword1.text == "" || RegisterPassword2.text == "" )
 		{
-			ErrorJoinRegisterLoginMsg.text = "Password cannot be null!";
+			ErrorJoinRegisterLoginMsg.text = "Password field cannot be empty";
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
 		else if( RegisterPassword1.text != RegisterPassword2.text )
 		{
-			ErrorJoinRegisterLoginMsg.text = "Passwords does not match";
+			ErrorJoinRegisterLoginMsg.text = "Passwords entered do not match";
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
@@ -266,7 +266,7 @@ public class mainMenu : MonoBehaviour {
 		}
 		else 
 		{
-			ErrorJoinRegisterLoginMsg.text = "The IP address cannot be null!";
+			ErrorJoinRegisterLoginMsg.text = "The IP address cannot be empty";
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
@@ -339,21 +339,6 @@ public class mainMenu : MonoBehaviour {
 	public void showLobby()
 	{
 		LobbyCanvas.enabled = true;
-//		Player p = Player.CreateComponent ("hi", "lo", "123", GM.players.Count+1, GM.gameObject);
-//		GM.players.Add (p);
-
-//		Player p3 = Player.CreateComponent ("jaa", "hoo", "1113", GM.players.Count + 1, GM.gameObject);
-//		GM.players.Add (p3);
-//
-//		Player p4 = Player.CreateComponent ("jdsaa", "hwwoo", "111333", GM.players.Count + 1, GM.gameObject);
-//		GM.players.Add (p4);
-//
-//		Player p5 = Player.CreateComponent ("jdsdsdsaa", "hwwoo", "11133333", GM.players.Count + 1, GM.gameObject);
-//		GM.players.Add (p5);
-//
-//		Player p6 = Player.CreateComponent ("dd", "ho", "1133", GM.players.Count + 1, GM.gameObject);
-//		GM.players.Add (p6);
-
 	}
 
 	[RPC]
@@ -379,17 +364,20 @@ public class mainMenu : MonoBehaviour {
 		if (GM.finalMapChoice != -1) 
 		{	
 			List<Player> players = GM.getPlayers();
-			Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
+			Graph finalMap = GM.mapGen.getMap(GM.finalMapChoice);
 			GM.finalMap = finalMap;
-			GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
+			GM.mapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
 			if(GM.isServer)
 			{
-				GM.MapGen.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
+				GM.mapGen.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
 			}
 			this.networkView.RPC("startLevel", RPCMode.AllBuffered);
 		}
 	}
-	
+	public void launchSavedGamePressed()
+	{
+
+	}
 
 	void Update()
 	{

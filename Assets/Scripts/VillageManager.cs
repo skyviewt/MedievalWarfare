@@ -477,7 +477,8 @@ public class VillageManager : MonoBehaviour {
 	}
 
 	//TODO needs networking
-	public void buildTower(Village v, Tile t){
+	public void buildTower(Village v, Tile t)
+	{
 
 		GameObject tower = Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity) as GameObject;
 		tower.transform.localScale = new Vector3 (0.03f,0.03f,0.03f);
@@ -489,6 +490,62 @@ public class VillageManager : MonoBehaviour {
 		v.addWood (-5);
 
 		//t.gameObject.renderer.material.color = Color.yellow;
+	}
+
+	//TODO prefab drawing/destroying
+	//TODO networking component
+	public void updateVillages(Village v)
+	{
+		List<Tile> controlledRegion = v.getControlledRegion ();
+		foreach (Tile tile in controlledRegion)
+		{
+			LandType type = tile.getLandType();
+			if (type == LandType.Tombstone)
+			{
+				tile.setLandType(LandType.Trees);
+			}
+			
+			Unit unitOnTile = tile.getOccupyingUnit(); //grabs the occupying unit on tile
+			if (unitOnTile != null)
+			{
+				UnitActionType action = unitOnTile.getAction(); //get the action of the unit on tile
+				
+				if (action == UnitActionType.StartCultivating)
+				{
+					unitOnTile.setAction(UnitActionType.FinishCultivating);
+				}
+				if (action == UnitActionType.FinishCultivating)
+				{
+					unitOnTile.setAction(UnitActionType.ReadyForOrders);
+					tile.setLandType(LandType.Meadow);
+				}
+				if (action == UnitActionType.BuildingRoad)
+				{
+					unitOnTile.setAction(UnitActionType.ReadyForOrders);
+					tile.buildRoad();
+				}
+			}
+			
+			if (type == LandType.Grass)
+			{
+				v.addGold(1); //add gold by 1
+				
+			}
+			if (type == LandType.Meadow)
+			{
+				
+				v.addGold(2); //add gold by 2
+			}
+		}
+		
+		int totalWages = v.getTotalWages ();
+		int villageGold = v.getGold ();
+		if (villageGold >= totalWages) { //means have enough money to pay units
+			villageGold = villageGold - totalWages;
+		} 
+		else {
+			v.retireAllUnits();
+		}
 	}
 
 	public void buildCastle(Village v)
@@ -507,8 +564,8 @@ public class VillageManager : MonoBehaviour {
 		}
 	}	
 
-	public void buildCannon(Village v, GameObject go){
+	public void buildCannon(Village v, GameObject go)
+	{
 
 	}
-
 }
