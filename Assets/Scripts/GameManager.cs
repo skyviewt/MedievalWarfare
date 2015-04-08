@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour {
 
 	public void createNewGame ()
 	{
-		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject);
+		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
 	}
 
 	private void beginNextTurn()

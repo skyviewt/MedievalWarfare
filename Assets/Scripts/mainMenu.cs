@@ -368,8 +368,8 @@ public class mainMenu : MonoBehaviour {
 			//GM.finalMap = finalMap;
 			//GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
 			//GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
-			GM.InitializeFinalMap();
 			//GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
+			GM.InitializeFinalMap();
 			GM.createNewGame();
 			this.gameObject.networkView.RPC("startLevel", RPCMode.AllBuffered);
 		}

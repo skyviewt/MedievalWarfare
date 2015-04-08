@@ -15,8 +15,8 @@ public enum PlayerStatus
 public class Game : MonoBehaviour
 {
 	private Graph gameMap;
-	private List<Player> players;							//stores the list of players in the game
-	private List<PlayerStatus> playerStatuses;				//stores the status of players in the game
+	private List<Player> players;														//stores the list of players in the game
+	private List<PlayerStatus> playerStatuses = new List<PlayerStatus> ();				//stores the status of players in the game
 	private Player currentPlayer;
 	private int currentTurn;
 	
@@ -26,11 +26,10 @@ public class Game : MonoBehaviour
 		Game theGame = g.AddComponent<Game>();
 		theGame.players = participants;
 		theGame.gameMap = map;
-		theGame.playerStatuses = new List<PlayerStatus> ();
-		for (int i = 0; i < theGame.players.Count; i++) 
+		print (theGame.players.Count);
+		for(int i = 0; i < theGame.players.Count; i++) 
 		{
-			print ("player count: "+ i);
-			theGame.playerStatuses[i] = PlayerStatus.PLAYING;
+			theGame.playerStatuses.Add(PlayerStatus.PLAYING);
 		}
 
 		theGame.setTurn(0);
