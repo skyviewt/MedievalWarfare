@@ -39,9 +39,6 @@ public class mainMenu : MonoBehaviour {
 	public Camera resCam1;
 	public Camera resCam2;
 
-	public int curPlayers = 0;
-	public bool updatedLobby = false;
-
 	public int[] countMapChoices = new int[2];
 
 	// 1-based
@@ -314,7 +311,7 @@ public class mainMenu : MonoBehaviour {
 
 	public void increaseMapChoice1()
 	{
-		this.gameObject.networkView.RPC ("increaseMapChoiceNet", RPCMode.AllBuffered, 0);
+		this.networkView.RPC ("increaseMapChoiceNet", RPCMode.AllBuffered, 0);
 		mapChoice = 1;
 		MiniMapCanvas.enabled = false;
 		cam1.enabled = false;
@@ -331,7 +328,7 @@ public class mainMenu : MonoBehaviour {
 
 	public void increaseMapChoice2()
 	{
-		this.gameObject.networkView.RPC ("increaseMapChoiceNet", RPCMode.AllBuffered, 1);
+		this.networkView.RPC ("increaseMapChoiceNet", RPCMode.AllBuffered, 1);
 		mapChoice = 2;
 		MiniMapCanvas.enabled = false;
 		cam1.enabled = false;
@@ -380,7 +377,7 @@ public class mainMenu : MonoBehaviour {
 	void Update()
 	{
 		//updates the lobby
-		if ( LobbyCanvas.enabled == true && (!updatedLobby ||  curPlayers != GM.players.Count ) ) 
+		if ( LobbyCanvas.enabled == true ) 
 		{
 			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
 			if (isMap1Chosen) {
@@ -419,7 +416,6 @@ public class mainMenu : MonoBehaviour {
 				}
 			
 				LaunchText.GetComponent<Button> ().enabled = true;	
-				updatedLobby = true;
 			}
 			else
 			{
@@ -437,7 +433,6 @@ public class mainMenu : MonoBehaviour {
 			map1PlayerCount.text = countMapChoices [0].ToString ();
 			map2PlayerCount.text = countMapChoices [1].ToString ();
 
-			curPlayers = GM.players.Count;
 		}
 	}
 
