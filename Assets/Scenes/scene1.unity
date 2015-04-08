@@ -455,7 +455,7 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 2.5999999}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &173362592
@@ -472,7 +472,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: .196078435, g: .196078435, b: .196078435, a: 1}
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 3ce4961425d650e42a4222d73f437545, type: 3}
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -1050,7 +1050,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!223 &578522666
 Canvas:
   m_ObjectHideFlags: 0
@@ -1639,6 +1639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52b78ed05263e4d7ca16ce3e8840cba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitPref: {fileID: 0}
   meadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
 --- !u!4 &800187053
 Transform:
@@ -1916,7 +1917,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30FD(\u2267\u0414\u2266)\u30CE\nIt is your turn now!"
+  m_Text: "\u30FD(\u2267\u0414\u2266)\u30CE\nIT IS YOUR TURN"
 --- !u!222 &959614888
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1973,8 +1974,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
-  m_AnchoredPosition: {x: 2, y: -46.2999992}
-  m_SizeDelta: {x: 83.8000031, y: 30}
+  m_AnchoredPosition: {x: 0, y: -28.7000046}
+  m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &987356062
 MonoBehaviour:
@@ -2042,7 +2043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Sprite: {fileID: 21300000, guid: 9bb8f50cfbe7d174ba9d9d25d51b4e48, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1d594885531caa14ba626cba6647a3ed, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2505,7 +2506,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1107421448
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3272,8 +3273,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 827, y: 39}
+  m_AnchoredPosition: {x: 2, y: 11}
+  m_SizeDelta: {x: 827, y: 64}
   m_Pivot: {x: .5, y: 1}
 --- !u!114 &1428047647
 MonoBehaviour:
