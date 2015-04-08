@@ -403,7 +403,7 @@ public class mainMenu : MonoBehaviour {
 					Debug.Log (Network.connections[i].ipAddress);
 					//get the player with the same ipAddress
 					Debug.Log (GM.players.Count);
-					for(int j = 0; i<GM.players.Count; j++)
+					for(int j = 0; j<GM.players.Count; j++)
 					{
 						print ("what is j:"+j);
 						Player playa = GM.players[j];
