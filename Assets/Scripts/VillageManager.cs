@@ -484,8 +484,7 @@ public class VillageManager : MonoBehaviour {
 		tower.transform.eulerAngles = new Vector3(-90,0,0);
 
 		Structure s = tower.GetComponent<Structure> ();
-		t.replace (null);
-		Destroy (t.prefab);
+		t.replace (tower);
 		t.setStructure (s);
 		v.addWood (-5);
 

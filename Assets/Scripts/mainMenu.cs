@@ -280,7 +280,7 @@ public class mainMenu : MonoBehaviour {
 	void Update()
 	{
 		//updates the lobby
-		if (LobbyCanvas.enabled == true && (curPlayers != GM.players.Count || !updatedLobby) ) 
+		if ( LobbyCanvas.enabled == true ) 
 		{
 			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
 			if (isMap1Chosen) {
@@ -302,28 +302,34 @@ public class mainMenu : MonoBehaviour {
 				                    p.getPassword(),
 				                    p.getColor(), 
 				                    p.getLosses(), 
-				                    p.getWins() );
+				                    p.getWins(),
+				                    Network.player.ipAddress);
 			}
-			Debug.Log (GM.players.Count);
-			Debug.Log(Network.connections.Length);
+//			Debug.Log (GM.players.Count);
+//			Debug.Log(Network.connections.Length);
 			if (GM.isServer) 
 			{
 				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
 				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
-//				connectedPlayerText[0].text = p.getName ();
 				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
-//				connectedPlayerMapText[0].text = "Map " + mapChoice.ToString();
 				// only counting the joining players.
-				for (int i = 1; i<Network.connections.Length; i++) 
+				for (int i = 0; i<Network.connections.Length; i++) 
 				{
 
+//					Debug.Log (i);
+					print ("-----joining players ip-----");
+					Debug.Log (Network.connections[i].ipAddress);
 					//get the player with the same ipAddress
-					Player playa = GM.players.Where(player=> (player.ipAddress == Network.connections[i].ipAddress)).FirstOrDefault();
-//					connectedPlayerText[i].text = playa.getName ();
-					if(playa){
-						this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, 0, playa.getName());
+					for(int j = 0; i<GM.players.Count; j++)
+					{
+						print ("what is j:"+j);
+						Player playa = GM.players[j];
+						if( playa.ipAddress == Network.connections[i].ipAddress )
+						{
+							this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, i+1, playa.getName());
+							break;
+						}
 					}
-					
 				}
 			
 				LaunchText.GetComponent<Button> ().enabled = true;	

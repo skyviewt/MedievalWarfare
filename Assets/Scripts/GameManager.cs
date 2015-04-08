@@ -81,12 +81,14 @@ public class GameManager : MonoBehaviour {
 	}
 
 	[RPC]
-	public void addPlayerNet(string name, string pass, int color, int loss, int win)
+	public void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)
 	{
 		bool isExist = (this.players.Where(player => ((player.getName() == name) && (player.getPassword() == pass) )).Count() > 0);
 		if (!isExist) 
 		{
 			Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
+			p.ipAddress = ip;
+		
 			this.players.Add (p);	
 		}
 	}
