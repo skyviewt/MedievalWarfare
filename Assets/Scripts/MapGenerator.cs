@@ -234,14 +234,14 @@ public class MapGenerator : MonoBehaviour {
 		foreach ( Tile t in map.getVertices() )
 		{
 			int color = rand.Next(0,players.Count+1);
-			//print ("color: "+color);
+			print ("color: "+color);
 			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
 		}
 
 		foreach ( Tile t in map.getVertices() )
 		{
 			// player.count is the neutral color.
-			if ( t.getVisited() == false  && t.getColor() != 0 )
+			if ( t.getVisited() == false  && t.getColor() != players.Count )
 			{
 				List<Tile> TilesToReturn = new List<Tile>();
 				t.setVisited(true);
@@ -252,12 +252,12 @@ public class MapGenerator : MonoBehaviour {
 
 				if( TilesToReturn.Count >= 3 )
 				{
-					Player p = players[color-1];
+					Player p = players[color];
 			
 					Tile location = TilesToReturn[0];
 					//location.setLandType (LandType.Grass);
 					location.networkView.RPC("setLandTypeNet", RPCMode.AllBuffered, (int) LandType.Grass);
-					Vector3 hovelLocation = new Vector3(location.point.x, 0.1f, location.point.y);
+					Vector3 hovelLocation = new Vector3(location.point.x, 0, location.point.y);
 					GameObject hovel = Network.Instantiate(HovelPrefab, hovelLocation, HovelPrefab.transform.rotation, 0) as GameObject;
 					//Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
 					Village newVillage = hovel.GetComponent<Village>();
@@ -294,11 +294,11 @@ public class MapGenerator : MonoBehaviour {
 					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
 				}
 			}
-			if (t.getVillage() == null && t.getColor() != 0)
+			if (t.getVillage() == null && t.getColor() != players.Count)
 			{
 				//t.setColor(players.Count);
 				//t.gameObject.renderer.material.color = Color.white;
-				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 0);
+				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, players.Count);
 			}
 		}
 

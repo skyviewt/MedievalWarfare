@@ -21,7 +21,6 @@ public class VillageManager : MonoBehaviour {
 	public GameObject meadowPrefab;
 	public GameObject hovelPrefab;
 	public GameObject tombPrefab;
-	public GameObject towerPrefab;
 
 	void Update () {
 		if( isInGame && gameGUI == null )
@@ -39,7 +38,7 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType vAction = v.getAction ();
 		if (vType == VillageType.Fort) 
 		{
-			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle ¯\(°_o)/¯");
+			gameGUI.displayError(@"The Fort is your strongest village! ¯\(°_o)/¯");
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
@@ -57,7 +56,7 @@ public class VillageManager : MonoBehaviour {
 	{
 		Village myVillage = newTile.getVillage ();
 		List<Tile> neighbours = newTile.getNeighbours();
-		//int mySize = myVillage.getRegionSize ();
+		int mySize = myVillage.getRegionSize ();
 		Player myPlayer = myVillage.getPlayer ();
 		List<Village> villagesToMerge = new List<Village>();
 		villagesToMerge.Add (myVillage);
@@ -99,7 +98,7 @@ public class VillageManager : MonoBehaviour {
 				Tile villageLocation = village.getLocatedAt();
 				Destroy (villageLocation.prefab);
 				villageLocation.setLandType (LandType.Meadow);
-				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 
 				myPlayer.myVillages.Remove (village);
 				Destroy (village.gameObject);
@@ -271,41 +270,24 @@ public class VillageManager : MonoBehaviour {
 
 			if (region.Contains (oldLocation)){
 				tileLocation = oldLocation;
-				hovelLocation = new Vector3(tileLocation.point.x, 0.1f, tileLocation.point.y);		
+				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);		
 			} else {
 				tileLocation = getTileForRespawn(region);
 				tileLocation.replace (null);
-				hovelLocation = new Vector3(tileLocation.point.x, 0.1f, tileLocation.point.y);
+				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);
 			}
 
-			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
-			Village v = newTown.GetComponent<Village>();
+			GameObject hovel = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
+			Village v = hovel.GetComponent<Village>();
 			v.addRegion (region); //adds T<>V and any U<>V
 			v.setLocation (tileLocation);
 			p.addVillage(v);
 			v.setControlledBy(p);
 
 			if (region.Contains (oldLocation)){
-				VillageType vType = villageToSplit.getMyType();
-				v.setMyType(vType);
-				if (vType == VillageType.Hovel) 
-				{
-					newTown.transform.FindChild("Hovel").gameObject.SetActive (true);
-					newTown.transform.FindChild("Town").gameObject.SetActive (false);
-					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
-				}
-				else if (vType == VillageType.Town) 
-				{
-					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
-					newTown.transform.FindChild("Town").gameObject.SetActive (true);
-					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
-				}
-				else if (vType == VillageType.Fort) 
-				{					
-					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
-					newTown.transform.FindChild("Town").gameObject.SetActive (false);
-					newTown.transform.FindChild("Fort").gameObject.SetActive (true);
-				}
+				v.setMyType(villageToSplit.getMyType());
+				v.upgrade (); // switches active prefab to current type
+				v.addWood (8); // just cuz upgrade removes wood
 			}
 
 			v.addGold(splitGold);
@@ -473,99 +455,6 @@ public class VillageManager : MonoBehaviour {
 		} else {
 			gameGUI.displayError(@"You don't have enough gold for a knight. ¯\(°_o)/¯");
 		}
-
-	}
-
-	//TODO needs networking
-	public void buildTower(Village v, Tile t)
-	{
-
-		GameObject tower = Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity) as GameObject;
-		tower.transform.localScale = new Vector3 (0.03f,0.03f,0.03f);
-		tower.transform.eulerAngles = new Vector3(-90,0,0);
-
-		Structure s = tower.GetComponent<Structure> ();
-		t.replace (tower);
-		t.setStructure (s);
-		v.addWood (-5);
-
-		//t.gameObject.renderer.material.color = Color.yellow;
-	}
-
-	//TODO prefab drawing/destroying
-	//TODO networking component
-	public void updateVillages(Village v)
-	{
-		List<Tile> controlledRegion = v.getControlledRegion ();
-		foreach (Tile tile in controlledRegion)
-		{
-			LandType type = tile.getLandType();
-			if (type == LandType.Tombstone)
-			{
-				tile.setLandType(LandType.Trees);
-			}
-			
-			Unit unitOnTile = tile.getOccupyingUnit(); //grabs the occupying unit on tile
-			if (unitOnTile != null)
-			{
-				UnitActionType action = unitOnTile.getAction(); //get the action of the unit on tile
-				
-				if (action == UnitActionType.StartCultivating)
-				{
-					unitOnTile.setAction(UnitActionType.FinishCultivating);
-				}
-				if (action == UnitActionType.FinishCultivating)
-				{
-					unitOnTile.setAction(UnitActionType.ReadyForOrders);
-					tile.setLandType(LandType.Meadow);
-				}
-				if (action == UnitActionType.BuildingRoad)
-				{
-					unitOnTile.setAction(UnitActionType.ReadyForOrders);
-					tile.buildRoad();
-				}
-			}
-			
-			if (type == LandType.Grass)
-			{
-				v.addGold(1); //add gold by 1
-				
-			}
-			if (type == LandType.Meadow)
-			{
-				
-				v.addGold(2); //add gold by 2
-			}
-		}
-		
-		int totalWages = v.getTotalWages ();
-		int villageGold = v.getGold ();
-		if (villageGold >= totalWages) { //means have enough money to pay units
-			villageGold = villageGold - totalWages;
-		} 
-		else {
-			v.retireAllUnits();
-		}
-	}
-
-	public void buildCastle(Village v)
-	{
-		int vWood = v.getWood ();
-		VillageType vType = v.getMyType ();
-		VillageActionType vAction = v.getAction ();
-		if (vType != VillageType.Fort) {
-			gameGUI.displayError (@"Upgrade to a Fort before building a Castle");
-		} else if (vWood < 12) {
-			gameGUI.displayError (@"Castles require more lumber (12)");
-		} else if (vAction != VillageActionType.ReadyForOrders) {
-			gameGUI.displayError (@"You cant queue build orders :/");
-		} else {
-			v.buildCastle();
-		}
-	}	
-
-	public void buildCannon(Village v, GameObject go)
-	{
 
 	}
 }

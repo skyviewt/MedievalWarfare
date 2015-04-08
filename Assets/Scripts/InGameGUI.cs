@@ -20,14 +20,13 @@ public class InGameGUI : MonoBehaviour {
 	public GameObject UnitPrefab;
 
 	//selections
-	public GameObject _Village;
-	public GameObject _Unit;
-	public GameObject _Tile;
+	private GameObject _Village;
+	private GameObject _Unit;
+	private GameObject _Tile;
 	private GameObject _WoodValue;
 	private GameObject _GoldValue;
 
-	public bool _isAUnitSelected;
-	public bool _isVillageSelected;
+	private bool _isAUnitSelected;
 
 	public Text _WoodText;
 	public Text _GoldText;
@@ -36,12 +35,10 @@ public class InGameGUI : MonoBehaviour {
 	public Text _ErrorText;
 	public Transform EndButton;
 
-	private Game _game;
 	private Tile _move;
 
 	private VillageManager villageManager;
 	private UnitManager unitManager;
-	private GameManager gameManager;
 
 	private bool menuUp;
 	// Use this for initialization
@@ -51,7 +48,6 @@ public class InGameGUI : MonoBehaviour {
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		villageManager.isInGame = true;
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
-		gameManager = GameObject.Find("preserveGM").GetComponent<GameManager> ();
 		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
@@ -98,8 +94,8 @@ public class InGameGUI : MonoBehaviour {
 
 	public void endTurnPressed()
 	{
+		//turnOrder = (turnOrder+1)%2;
 		//disableAllCanvases ();
-		gameManager.setNextPlayerInTurnOrder ();
 		gameObject.networkView.RPC ("incrementTurnOrderNet", RPCMode.AllBuffered);
 	}
 	private void disableAllCanvases()
@@ -176,15 +172,6 @@ public class InGameGUI : MonoBehaviour {
 	}
 
 	//Functions for when a Unit is selected
-	public void cultivatePressed()
-	{
-		Unit u = _Unit.GetComponent<Unit>();
-
-		unitManager.cultivateMeadow(u);
-
-		UnitCanvas.enabled = false;
-		menuUp = false;
-	}
 	public void unitPressed()
 	{
 		UnitCanvas.enabled = true;
@@ -326,8 +313,6 @@ public class InGameGUI : MonoBehaviour {
 		_move = null;
 		_Tile = null;
 		_isAUnitSelected = false;
-		_Village = null;
-		_isVillageSelected = false;
 	}
 	// Update is called once per frame
 	void Update()
@@ -389,30 +374,23 @@ public class InGameGUI : MonoBehaviour {
 					}
 					case "Grass":
 					{
-						if (_isAUnitSelected == true){
-							ErrorCanvas.enabled = true;
-							validateMove(hit);
-						} else if (_isVillageSelected==true){
-							ErrorCanvas.enabled = true;
-							validateBuild(hit);
-						} else {
+						if(_isAUnitSelected == false)
+						{
 							_Tile = hit.collider.gameObject;
 							Tile t = _Tile.GetComponent<Tile>();
 							Village v = t.getVillage ();
-							if (v!=null){
-								Debug.Log(v);
-								int redrawWood = v.getWood();
-								int redrawGold = v.getGold();
-								int redrawRegion = v.getRegionSize();
-								int redrawUnits = v.getUnitSize();
-								_WoodText.text = redrawWood.ToString();
-								_GoldText.text = redrawGold.ToString();
-								_RegionText.text = redrawRegion.ToString();
-								_UnitsText.text = redrawUnits.ToString();
-							}
+							Debug.Log(v);
+							int redrawWood = v.getWood();
+							int redrawGold = v.getGold();
+							int redrawRegion = v.getRegionSize();
+							int redrawUnits = v.getUnitSize();
+							_WoodText.text = redrawWood.ToString();
+							_GoldText.text = redrawGold.ToString();
+							_RegionText.text = redrawRegion.ToString();
+							_UnitsText.text = redrawUnits.ToString();
 						}
-
-						ClearSelections();
+						ErrorCanvas.enabled = false;
+						validateMove(hit);
 						break;
 					}
 				}
@@ -446,88 +424,6 @@ public class InGameGUI : MonoBehaviour {
 			}
 		}
 
-	}
-
-	public void buildTowerPressed()
-	{
-		VillageCanvas.enabled = false;
-		Village v = _Village.GetComponent<Village> ();
-		if (v.getWood () >= 5) {
-			_isVillageSelected = true;
-			this.displayError ("Please select an empty tile to build on");
-		} else {
-			this.displayError ("You need at least 5 wood to build a tower");
-		}
-		menuUp = false;
-	}
-
-	void validateBuild(RaycastHit hit)
-	{
-		//print ("in validateBuild");
-		//print (_isVillageSelected);
-		if (_isVillageSelected && _Village.GetComponent<Village> ().getAction() == VillageActionType.ReadyForOrders) 
-		{
-			//print ("inside inside validate build");
-			Village v = _Village.GetComponent<Village> ();
-			_Tile = hit.collider.gameObject;
-			Tile selection = _Tile.GetComponent<Tile> ();
-			if (!v.getControlledRegion().Contains (selection)){
-				this.displayError ("You must build inside your controlled region");
-			} else if (selection.getStructure ()!=null){
-				this.displayError ("There is already a tower there");
-			} else if (selection.getOccupyingUnit()!=null){
-				this.displayError ("We arent building homes! A unit is standing there");
-			} else if (selection == v.getLocatedAt()){
-				this.displayError ("Towers go AROUND your village");
-			} else {
-				villageManager.buildTower(v, selection);
-			}
-			//selection.gameObject.renderer.material.color = Color.yellow;
-		}
-		ClearSelections();
-	}
-
-	public void buildRoadPressed()
-	{
-		Unit u = _Unit.GetComponent<Unit>();
-		//Village v = u.getVillage();
-		Tile t = u.getLocation ();
-		ErrorCanvas.enabled = true;
-		if (u.getUnitType () != UnitType.PEASANT) {
-			this.displayError ("Only peasants can build roads");
-		} else if (t.checkRoad ()) {
-			this.displayError ("This tile already has a road");
-		} else {
-			//TODO RPC this, delay until next turn
-			t.buildRoad ();
-			u.setAction(UnitActionType.BuildingRoad);
-		}
-
-		UnitCanvas.enabled = false;
-		menuUp = false;
-		ClearSelections();
-	}
-
-	public void buildCastlePressed()
-	{
-		Village v = _Village.GetComponent<Village> ();
-		villageManager.buildCastle (v);
-		int redrawWood = v.getWood();
-		_WoodText.text = redrawWood.ToString();
-		VillageCanvas.enabled = false;
-		menuUp = false;
-	}
-
-	public void buildCannonPressed()
-	{
-		Village v = _Village.GetComponent<Village> ();
-		villageManager.buildCannon (v,UnitPrefab);
-		int redrawUnits = v.getUnitSize ();
-		int redrawGold = v.getGold();
-		_UnitsText.text = redrawUnits.ToString();
-		_GoldText.text = redrawGold.ToString();
-		VillageCanvas.enabled = false;
-		menuUp = false;
 	}
 
 }

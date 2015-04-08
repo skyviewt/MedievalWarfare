@@ -12,10 +12,6 @@ public class mainMenu : MonoBehaviour {
 	public Canvas MiniMapCanvas;
 	public Canvas MainMenuCanvas;
 	public Canvas LobbyCanvas;
-	public Canvas LoginCanvas;
-	public Canvas RegisterCanvas;
-	public Canvas LoginBoxCanvas;
-	public Canvas ErrorCanvas;
 	public Transform HostText;
 	public Transform JoinText;
 	public Transform StatsText;
@@ -24,7 +20,7 @@ public class mainMenu : MonoBehaviour {
 	public Transform LaunchText;
 	public Text ErrorLobbyMsg;
 
-	public Text ErrorJoinRegisterLoginMsg;
+	public Text ErrorJoinMsg;
 
 	public List<Text> connectedPlayerText;
 	public List<Text> connectedPlayerMapText;
@@ -47,13 +43,6 @@ public class mainMenu : MonoBehaviour {
 	public Text _ipInput;
 	public Text _portInput;
 
-	public Text RegisterUserNameInput;
-	public Text RegisterPassword1;
-	public Text RegisterPassword2;
-
-	public Text LoginUserName;
-	public Text LoginPassword;
-
 	// Elements
 	public GameObject PrefabFire;
 	public GameObject PrefabLight;
@@ -65,21 +54,17 @@ public class mainMenu : MonoBehaviour {
 		Instantiate(PrefabFire);
 		Instantiate(PrefabLight);
 		GM = GameObject.Find("perserveGM").GetComponent<GameManager>();
-		LoginCanvas.enabled = true;
-		MainMenuCanvas.enabled = false;
+		MainMenuCanvas.enabled = true;
 		ExitCanvas.enabled = false;
 		JoinGameCanvas.enabled = false;
 		MiniMapCanvas.enabled = false;
 		LobbyCanvas.enabled = false;
-		RegisterCanvas.enabled = false;
-		LoginBoxCanvas.enabled = false;
-		ErrorCanvas.enabled = true;
 		cam1.enabled = false;
 		cam2.enabled = false;
 		resCam1.enabled = false;
 		resCam2.enabled = false;
 		ErrorLobbyMsg.enabled = false;
-		ErrorJoinRegisterLoginMsg.enabled = false;
+		ErrorJoinMsg.enabled = false;
 		LaunchText.GetComponent<Button>().enabled = false;
 	}
 
@@ -96,121 +81,6 @@ public class mainMenu : MonoBehaviour {
 		MainMenuCanvas.enabled = true;
 		showStartGameButtons ();
 	}
-
-
-	public void registerButtonPressed()
-	{
-		RegisterCanvas.enabled = true;
-	}
-
-	public void loginButtonPressed()
-	{
-		LoginBoxCanvas.enabled = true;
-	}
-
-	public void actualLoginPressed()
-	{
-		ErrorJoinRegisterLoginMsg.enabled = false;
-		if( LoginUserName.text == "" )
-		{
-			ErrorJoinRegisterLoginMsg.text = "Username cannot be null!";
-			ErrorJoinRegisterLoginMsg.enabled = true;
-			return;
-		}
-		else if( LoginPassword.text == "" )
-		{
-			ErrorJoinRegisterLoginMsg.text = "Password cannot be null!";
-			ErrorJoinRegisterLoginMsg.enabled = true;
-			return;
-		}
-		WWWForm form = new WWWForm();
-		form.AddField("user", LoginUserName.text);
-		form.AddField("password", LoginPassword.text);
-		WWW w = new WWW("http://medievalwarfare.site90.net/login.php", form);
-		StartCoroutine(login(w));
-	}
-
-	public void returnToLoginPressed()
-	{
-		ErrorJoinRegisterLoginMsg.enabled = false;
-		LoginBoxCanvas.enabled = false;
-		RegisterCanvas.enabled = false;
-		LoginCanvas.enabled = true;
-	}
-
-	IEnumerator login(WWW w)
-	{
-		ErrorJoinRegisterLoginMsg.enabled = false;
-		yield return w;
-		if (w.error == null)
-		{
-			if (w.text == "login-SUCCESS")
-			{
-				LoginCanvas.enabled = false;
-				LoginBoxCanvas.enabled = false;
-				MainMenuCanvas.enabled = true;
-				showStartGameButtons ();
-			}
-			else
-			{
-				ErrorJoinRegisterLoginMsg.text = w.text;
-				ErrorJoinRegisterLoginMsg.enabled = true;
-			}
-		}
-		else
-		{
-			ErrorJoinRegisterLoginMsg.text = "ERROR: " + w.error;
-			ErrorJoinRegisterLoginMsg.enabled = true;
-		}
-	}
-
-	IEnumerator registerFunc(WWW w)
-	{
-		yield return w;
-		if (w.error == null)
-		{
-			ErrorJoinRegisterLoginMsg.text = w.text;
-			Debug.Log (w.text);
-			ErrorJoinRegisterLoginMsg.enabled = true;
-		}
-		else
-		{
-			ErrorJoinRegisterLoginMsg.text += "ERROR: " + w.error;
-			Debug.Log (w.error);
-			ErrorJoinRegisterLoginMsg.enabled = true;
-		}
-
-	}
-
-	public void actualRegistrationPressed()
-	{
-		ErrorJoinRegisterLoginMsg.enabled = false;
-		if( RegisterUserNameInput.text == "" )
-		{
-			ErrorJoinRegisterLoginMsg.text = "Username field cannot be empty";
-			ErrorJoinRegisterLoginMsg.enabled = true;
-			return;
-		}
-		else if( RegisterPassword1.text == "" || RegisterPassword2.text == "" )
-		{
-			ErrorJoinRegisterLoginMsg.text = "Password field cannot be empty";
-			ErrorJoinRegisterLoginMsg.enabled = true;
-			return;
-		}
-		else if( RegisterPassword1.text != RegisterPassword2.text )
-		{
-			ErrorJoinRegisterLoginMsg.text = "Passwords entered do not match";
-			ErrorJoinRegisterLoginMsg.enabled = true;
-			return;
-		}
-		WWWForm form = new WWWForm();
-		form.AddField("user", RegisterUserNameInput.text);
-		form.AddField("password", RegisterPassword1.text);
-		form.AddField ("ipaddress", Network.player.ipAddress);
-		WWW w = new WWW("http://medievalwarfare.site90.net/register.php", form);
-		StartCoroutine(registerFunc(w));
-	}
-
 
 	public void showStartGameButtons()
 	{
@@ -238,24 +108,16 @@ public class mainMenu : MonoBehaviour {
 
 	public void joinGameButtonPressed()
 	{
-		ErrorJoinRegisterLoginMsg.enabled = false;
+		ErrorJoinMsg.enabled = false;
 		hideStartGameButtons ();
 		MainMenuCanvas.enabled = false;
 		JoinGameCanvas.enabled = true;
-		GM.gameObject.networkView.RPC ("addPlayerNet", 
-		                    RPCMode.AllBuffered, 
-		                    LoginUserName.text,
-		                    LoginPassword.text,
-		                    GM.players.Count+1, 
-		                    0, 
-		                    0,
-		                    Network.player.ipAddress);
 		GM.setIsServer (false);
 	}
 
 	public void connectButtonPressed()
 	{
-		ErrorJoinRegisterLoginMsg.enabled = false;
+		ErrorJoinMsg.enabled = false;
 
 		print(_ipInput.text);
 		if (_ipInput.text != "")
@@ -267,15 +129,15 @@ public class mainMenu : MonoBehaviour {
 
 			if(res != NetworkConnectionError.NoError)
 			{
-				ErrorJoinRegisterLoginMsg.text = res.ToString();
-				ErrorJoinRegisterLoginMsg.enabled = true;
+				ErrorJoinMsg.text = res.ToString();
+				ErrorJoinMsg.enabled = true;
 				return;
 			}
 		}
 		else 
 		{
-			ErrorJoinRegisterLoginMsg.text = "The IP address cannot be empty";
-			ErrorJoinRegisterLoginMsg.enabled = true;
+			ErrorJoinMsg.text = "The IP address cannot be null!";
+			ErrorJoinMsg.enabled = true;
 			return;
 		}
 		showMiniMapMenu ();
@@ -285,16 +147,6 @@ public class mainMenu : MonoBehaviour {
 	{
 		GM.setIsServer (true);
 		GM.initGame (GM.ipAddress, GM.port);
-
-	
-		GM.gameObject.networkView.RPC ("addPlayerNet", 
-		                    RPCMode.AllBuffered, 
-		                    LoginUserName.text,
-		                    LoginPassword.text,
-		                    GM.players.Count+1, 
-		                    0, 
-		                    0,
-		                    Network.player.ipAddress);
 		showMiniMapMenu ();
 	}
 
@@ -311,7 +163,7 @@ public class mainMenu : MonoBehaviour {
 
 	public void increaseMapChoice1()
 	{
-		this.networkView.RPC ("increaseMapChoiceNet", RPCMode.AllBuffered, 0);
+		countMapChoices [0] += 1;
 		mapChoice = 1;
 		MiniMapCanvas.enabled = false;
 		cam1.enabled = false;
@@ -320,15 +172,9 @@ public class mainMenu : MonoBehaviour {
 		
 	}
 
-	[RPC]
-	public void increaseMapChoiceNet(int i)
-	{
-		this.countMapChoices [i] += 1;
-	}
-
 	public void increaseMapChoice2()
 	{
-		this.networkView.RPC ("increaseMapChoiceNet", RPCMode.AllBuffered, 1);
+		countMapChoices [1] += 1;
 		mapChoice = 2;
 		MiniMapCanvas.enabled = false;
 		cam1.enabled = false;
@@ -341,8 +187,7 @@ public class mainMenu : MonoBehaviour {
 		LobbyCanvas.enabled = true;
 	}
 
-	[RPC]
-	public void startLevel()
+	public void StartLevel()
 	{
 		Application.LoadLevel("scene1");
 	}
@@ -359,97 +204,55 @@ public class mainMenu : MonoBehaviour {
 		}
 	}
 
-	public void launchGamePressed()
+	public void lauchGamePressed()
 	{
 		if (GM.finalMapChoice != -1) 
-		{	
-			//List<Player> players = GM.getPlayers();
-			//Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
-			//GM.finalMap = finalMap;
-			//GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
-			//GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
-			//GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
-			GM.InitializeFinalMap();
-			GM.createNewGame();
-			this.gameObject.networkView.RPC("startLevel", RPCMode.AllBuffered);
+		{
+			GM.finalMap = GM.MapGen.getMap(GM.finalMapChoice);
+			GM.MapGen.initializeColorAndVillagesOnMap(GM.players, GM.finalMapChoice, GM.finalMap);
+			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
+			StartLevel();
 		}
-	}
-	public void launchSavedGamePressed()
-	{
 
 	}
+	
 
 	void Update()
 	{
-		//updates the lobby
-		if ( LobbyCanvas.enabled == true ) 
+		if( LobbyCanvas.enabled == true )
 		{
+			print ("in Update");
 			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
-			if (isMap1Chosen) {
-					resCam1.enabled = true;	
-					chosenMapText.text = "Map 1";
-					GM.finalMapChoice = 0;
-			} else {
-					resCam2.enabled = true;	
-					chosenMapText.text = "Map 2";
-					GM.finalMapChoice = 1;
-			}
-		
-			if (GM.isServer) 
+			if (isMap1Chosen) 
 			{
-				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
-				this.gameObject.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
-				this.gameObject.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
-				// only counting the joining players.
-				for (int i = 0; i<Network.connections.Length; i++) 
-				{
-
-					print ("-----joining players ip-----");
-					Debug.Log (Network.connections[i].ipAddress);
-					//get the player with the same ipAddress
-					Debug.Log (GM.players.Count);
-					for(int j = 0; j<GM.players.Count; j++)
-					{
-						print ("what is j:"+j);
-						Player playa = GM.players[j];
-						if( playa.ipAddress == Network.connections[i].ipAddress )
-						{
-							this.gameObject.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, i+1, playa.getName());
-							break;
-						}
-					}
-				}
-			
-				LaunchText.GetComponent<Button> ().enabled = true;	
-			}
-			else
+				resCam1.enabled = true;	
+				chosenMapText.text = "Map 1";
+				GM.finalMapChoice = 0;
+			} 
+			else 
 			{
-				for(int i = 0; i<GM.players.Count; i++)
-				{
-					if(GM.players[i].getName () == connectedPlayerText[i].text)
-					{
-						this.gameObject.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, i, "Map " + mapChoice.ToString());
-					}
-				}
-				LaunchText.GetComponent<Button> ().enabled = false;	
+				resCam2.enabled = true;	
+				chosenMapText.text = "Map 2";
+				GM.finalMapChoice = 1;
 			}
 
+			// only counting the joining players.
+			for(int i = 0; i<GM.players.Count; i++)
+			{
+				print (GM.players[i].getName());
+				connectedPlayerText[i].text = GM.players[i].getName();
 
-			map1PlayerCount.text = countMapChoices [0].ToString ();
-			map2PlayerCount.text = countMapChoices [1].ToString ();
-
+//				if(Network.player.ipAddress == Network.connections[0].ipAddress)
+//				{
+//					connectedPlayerMapText[i+1].text = "Map " + mapChoice.ToString ();
+//				}
+			}
 		}
-	}
-
-	[RPC]
-	public void changePlayerTextNet(int i, string s)
-	{
-		this.connectedPlayerText [i].text = s;
-	}
-
-	[RPC]
-	public void changePlayerMapTextNet(int i, string s)
-	{
-		this.connectedPlayerMapText [i].text = s;
+		if (GM.isServer) 
+		{
+			LaunchText.GetComponent<Button>().enabled = true;	
+		}
+		map1PlayerCount.text = countMapChoices [0].ToString ();
+		map2PlayerCount.text = countMapChoices [1].ToString ();
 	}
 }

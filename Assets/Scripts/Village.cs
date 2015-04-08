@@ -27,23 +27,19 @@ public class Village : MonoBehaviour {
 	private Tile locatedAt;
 	private List<Unit> supportedUnits;
 	private VillageType myType;
-	public VillageActionType myAction;
+	private VillageActionType myAction;
 	private int gold;
 	private int wood;
 	private Shader outline;
 	private VillageManager vm;
-	public int wage;
-	public int health;
-
+	
 	// Use this for initialization
 	void Start()
 	{
 		outline = Shader.Find("Glow");
 		GameObject go = GameObject.Find("VillageManager");
 		vm = go.GetComponent<VillageManager> ();
-		//Debug.Log (vm);
-		wage = 0;
-		health = 1;
+		Debug.Log (vm);
 	}
 	
 	// Update is called once per frame
@@ -321,14 +317,12 @@ public class Village : MonoBehaviour {
 			this.transform.FindChild("Hovel").gameObject.SetActive (false);
 			this.transform.FindChild("Town").gameObject.SetActive (true);
 			setMyType (VillageType.Town);
-			health = 2;
 		}
 		else if (myType == VillageType.Town) 
 		{
 			transform.FindChild("Town").gameObject.SetActive (false);
 			transform.FindChild("Fort").gameObject.SetActive (true);
 			setMyType (VillageType.Fort);
-			health = 5;
 		}
 	}
 	//sets gold to 0 and returns the previous gold value
@@ -363,15 +357,4 @@ public class Village : MonoBehaviour {
 		controlledBy = pls [playerIndex];
 	}
 
-	public void buildCastle(){
-		wood -= 12;
-		wage = 80;
-		health = 10;
-		this.transform.FindChild("Hovel").gameObject.SetActive (false);
-		this.transform.FindChild("Town").gameObject.SetActive (false);
-		this.transform.FindChild("Fort").gameObject.SetActive (false);
-		this.transform.FindChild("Castle").gameObject.SetActive (true);
-		setMyType (VillageType.Castle);
-	}
-	
 }

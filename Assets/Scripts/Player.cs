@@ -13,7 +13,6 @@ public class Player : MonoBehaviour{
 	public List<Village> myVillages;
 	private Game aGame;
 	private int color;
-	public string ipAddress;
 
 	//constructor
 	public static Player CreateComponent ( string pName, string pPass, int pWins, int pLosses, int pColor, GameObject g ) 
@@ -29,15 +28,13 @@ public class Player : MonoBehaviour{
 	}
 
 
-	public static Player CreateComponent ( string pName, string pPass, string ipAddress, int color, GameObject g ) 
+	public static Player CreateComponent ( string pName, string pPass, GameObject g ) 
 	{
 		Player thePlayer = g.AddComponent<Player>();
 		thePlayer.username = pName;
 		thePlayer.password = pPass;
 		thePlayer.wins = 0;
 		thePlayer.losses = 0;
-		thePlayer.ipAddress = ipAddress;
-		thePlayer.color = color;
 		thePlayer.myVillages = new List<Village> ();
 		return thePlayer;
 	}
@@ -48,10 +45,10 @@ public class Player : MonoBehaviour{
 		myVillages = new List<Village>();
 	}
 	
-	public void initPlayer(string pName, string pPass, int pColor){
+	public void initPlayer(string pName, string pPass, int color){
 		username = pName;
 		password = pPass;
-		color = pColor;
+		color = color;
 	}
 	[RPC]
 	void addVillageNet(NetworkViewID villageID){
@@ -88,10 +85,6 @@ public class Player : MonoBehaviour{
 	public string getName()
 	{
 		return username;
-	}
-	public string getPassword()
-	{
-		return password;
 	}
 	public void addVillage(Village v)
 	{

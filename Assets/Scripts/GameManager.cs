@@ -9,21 +9,17 @@ public class GameManager : MonoBehaviour {
 	public string ipAddress;
 	public int port = 25000;
 	public bool isServer = true;
-	
-	public List<Player> players = new List<Player>();
-	public Graph finalMap = null;
+	public List<Player> players;
 
 	public int finalMapChoice = -1;
-	public MapGenerator mapGen;
 
-	public Game game;
+	public MapGenerator MapGen;
 
-	private VillageManager villageManager;
-
+	public Graph finalMap = null;
+	
 	// Use this for initialization
 	void Start () 
 	{
-		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager> ();
 	}
 
 	public NetworkConnectionError initGame(string ip, int pPort)
@@ -33,13 +29,28 @@ public class GameManager : MonoBehaviour {
 
 			Network.InitializeServer (32, port);
 			print ("in isServer----"); 
+			Player p1 = Player.CreateComponent ("Sky", "123", gameObject);
+			p1.setColor(0);
+			Player p2 = Player.CreateComponent ("Joerg", "456", gameObject);
+			p2.setColor(1);
 
+//			gameObject.networkView.RPC ("initPlayers", RPCMode.AllBuffered);
 
-			mapGen = gameObject.GetComponent<MapGenerator> ();
+//			Player[] pls = gameObject.GetComponents<Player>();
+			List<Player> participants = new List<Player> ();
+//			participants.Add (pls[0]);
+//			participants.Add (pls[1]);
+
+			participants.Add (p1);
+			participants.Add (p2);
+			// to get hold of the players
+			this.players = participants;
+
+			MapGen = gameObject.GetComponent<MapGenerator> ();
 
 			for ( int i = 0; i<2; i++)
 			{
-				mapGen.initMap (i);
+				MapGen.initMap (i);
 			}
 			return NetworkConnectionError.NoError;
 		} else {
@@ -71,77 +82,16 @@ public class GameManager : MonoBehaviour {
 	{
 		return this.port;
 	}
-	
-	public void addPlayer(Player p)
-	{
-		this.players.Add (p);
-	}
-
-	public List<Player> getPlayers()
-	{
-		return this.players;
-	}
-
-	public void InitializeFinalMap ()
-	{
-		this.finalMap = mapGen.getMap(finalMapChoice);
-		mapGen.initializeColorAndVillagesOnMap(players, finalMapChoice, this.finalMap); // this needs to be RPC
-		mapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
-	}
-
-	public void createNewGame ()
-	{
-		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
-	}
-
-	private void beginNextTurn()
-	{
-		Player p = game.getCurrentPlayer ();
-		List<Village> villagesToUpdate = p.getVillages ();
-		foreach (Village v in villagesToUpdate)
-		{
-			villageManager.updateVillages(v);
-		}
-	}
-
-	//TODO networking
-	public void setNextPlayerInTurnOrder()
-	{
-		int currentTurn = game.getCurrentTurn();
-		int numberOfPlayers = game.getPlayers().Count;
-		List<PlayerStatus> playerStatuses = game.getPlayerStatuses();
-
-		for(int i = 0; i < numberOfPlayers; i++)
-		{
-			int nextPlayerTurn = (currentTurn + i) % numberOfPlayers;
-			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
-			{
-				game.setTurn (nextPlayerTurn);
-				beginNextTurn();
-				break;
-			}
-			else
-			{
-				continue;
-			}
-		}
-	}
 
 
 	[RPC]
-	public void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)
-	{
-		bool isExist = (this.players.Where(player => ((player.getName() == name) && (player.getPassword() == pass) )).Count() > 0);
-		Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
+	void initPlayers(){
+		Player[] pls = gameObject.GetComponents<Player>();
+		pls [0].initPlayer ("P1", "Pass", 0);
+		pls [1].initPlayer ("P2", "Pass", 1);
 
-		if (!isExist && !players.Contains( p )) 
-		{
-			p.ipAddress = ip;
-			
-			this.players.Add (p);	
-		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 	

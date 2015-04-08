@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,6 @@ using System.Linq;
 [System.Serializable]
 public class UnitManager : MonoBehaviour {
 
-	public GameObject meadowPrefab;
 	public GameObject curEffect;
 	public GameObject attackEffect1;
 	public GameObject attackEffect2;
@@ -14,7 +13,6 @@ public class UnitManager : MonoBehaviour {
 	public TileManager tileManager;
 	public InGameGUI gameGUI;
 	public readonly int TEN = 10;
-
 	// Use this for initialization
 
 	void Start () {
@@ -72,10 +70,11 @@ public class UnitManager : MonoBehaviour {
 				}
 				else
 				{
-					// quit if tile is guarded by unit or tower
+					// quit if tile is guarded
+					//TODO check for watch towers
 					bool guarded = tileManager.checkNeighboursForGuards(dest, unit);
 					if (guarded){
-						gameGUI.displayError (@"That area is being protected");
+						gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
 						return;
 					}
 
@@ -83,15 +82,15 @@ public class UnitManager : MonoBehaviour {
 					// if there is any enemy unit
 					if (destUnit!=null){
 						if(srcUnitType>destUnit.getUnitType()){
-							//unit.animation.CrossFade("attack");
+							unit.animation.CrossFade("attack");
 							// kill enemy unit, remove it from tile, remove it from village
 							//perform move gets called after.
 							destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
 							dest.setOccupyingUnit(unit);
 							Destroy (destUnit.gameObject);
 							//adding an attack effect
-							//curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y), attackEffect1.transform.rotation) as GameObject;
-							//unit.animation.CrossFadeQueued("idle");
+							curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y), attackEffect1.transform.rotation) as GameObject;
+							unit.animation.CrossFadeQueued("idle");
 
 						} else {
 							gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
@@ -110,11 +109,7 @@ public class UnitManager : MonoBehaviour {
 							return;
 						}
 					}
-					// destroy towers
-					if (dest.getStructure()!=null && srcUnitType>UnitType.INFANTRY){
-						dest.setStructure(false);
-						dest.replace (null);
-					}
+					// TODO knights destroying towers
 
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
 					villageManager.MergeAlliedRegions(dest);
@@ -131,33 +126,6 @@ public class UnitManager : MonoBehaviour {
 	private void movePrefab(Unit u, Vector3 vector)
 	{
 		u.transform.localPosition = vector;
-	}
-
-	//It's presumed that the unit is already ontop of the tile.
-	//Thus the tile is either grass or meadow.
-	public void cultivateMeadow (Unit u)
-	{
-		if (u.getUnitType() != UnitType.PEASANT) {
-			gameGUI.displayError (@"Only your peasants are willing to cultivate meadows.");
-		} 
-		else 
-		{
-			Tile uLocation = u.getLocation();
-			LandType tileType = uLocation.getLandType();
-			if(tileType == LandType.Meadow)
-			{
-				gameGUI.displayError (@"There is already a lovely meadow here.");
-			}
-			else if(tileType == LandType.Grass)
-			{
-				//TODO delay for turn manager
-				uLocation.setLandType(LandType.Meadow);
-				uLocation.prefab = Instantiate (meadowPrefab, new Vector3 (uLocation.point.x, 0, uLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
-
-				u.setAction(UnitActionType.StartCultivating);
-			}
-		}
-
 	}
 
 	private void performMove(Unit unit, Tile dest)
@@ -185,11 +153,11 @@ public class UnitManager : MonoBehaviour {
 			{
 				//print ("entered cutting trees");
 				unit.setAction(UnitActionType.ChoppingTree);
-				//unit.animation.CrossFade("attack");
+				unit.animation.CrossFade("attack");
 				Destroy (dest.prefab);
 				dest.prefab = null;
 
-				//unit.animation.CrossFadeQueued("idle");
+				unit.animation.CrossFadeQueued("idle");
 				srcVillage.addWood(1);
 				dest.setLandType(LandType.Grass);
 			}
@@ -204,21 +172,6 @@ public class UnitManager : MonoBehaviour {
 
 	private bool canUnitMove(Unit u, Tile t)
 	{
-		// castle check
-		foreach (Tile n in t.getNeighbours()) {
-			try{
-				Village v = n.getVillage ();
-				VillageType vt = v.getMyType();
-				Player them = v.controlledBy;
-				Player you = u.getVillage().controlledBy;
-				if (them!=you && vt==VillageType.Castle){
-					gameGUI.displayError (@"I cant even get near to their castle!");
-					return false;
-				}
-			} catch {
-				continue;
-			}
-		}
 		// friendly checks
 		if (t.getVillage ()==null || t.getVillage ().controlledBy == u.getVillage ().controlledBy) {
 			if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && u.getUnitType() == UnitType.KNIGHT){
