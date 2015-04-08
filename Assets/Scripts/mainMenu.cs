@@ -271,13 +271,15 @@ public class mainMenu : MonoBehaviour {
 	public void launchGamePressed()
 	{
 		if (GM.finalMapChoice != -1) 
-		{
+		{	
+			GameObject game = GameObject.Instantiate ();
 			GM.finalMap = GM.MapGen.getMap(GM.finalMapChoice);
 			GM.MapGen.initializeColorAndVillagesOnMap(GM.players, GM.finalMapChoice, GM.finalMap);
 			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
+			GM.players = GM.getPlayers();
+			GM.game = Game.Instantiate(GM.players,GM.finalMap,game);
 			StartLevel();
 		}
-
 	}
 	
 
@@ -319,6 +321,7 @@ public class mainMenu : MonoBehaviour {
 				// only counting the joining players.
 				for (int i = 0; i<Network.connections.Length; i++) 
 				{
+
 //					Debug.Log (i);
 					print ("-----joining players ip-----");
 					Debug.Log (Network.connections[i].ipAddress);
@@ -334,7 +337,6 @@ public class mainMenu : MonoBehaviour {
 							break;
 						}
 					}
-
 				}
 			
 				LaunchText.GetComponent<Button> ().enabled = true;	

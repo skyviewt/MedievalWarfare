@@ -9,14 +9,14 @@ public class GameManager : MonoBehaviour {
 	public string ipAddress;
 	public int port = 25000;
 	public bool isServer = true;
+
 	public List<Player> players = new List<Player>();
-
 	public Player curPlayer;
-	public int finalMapChoice = -1;
 
+	public int finalMapChoice = -1;
 	public MapGenerator MapGen;
 
-	public Game theGame;
+	public Game game;
 	public Graph finalMap = null;
 	
 	// Use this for initialization
@@ -73,6 +73,11 @@ public class GameManager : MonoBehaviour {
 	public void addPlayer(Player p)
 	{
 		this.players.Add (p);
+	}
+
+	public List<Player> getPlayers()
+	{
+		return this.players;
 	}
 
 	[RPC]
