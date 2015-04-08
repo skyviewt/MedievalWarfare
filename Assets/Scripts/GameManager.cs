@@ -9,14 +9,15 @@ public class GameManager : MonoBehaviour {
 	public string ipAddress;
 	public int port = 25000;
 	public bool isServer = true;
-
+	
 	public List<Player> players = new List<Player>();
+	public Graph finalMap = null;
 
 	public int finalMapChoice = -1;
-	public MapGenerator MapGen;
+	public MapGenerator mapGen;
 
 	public Game game;
-	public Graph finalMap = null;
+
 	private VillageManager villageManager;
 
 	// Use this for initialization
@@ -34,11 +35,11 @@ public class GameManager : MonoBehaviour {
 			print ("in isServer----"); 
 
 
-			MapGen = gameObject.GetComponent<MapGenerator> ();
+			mapGen = gameObject.GetComponent<MapGenerator> ();
 
 			for ( int i = 0; i<2; i++)
 			{
-				MapGen.initMap (i);
+				mapGen.initMap (i);
 			}
 			return NetworkConnectionError.NoError;
 		} else {
@@ -81,33 +82,49 @@ public class GameManager : MonoBehaviour {
 		return this.players;
 	}
 
-	public void beginTurn(Game g, Player p)
+	public void InitializeFinalMap ()
 	{
-		g.setTurn (p);
+		this.finalMap = mapGen.getMap(finalMapChoice);
+		mapGen.initializeColorAndVillagesOnMap(players, finalMapChoice, this.finalMap); // this needs to be RPC
+		mapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
+	}
+
+	public void createNewGame ()
+	{
+		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject);
+	}
+
+	private void beginNextTurn()
+	{
+		Player p = game.getCurrentPlayer ();
 		List<Village> villagesToUpdate = p.getVillages ();
 		foreach (Village v in villagesToUpdate)
 		{
 			villageManager.updateVillages(v);
 		}
 	}
-	
+
+	//TODO networking
 	public void setNextPlayerInTurnOrder()
 	{
 		int currentTurn = game.getCurrentTurn();
-		List<PlayerStatus> playerStatuses = game.getStatuses ();
-		for(int i = 0; i < players.Count; i++)
+		int numberOfPlayers = game.getPlayers().Count;
+		List<PlayerStatus> playerStatuses = game.getPlayerStatuses();
+
+		for(int i = 0; i < numberOfPlayers; i++)
 		{
-			int nextPlayerTurn = currentTurn + i;
+			int nextPlayerTurn = (currentTurn + i) % numberOfPlayers;
 			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
 			{
 				game.setTurn (nextPlayerTurn);
+				beginNextTurn();
+				break;
 			}
 			else
 			{
 				continue;
 			}
 		}
-		print ("if we reach this point then there's a bug somewhere.");
 	}
 
 

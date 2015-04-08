@@ -51,7 +51,7 @@ public class InGameGUI : MonoBehaviour {
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		villageManager.isInGame = true;
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
-		turnManager = GameObject.Find("TurnManager").GetComponent<TurnManager> ();
+		gameManager = GameObject.Find("preserveGM").GetComponent<GameManager> ();
 		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
@@ -98,9 +98,8 @@ public class InGameGUI : MonoBehaviour {
 
 	public void endTurnPressed()
 	{
-		//turnOrder = (turnOrder+1)%2;
 		//disableAllCanvases ();
-		//turnManager.setNextPlayerInTurnOrder ();
+		gameManager.setNextPlayerInTurnOrder ();
 		gameObject.networkView.RPC ("incrementTurnOrderNet", RPCMode.AllBuffered);
 	}
 	private void disableAllCanvases()

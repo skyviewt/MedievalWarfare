@@ -491,6 +491,8 @@ public class VillageManager : MonoBehaviour {
 		//t.gameObject.renderer.material.color = Color.yellow;
 	}
 
+	//TODO prefab drawing/destroying
+	//TODO networking component
 	public void updateVillages(Village v)
 	{
 		List<Tile> controlledRegion = v.getControlledRegion ();

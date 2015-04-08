@@ -17,9 +17,8 @@ public class Game : MonoBehaviour
 	private Graph gameMap;
 	private List<Player> players;							//stores the list of players in the game
 	private List<PlayerStatus> playerStatuses;				//stores the status of players in the game
-	private int numberOfPlayers;
 	private Player currentPlayer;
-	private int currentTurn;								
+	private int currentTurn;
 	
 	//constructor
 	public static Game CreateComponent ( List<Player> participants, Graph map,  GameObject g) 
@@ -27,9 +26,8 @@ public class Game : MonoBehaviour
 		Game theGame = g.AddComponent<Game>();
 		theGame.players = participants;
 		theGame.gameMap = map;
-		theGame.numberOfPlayers = participants.Count;
 		theGame.playerStatuses = new List<PlayerStatus> ();
-		for (int i = 0; i < theGame.numberOfPlayers; i++) 
+		for (int i = 0; i < theGame.players.Count; i++) 
 		{
 			print ("player count: "+ i);
 			theGame.playerStatuses[i] = PlayerStatus.PLAYING;
@@ -55,8 +53,12 @@ public class Game : MonoBehaviour
 	{
 		return this.currentTurn;
 	}
+	public Player getCurrentPlayer()
+	{
+		return this.currentPlayer;
+	}
 
-	public List<PlayerStatus> getStatuses()
+	public List<PlayerStatus> getPlayerStatuses()
 	{
 		return this.playerStatuses;
 	}

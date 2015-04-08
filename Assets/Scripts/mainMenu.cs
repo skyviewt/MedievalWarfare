@@ -110,19 +110,19 @@ public class mainMenu : MonoBehaviour {
 		ErrorJoinRegisterLoginMsg.enabled = false;
 		if( RegisterUserNameInput.text == "" )
 		{
-			ErrorJoinRegisterLoginMsg.text = "Username cannot be null!";
+			ErrorJoinRegisterLoginMsg.text = "Username field cannot be empty";
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
 		else if( RegisterPassword1.text == "" || RegisterPassword2.text == "" )
 		{
-			ErrorJoinRegisterLoginMsg.text = "Password cannot be null!";
+			ErrorJoinRegisterLoginMsg.text = "Password field cannot be empty";
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
 		else if( RegisterPassword1.text != RegisterPassword2.text )
 		{
-			ErrorJoinRegisterLoginMsg.text = "Passwords does not match";
+			ErrorJoinRegisterLoginMsg.text = "Passwords entered do not match";
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
@@ -193,7 +193,7 @@ public class mainMenu : MonoBehaviour {
 		}
 		else 
 		{
-			ErrorJoinRegisterLoginMsg.text = "The IP address cannot be null!";
+			ErrorJoinRegisterLoginMsg.text = "The IP address cannot be empty";
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
@@ -271,17 +271,21 @@ public class mainMenu : MonoBehaviour {
 	{
 		if (GM.finalMapChoice != -1) 
 		{	
-			List<Player> players = GM.getPlayers();
-			Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
-			GM.finalMap = finalMap;
-			GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
-			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
-
+			//List<Player> players = GM.getPlayers();
+			//Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
+			//GM.finalMap = finalMap;
+			//GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
+			//GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
+			GM.InitializeFinalMap();
 			//GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
+			GM.createNewGame();
 			StartLevel(); // this needs to be rpc to all teh connections
 		}
 	}
-	
+	public void launchSavedGamePressed()
+	{
+
+	}
 
 	void Update()
 	{
