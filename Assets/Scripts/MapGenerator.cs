@@ -241,7 +241,7 @@ public class MapGenerator : MonoBehaviour {
 		foreach ( Tile t in map.getVertices() )
 		{
 			// player.count is the neutral color.
-			if ( t.getVisited() == false  && t.getColor() != players.Count )
+			if ( t.getVisited() == false  && t.getColor() != 0 )
 			{
 				List<Tile> TilesToReturn = new List<Tile>();
 				t.setVisited(true);
@@ -294,11 +294,11 @@ public class MapGenerator : MonoBehaviour {
 					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
 				}
 			}
-			if (t.getVillage() == null && t.getColor() != players.Count)
+			if (t.getVillage() == null && t.getColor() != 0)
 			{
 				//t.setColor(players.Count);
 				//t.gameObject.renderer.material.color = Color.white;
-				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, players.Count);
+				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 0);
 			}
 		}
 

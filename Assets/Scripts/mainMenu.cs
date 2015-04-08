@@ -378,14 +378,8 @@ public class mainMenu : MonoBehaviour {
 
 	void Update()
 	{
-		bool isSamePlayer = false;
-		if (GM.isServer) 
-		{
-			isSamePlayer = (Network.connections.Length +1 == curPlayers);
-
-		}
 		//updates the lobby
-		if ( LobbyCanvas.enabled == true && (!updatedLobby ||  !isSamePlayer) ) 
+		if ( LobbyCanvas.enabled == true && (!updatedLobby ||  curPlayers != GM.players.Count ) ) 
 		{
 			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
 			if (isMap1Chosen) {
@@ -398,7 +392,6 @@ public class mainMenu : MonoBehaviour {
 					GM.finalMapChoice = 1;
 			}
 		
-//			Debug.Log(Network.connections.Length);
 			if (GM.isServer) 
 			{
 				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
@@ -408,7 +401,6 @@ public class mainMenu : MonoBehaviour {
 				for (int i = 0; i<Network.connections.Length; i++) 
 				{
 
-//					Debug.Log (i);
 					print ("-----joining players ip-----");
 					Debug.Log (Network.connections[i].ipAddress);
 					//get the player with the same ipAddress
