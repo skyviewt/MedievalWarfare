@@ -3,32 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-[System.Serializable]
 public class VillageManager : MonoBehaviour {
-
-	public bool isInGame = false;
+	
 	public readonly int ZERO = 0;
 	public readonly int ONE = 1;
-	public readonly int THREE = 3;
 	public readonly int EIGHT = 8;
 	public readonly int TEN = 10;
 	public readonly int TWENTY = 20;
 	public readonly int THIRTY = 30;
 	public readonly int FOURTY = 40;
-	public readonly int NEUTRAL = 2;
 	private InGameGUI gameGUI;
 	// Use this for initialization
 	public GameObject meadowPrefab;
-	public GameObject hovelPrefab;
-	public GameObject tombPrefab;
 
-	void Update () {
-		if( isInGame && gameGUI == null )
-		{
-			Debug.Log ("finding attachingGUI");
-			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
-			Debug.Log (gameGUI);
-		}
+	void Start () {
+		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
 	
 	public void upgradeVillage(Village v)
@@ -56,13 +45,12 @@ public class VillageManager : MonoBehaviour {
 	{
 		Village myVillage = newTile.getVillage ();
 		List<Tile> neighbours = newTile.getNeighbours();
-		int mySize = myVillage.getRegionSize ();
 		Player myPlayer = myVillage.getPlayer ();
+		VillageType myVillageType = myVillage.getMyType ();
 		List<Village> villagesToMerge = new List<Village>();
-		villagesToMerge.Add (myVillage);
-		Village biggestVillage = myVillage;
-		//VillageType biggestType = biggestVillage.getMyType ();
-
+		int size = ZERO;
+		Village biggestVillage = null;
+		VillageType biggestVillageType = VillageType.Hovel;
 		foreach (Tile neighbour in neighbours) 
 		{
 			Village neighbourVillage = neighbour.getVillage ();
@@ -71,278 +59,58 @@ public class VillageManager : MonoBehaviour {
 				Player neighbourPlayer = neighbourVillage.getPlayer ();
 				if((myPlayer == neighbourPlayer) && !(villagesToMerge.Contains(neighbourVillage)))
 				{
-					villagesToMerge.Add(neighbourVillage);
-					VillageType neighbourType = neighbourVillage.getMyType();
-					int neighbourSize = neighbourVillage.getRegionSize();
-					if (neighbourType>biggestVillage.getMyType())
+					List<Tile> neighbourControlledRegion = neighbourVillage.getControlledRegion();
+					int neighbourSize = neighbourControlledRegion.Count();
+					VillageType neighbourVillageType = neighbourVillage.getMyType();
+					if(((size < neighbourSize) && (biggestVillageType == neighbourVillageType)) || biggestVillageType < neighbourVillageType)
 					{
+						size = neighbourSize;
 						biggestVillage = neighbourVillage;
-					} 
-					else if (neighbourType==biggestVillage.getMyType()&&neighbourSize>biggestVillage.getRegionSize())
-					{
-						biggestVillage = neighbourVillage;
+						biggestVillageType = neighbourVillageType;
 					}
+					villagesToMerge.Add(neighbourVillage);
 				}
-			}
-		}
 
-		foreach (Village village in villagesToMerge) {
-			if (village != biggestVillage) {
-				biggestVillage.addGold (village.getGold ());
-				biggestVillage.addWood (village.getWood ());
-				biggestVillage.addRegion(village.getControlledRegion ());
-				//foreach (Unit u in village.getControlledUnits ()){
-				//	biggestVillage.addUnit (u);
-				//}
-				// remove prefab
+			}
+	
+		}
+		int totalGold = ZERO;
+		int totalWood = ZERO;
+		List<Tile> totalRegion = new List<Tile> ();
+		foreach (Village village in villagesToMerge) 
+		{
+			if(village != biggestVillage)
+			{
+				totalGold += village.getGold ();
+				totalWood += village.getWood ();
+				List<Tile> villageRegion = village.getControlledRegion();
 				Tile villageLocation = village.getLocatedAt();
+				List<Unit> villageUnits = village.getControlledUnits();
+				totalRegion.AddRange(villageRegion);
+				foreach(Unit u in villageUnits)
+				{
+					u.setVillage(biggestVillage);
+					biggestVillage.addUnit(u);
+				}
+				//destroying a village from the game
+				//Destroy (//prefab for village);
 				Destroy (villageLocation.prefab);
 				villageLocation.setLandType (LandType.Meadow);
-				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
-
-				myPlayer.myVillages.Remove (village);
-				Destroy (village.gameObject);
+				//This MeadowPrefab has no networkviewID
+				villageLocation.prefab = Instantiate(meadowPrefab, new Vector3(villageLocation.point.x, 0.2f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 
 			}
+			biggestVillage.addGold(totalGold);
+			biggestVillage.addWood(totalWood);
+			biggestVillage.addRegion(totalRegion);
 		}
 	}
-
-	public void plunderVillage (Village pluderingVillage, Village plunderedVillage, Tile dest)
+	
+	public void takeoverTile(Tile Destination)
 	{
-		//determine amount to steal
-		int wood = plunderedVillage.getWood ();
-		int gold = plunderedVillage.getGold ();
-		// remove from enemy village
-		plunderedVillage.addGold(-gold);
-		plunderedVillage.addWood(-wood);
-		// add to yours
-		pluderingVillage.addWood(wood);
-		pluderingVillage.addGold(gold);
-
-		Destroy (dest.prefab); // destroy the village, create a meadow
-		dest.prefab = Instantiate (meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation) as GameObject;
-		dest.replace (meadowPrefab);
-
-		/*/ respawn enemy hovel happens during the split
-		List<Tile> validTiles = plunderedVillage.getControlledRegion ();
-		Tile respawnLocation = getTileForRespawn (validTiles);
-		respawnLocation.replace (null);
-		Destroy (respawnLocation.prefab);
-		GameObject hovel = Network.Instantiate(hovelPrefab, new Vector3 (respawnLocation.point.x, 0.2f, respawnLocation.point.y), hovelPrefab.transform.rotation, 0) as GameObject;
-		plunderedVillage.setLocation (respawnLocation);
-		*/
+		
 	}
-
-	/*
-	 * Function adds village to invader. If the dest had a village prefab on it, then we take all resources
-	 * Already plundered!
-	 */ 
-	public void takeoverTile(Village invader, Tile dest)
-	{
-		Village invadedVillage = dest.getVillage ();
-		dest.setVillage (invader);
-		invader.addTile(dest);
-		invadedVillage.removeTile(dest);
-		splitRegion(dest, invadedVillage);
-	}
-	/*
-	// network component ?
-		// shouldnt need to be networked, this is just a helper function
-	private List<Tile> getValidTilesForRespawn(List<Tile> region)
-	{
-		List<Tile> validTiles = new List<Tile> ();
-		foreach (Tile t in region) 
-		{
-			if(t.getStructure() == null)
-			{
-				validTiles.Add(t);
-			}
-		}
-		return validTiles;
-	}
-
-	//TODO needs networking component
-	private void respawnHovel(Village v)
-	{
-		print ("made it to respawnhovel");
-		List<Tile> validTiles = getValidTilesForRespawn (v.getControlledRegion ());
-		System.Random rand = new System.Random();
-		int randomTileIndex;
-		Tile respawnLocation;
-		if(validTiles.Count == 0) // all tiles occupied by structures, then "repurpose" one of them
-		{
-			randomTileIndex = rand.Next (0, v.getRegionSize());
-			respawnLocation = validTiles[randomTileIndex];
-			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
-			// replace destroys the current prefab and sets the new one
-			v.setLocation(respawnLocation);
-		}
-		else
-		{
-			randomTileIndex = rand.Next (0, validTiles.Count);
-			respawnLocation = validTiles[randomTileIndex];
-			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
-			v.setLocation(respawnLocation);
-		}
-	}
-	*/
-	private Tile getTileForRespawn(List<Tile> region){
-		System.Random rand = new System.Random();
-		List<Tile> validTiles = new List<Tile>();
-		int randomTileIndex;
-		foreach (Tile t in region) {
-			if (t.getStructure()!=null){
-				validTiles.Add (t);
-			}
-		}
-		if (validTiles.Count <= 0) {
-			randomTileIndex = rand.Next (0, region.Count);
-			return region[randomTileIndex];
-		} else {
-			randomTileIndex = rand.Next (0, validTiles.Count);
-			return validTiles[randomTileIndex];
-		}
-	}
-
-
-	//TODO needs networking component
-	private void splitRegion(Tile splitTile, Village villageToSplit)
-	{	
-		List<List<Tile>> lstRegions = new List<List<Tile>>(); 
-		int oldWood = villageToSplit.getWood ();
-		int oldGold = villageToSplit.getGold ();
-		Tile oldLocation = villageToSplit.getLocatedAt ();
-		Player p = villageToSplit.getPlayer();
-
-		// prep for BFS
-		foreach (Tile t in villageToSplit.getControlledRegion()) {
-			t.setVisited(false);
-		}
-		// build connected regions
-		foreach (Tile t in splitTile.getNeighbours()) {
-			if (t.getVillage()==villageToSplit && !t.getVisited()){
-				List<Tile> newRegion = new List<Tile>();
-				t.setVisited(true);
-				newRegion.Add (t);
-				splitBFS (t,villageToSplit,newRegion);
-				if (newRegion.Count<3){
-					Neutralize (newRegion);
-				} else{
-					lstRegions.Add (newRegion);
-				}
-			}
-		}
-		print ("after the bfs");
-		/*// working test methods color each new region a different color
-		Color[] lstColors = {Color.black, Color.cyan, Color.yellow};
-		int i = 0;
-		foreach (List<Tile> region in lstRegions){
-			Color RandomColor = lstColors[i];
-			i++;
-			foreach (Tile t in region){
-				t.gameObject.renderer.material.color = RandomColor;
-			}
-		}*/
-
-		if (lstRegions.Count <= 0) {
-			Destroy (oldLocation.prefab);
-			oldLocation.replace (null);
-			oldLocation.setLandType (LandType.Meadow);
-			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
-
-			villageToSplit.retireAllUnits();
-			// remove village from player if not already done so
-			p.myVillages.Remove (villageToSplit);
-			Destroy (villageToSplit.gameObject);
-			print ("Village destroyed completely");
-			return; //stop here if no region is big enough
-		}
-
-		int splitWood = oldWood/lstRegions.Count;
-		int splitGold = oldGold/lstRegions.Count;
-
-		//create new villages
-		foreach(List<Tile> region in lstRegions){
-
-			print ("creating new village");
-			Vector3 hovelLocation;
-			Tile tileLocation;
-
-			if (region.Contains (oldLocation)){
-				tileLocation = oldLocation;
-				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);		
-			} else {
-				tileLocation = getTileForRespawn(region);
-				tileLocation.replace (null);
-				hovelLocation = new Vector3(tileLocation.point.x, 0, tileLocation.point.y);
-			}
-
-			GameObject hovel = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
-			Village v = hovel.GetComponent<Village>();
-			v.addRegion (region); //adds T<>V and any U<>V
-			v.setLocation (tileLocation);
-			p.addVillage(v);
-			v.setControlledBy(p);
-
-			if (region.Contains (oldLocation)){
-				v.setMyType(villageToSplit.getMyType());
-				v.upgrade (); // switches active prefab to current type
-				v.addWood (8); // just cuz upgrade removes wood
-			}
-
-			v.addGold(splitGold);
-			v.addWood(splitWood);
-
-		}
-		villageToSplit.gameObject.transform.Translate (0, 1, 0);
-		//villageToSplit.gameObject.renderer.material.color = Color.magenta;
-		Destroy (villageToSplit.gameObject);
-
-	}
-
-	// de-color, kill units, destroy structures, etc
-	// WORKING
-	private void Neutralize (List<Tile> region){
-		Village v = region[0].getVillage();
-		foreach (Tile t in region) {
-			t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2); // TODO hard coded neutral color...
-			v.removeTile(t);
-			t.setVillage (null);
-			Unit u = t.getOccupyingUnit ();
-			if (u!=null){
-				v.removeUnit(u); // also u.setVillage(null)
-				Destroy (u.gameObject);
-				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
-				t.setLandType(LandType.Tombstone);
-			}
-			t.setStructure(false); // helper method needs to be finished
-		}
-	}
-
-	// takes in a list, and builds it up with connected tiles
-	private void splitBFS (Tile tiletoSearch, Village villageToSplit, List<Tile> tilesToReturn){
-		foreach (Tile n in tiletoSearch.getNeighbours()){
-			if (n.getVillage()==villageToSplit && !n.getVisited()){
-				n.setVisited( true );
-				tilesToReturn.Add(n);
-				splitBFS (n, villageToSplit, tilesToReturn);
-			}
-		}
-	}
-
-	//TODO needs networking component
-	public void removeUnitFromVillage(Village v,Unit u)
-	{
-		v.removeUnit(u);
-	}
-
-	//TODO needs networking component
-	public void removeTileFromVillage(Village v, Tile t)
-	{
-		v.removeTile (t);
-		t.setVillage (null);
-	}
-
+	
 	public void hirePeasant(Village v,GameObject unitPrefab)
 	{
 		Tile tileAt = v.getLocatedAt ();

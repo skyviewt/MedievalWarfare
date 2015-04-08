@@ -3,26 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-[System.Serializable]
 public class Player : MonoBehaviour{
 	
 	private string username;
 	private string password;
 	private int wins;
 	private int losses;
-	public List<Village> myVillages;
+	private List<Village> myVillages;
 	private Game aGame;
 	private int color;
 
 	//constructor
-	public static Player CreateComponent ( string pName, string pPass, int pWins, int pLosses, int pColor, GameObject g ) 
+	public static Player CreateComponent ( string pName, string pPass, int pWins, int pLosses, GameObject g ) 
 	{
 		Player thePlayer = g.AddComponent<Player>();
 		thePlayer.username = pName;
 		thePlayer.password = pPass;
 		thePlayer.wins = pWins;
 		thePlayer.losses = pLosses;
-		thePlayer.color = pColor;
 		thePlayer.myVillages = new List<Village> ();
 		return thePlayer;
 	}
@@ -45,10 +43,9 @@ public class Player : MonoBehaviour{
 		myVillages = new List<Village>();
 	}
 	
-	public void initPlayer(string pName, string pPass, int color){
+	public void initPlayer(string pName, string pPass){
 		username = pName;
 		password = pPass;
-		color = color;
 	}
 	[RPC]
 	void addVillageNet(NetworkViewID villageID){

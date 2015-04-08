@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-[System.Serializable]
 public enum UnitType
 {
 	PEASANT,
@@ -12,7 +11,6 @@ public enum UnitType
 	KNIGHT
 };
 
-[System.Serializable]
 public enum UnitActionType
 {
 	ReadyForOrders,
@@ -28,10 +26,9 @@ public enum UnitActionType
 	EndOfTurn	
 };
 
-[System.Serializable]
 public class Unit : MonoBehaviour {
 
-	private Tile locatedAt;
+	public Tile locatedAt;
 	public UnitActionType myAction;
 	public UnitType myType;
 	private Village myVillage;
@@ -46,7 +43,7 @@ public class Unit : MonoBehaviour {
 	public static Unit CreateComponent ( UnitType unitType, Tile location, Village v, GameObject PeasantPrefab ) 
 	{
 		Tile toplace = null;
-		foreach (Tile a in location.getNeighbours()) 
+		foreach (Tile a in location.neighbours) 
 		{
 			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
 			{
@@ -97,7 +94,7 @@ public class Unit : MonoBehaviour {
 
 		//CreateComponent
 		Tile toplace = null;
-		foreach (Tile a in location.getNeighbours()) 
+		foreach (Tile a in location.neighbours) 
 		{
 			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == location.getColor())
 			{
@@ -117,7 +114,9 @@ public class Unit : MonoBehaviour {
 		myAction = UnitActionType.ReadyForOrders;
 		locatedAt.setOccupyingUnit (this);
 	}
-	
+
+
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -127,6 +126,11 @@ public class Unit : MonoBehaviour {
 	void OnMouseEnter()
 	{
 		this.renderer.material.shader = outline;
+	}
+
+	public void movePrefab(Vector3 vector)
+	{
+		this.transform.localPosition = vector;
 	}
 
 	void OnMouseExit()
