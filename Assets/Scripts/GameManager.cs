@@ -84,11 +84,11 @@ public class GameManager : MonoBehaviour {
 	{
 		bool isExist = (this.players.Where(player => ((player.getName() == name) && (player.getPassword() == pass) )).Count() > 0);
 		Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
-		if (!isExist && !players.Contains (p)) 
-		{
 
+		if (!isExist && !players.Contains( p )) 
+		{
 			p.ipAddress = ip;
-		
+			
 			this.players.Add (p);	
 		}
 	}
