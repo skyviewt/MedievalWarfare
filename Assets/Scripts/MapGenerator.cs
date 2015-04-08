@@ -252,7 +252,7 @@ public class MapGenerator : MonoBehaviour {
 
 				if( TilesToReturn.Count >= 3 )
 				{
-					Player p = players[color];
+					Player p = players[color-1];
 			
 					Tile location = TilesToReturn[0];
 					//location.setLandType (LandType.Grass);
