@@ -14,6 +14,7 @@ public class mainMenu : MonoBehaviour {
 	public Canvas LobbyCanvas;
 	public Canvas LoginCanvas;
 	public Canvas RegisterCanvas;
+	public Canvas LoginBoxCanvas;
 	public Canvas ErrorCanvas;
 	public Transform HostText;
 	public Transform JoinText;
@@ -53,6 +54,9 @@ public class mainMenu : MonoBehaviour {
 	public Text RegisterPassword1;
 	public Text RegisterPassword2;
 
+	public Text LoginUserName;
+	public Text LoginPassword;
+
 	// Elements
 	public GameObject PrefabFire;
 	public GameObject PrefabLight;
@@ -71,6 +75,7 @@ public class mainMenu : MonoBehaviour {
 		MiniMapCanvas.enabled = false;
 		LobbyCanvas.enabled = false;
 		RegisterCanvas.enabled = false;
+		LoginBoxCanvas.enabled = false;
 		ErrorCanvas.enabled = true;
 		cam1.enabled = false;
 		cam2.enabled = false;
@@ -95,14 +100,89 @@ public class mainMenu : MonoBehaviour {
 		showStartGameButtons ();
 	}
 
-	public void registerButtonRessed()
+
+	public void registerButtonPressed()
 	{
 		RegisterCanvas.enabled = true;
 	}
+
+	public void loginButtonPressed()
+	{
+		LoginBoxCanvas.enabled = true;
+	}
+
+	public void actualLoginPressed()
+	{
+		ErrorJoinRegisterLoginMsg.enabled = false;
+		if( LoginUserName.text == "" )
+		{
+			ErrorJoinRegisterLoginMsg.text = "Username cannot be null!";
+			ErrorJoinRegisterLoginMsg.enabled = true;
+			return;
+		}
+		else if( LoginPassword.text == "" )
+		{
+			ErrorJoinRegisterLoginMsg.text = "Password cannot be null!";
+			ErrorJoinRegisterLoginMsg.enabled = true;
+			return;
+		}
+		WWWForm form = new WWWForm();
+		form.AddField("user", LoginUserName.text);
+		form.AddField("password", LoginPassword.text);
+		WWW w = new WWW("http://medievalwarfare.site90.net/login.php", form);
+		StartCoroutine(login(w));
+	}
+
 	public void returnToLoginPressed()
 	{
+		ErrorJoinRegisterLoginMsg.enabled = false;
+		LoginBoxCanvas.enabled = false;
 		RegisterCanvas.enabled = false;
 		LoginCanvas.enabled = true;
+	}
+
+	IEnumerator login(WWW w)
+	{
+		ErrorJoinRegisterLoginMsg.enabled = false;
+		yield return w;
+		if (w.error == null)
+		{
+			if (w.text == "login-SUCCESS")
+			{
+				LoginCanvas.enabled = false;
+				LoginBoxCanvas.enabled = false;
+				MainMenuCanvas.enabled = true;
+				showStartGameButtons ();
+			}
+			else
+			{
+				ErrorJoinRegisterLoginMsg.text = w.text;
+				ErrorJoinRegisterLoginMsg.enabled = true;
+			}
+		}
+		else
+		{
+			ErrorJoinRegisterLoginMsg.text = "ERROR: " + w.error;
+			ErrorJoinRegisterLoginMsg.enabled = true;
+		}
+	}
+
+	IEnumerator registerFunc(WWW w)
+	{
+		yield return w;
+		if (w.error == null)
+		{
+			ErrorJoinRegisterLoginMsg.text = w.text;
+			Debug.Log (w.text);
+			ErrorJoinRegisterLoginMsg.enabled = true;
+		}
+		else
+		{
+			ErrorJoinRegisterLoginMsg.text += "ERROR: " + w.error;
+			Debug.Log (w.error);
+			ErrorJoinRegisterLoginMsg.enabled = true;
+		}
+
 	}
 
 	public void actualRegistrationPressed()
@@ -126,16 +206,12 @@ public class mainMenu : MonoBehaviour {
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
-		Debug.Log (Network.player.ipAddress);
-		Player p = Player.CreateComponent (RegisterUserNameInput.text,
-		                                   RegisterPassword1.text, 
-		                                   Network.player.ipAddress, 
-		                                  GM.players.Count, GM.gameObject);
-		GM.addPlayer(p);
-		RegisterCanvas.enabled = false;
-		LoginCanvas.enabled = false;
-		MainMenuCanvas.enabled = true;
-		showStartGameButtons ();
+		WWWForm form = new WWWForm();
+		form.AddField("user", RegisterUserNameInput.text);
+		form.AddField("password", RegisterPassword1.text);
+		form.AddField ("ipaddress", Network.player.ipAddress);
+		WWW w = new WWW("http://medievalwarfare.site90.net/register.php", form);
+		StartCoroutine(registerFunc(w));
 	}
 
 
@@ -169,6 +245,14 @@ public class mainMenu : MonoBehaviour {
 		hideStartGameButtons ();
 		MainMenuCanvas.enabled = false;
 		JoinGameCanvas.enabled = true;
+		GM.networkView.RPC ("addPlayerNet", 
+		                    RPCMode.AllBuffered, 
+		                    LoginUserName.text,
+		                    LoginPassword.text,
+		                    GM.players.Count+1, 
+		                    0, 
+		                    0,
+		                    Network.player.ipAddress);
 		GM.setIsServer (false);
 	}
 
@@ -204,6 +288,16 @@ public class mainMenu : MonoBehaviour {
 	{
 		GM.setIsServer (true);
 		GM.initGame (GM.ipAddress, GM.port);
+
+	
+		GM.networkView.RPC ("addPlayerNet", 
+		                    RPCMode.AllBuffered, 
+		                    LoginUserName.text,
+		                    LoginPassword.text,
+		                    GM.players.Count+1, 
+		                    0, 
+		                    0,
+		                    Network.player.ipAddress);
 		showMiniMapMenu ();
 	}
 
@@ -273,9 +367,10 @@ public class mainMenu : MonoBehaviour {
 		{	
 			List<Player> players = GM.getPlayers();
 			Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
+			GM.finalMap = finalMap;
 			GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
 			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
-			GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
+//			GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
 			StartLevel();
 		}
 	}
@@ -283,8 +378,14 @@ public class mainMenu : MonoBehaviour {
 
 	void Update()
 	{
+		bool isSamePlayer = false;
+		if (GM.isServer) 
+		{
+			isSamePlayer = (Network.connections.Length +1 == curPlayers);
+
+		}
 		//updates the lobby
-		if ( LobbyCanvas.enabled == true && (!updatedLobby || curPlayers != GM.players.Count) ) 
+		if ( LobbyCanvas.enabled == true && (!updatedLobby ||  !isSamePlayer) ) 
 		{
 			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
 			if (isMap1Chosen) {
@@ -296,20 +397,7 @@ public class mainMenu : MonoBehaviour {
 					chosenMapText.text = "Map 2";
 					GM.finalMapChoice = 1;
 			}
-			//add all players for all GM
-			for(int i=0; i<GM.players.Count; i++)
-			{
-				Player p = GM.players[i];
-				GM.networkView.RPC ("addPlayerNet", 
-				                    RPCMode.AllBuffered, 
-				                    p.getName (),
-				                    p.getPassword(),
-				                    p.getColor(), 
-				                    p.getLosses(), 
-				                    p.getWins(),
-				                    Network.player.ipAddress);
-			}
-			Debug.Log (GM.players.Count);
+		
 //			Debug.Log(Network.connections.Length);
 			if (GM.isServer) 
 			{

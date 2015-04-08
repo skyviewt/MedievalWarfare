@@ -224,17 +224,26 @@ public class Tile : MonoBehaviour
 	[RPC]
 	void setAndColor(int newColor){
 		color = newColor;
-		if( color == 0 )
+		// 0 is the neutral color
+		if( color == 1 )
 		{
 			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
 		}
-		else if ( color == 1 )
+		else if ( color == 2 )
 		{
 			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
 		}
-		else if ( color == 2 )
+		else if ( color == 3 )
 		{
-			gameObject.renderer.material.color = Color.white;
+			gameObject.renderer.material.color = new Color(0.5f, 0.2f, 1.0f, 0.05f);
+		}
+		else if ( color == 4 )
+		{
+			gameObject.renderer.material.color = new Color(0.2f, 0.0f, 0.60f, 0.5f);
+		}
+		else if ( color == 5 )
+		{
+			gameObject.renderer.material.color = new Color(0.0f, 0.2f, 0.6f, 0.1f);
 		}
 	}
 	
