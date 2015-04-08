@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour {
 
 	public Game game;
 
+	private Player localPlayer; // has getter
+	private int localTurn; //has getter and setter
 	private VillageManager villageManager;
 
 	// Use this for initialization
@@ -89,6 +91,7 @@ public class GameManager : MonoBehaviour {
 		mapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
 	}
 
+
 	public void createNewGame ()
 	{
 		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
@@ -102,6 +105,17 @@ public class GameManager : MonoBehaviour {
 		{
 			villageManager.updateVillages(v);
 		}
+	}
+	
+	public int getLocalTurn()
+	{
+		return this.localTurn;
+	}
+
+	//TODO RPC
+	public void setLocalTurn(int turnNumber)
+	{
+		this.localTurn = turnNumber;
 	}
 
 	//TODO networking
