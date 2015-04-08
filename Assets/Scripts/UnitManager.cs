@@ -206,13 +206,17 @@ public class UnitManager : MonoBehaviour {
 	{
 		// castle check
 		foreach (Tile n in t.getNeighbours()) {
-			Village v = n.getVillage ();
-			VillageType vt = v.getMyType();
-			Player them = v.controlledBy;
-			Player you = u.getVillage().controlledBy;
-			if (them!=you && vt==VillageType.Castle){
-				gameGUI.displayError (@"I cant even get near to their castle!");
-				return false;
+			try{
+				Village v = n.getVillage ();
+				VillageType vt = v.getMyType();
+				Player them = v.controlledBy;
+				Player you = u.getVillage().controlledBy;
+				if (them!=you && vt==VillageType.Castle){
+					gameGUI.displayError (@"I cant even get near to their castle!");
+					return false;
+				}
+			} catch {
+				continue;
 			}
 		}
 		// friendly checks
