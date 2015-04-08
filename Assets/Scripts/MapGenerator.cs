@@ -234,14 +234,14 @@ public class MapGenerator : MonoBehaviour {
 		foreach ( Tile t in map.getVertices() )
 		{
 			int color = rand.Next(0,players.Count+1);
-			print ("color: "+color);
+			//print ("color: "+color);
 			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
 		}
 
 		foreach ( Tile t in map.getVertices() )
 		{
 			// player.count is the neutral color.
-			if ( t.getVisited() == false  && t.getColor() != players.Count )
+			if ( t.getVisited() == false  && t.getColor() != 0 )
 			{
 				List<Tile> TilesToReturn = new List<Tile>();
 				t.setVisited(true);
@@ -252,7 +252,7 @@ public class MapGenerator : MonoBehaviour {
 
 				if( TilesToReturn.Count >= 3 )
 				{
-					Player p = players[color];
+					Player p = players[color-1];
 			
 					Tile location = TilesToReturn[0];
 					//location.setLandType (LandType.Grass);
@@ -294,11 +294,11 @@ public class MapGenerator : MonoBehaviour {
 					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
 				}
 			}
-			if (t.getVillage() == null && t.getColor() != players.Count)
+			if (t.getVillage() == null && t.getColor() != 0)
 			{
 				//t.setColor(players.Count);
 				//t.gameObject.renderer.material.color = Color.white;
-				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, players.Count);
+				t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 0);
 			}
 		}
 

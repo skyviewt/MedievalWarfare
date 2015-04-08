@@ -204,6 +204,21 @@ public class UnitManager : MonoBehaviour {
 
 	private bool canUnitMove(Unit u, Tile t)
 	{
+		// castle check
+		foreach (Tile n in t.getNeighbours()) {
+			try{
+				Village v = n.getVillage ();
+				VillageType vt = v.getMyType();
+				Player them = v.controlledBy;
+				Player you = u.getVillage().controlledBy;
+				if (them!=you && vt==VillageType.Castle){
+					gameGUI.displayError (@"I cant even get near to their castle!");
+					return false;
+				}
+			} catch {
+				continue;
+			}
+		}
 		// friendly checks
 		if (t.getVillage ()==null || t.getVillage ().controlledBy == u.getVillage ().controlledBy) {
 			if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && u.getUnitType() == UnitType.KNIGHT){

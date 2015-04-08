@@ -490,7 +490,7 @@ public class InGameGUI : MonoBehaviour {
 	public void buildRoadPressed()
 	{
 		Unit u = _Unit.GetComponent<Unit>();
-		Village v = u.getVillage();
+		//Village v = u.getVillage();
 		Tile t = u.getLocation ();
 		ErrorCanvas.enabled = true;
 		if (u.getUnitType () != UnitType.PEASANT) {
@@ -506,6 +506,28 @@ public class InGameGUI : MonoBehaviour {
 		UnitCanvas.enabled = false;
 		menuUp = false;
 		ClearSelections();
+	}
+
+	public void buildCastlePressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.buildCastle (v);
+		int redrawWood = v.getWood();
+		_WoodText.text = redrawWood.ToString();
+		VillageCanvas.enabled = false;
+		menuUp = false;
+	}
+
+	public void buildCannonPressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.buildCannon (v,UnitPrefab);
+		int redrawUnits = v.getUnitSize ();
+		int redrawGold = v.getGold();
+		_UnitsText.text = redrawUnits.ToString();
+		_GoldText.text = redrawGold.ToString();
+		VillageCanvas.enabled = false;
+		menuUp = false;
 	}
 
 }

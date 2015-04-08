@@ -48,10 +48,10 @@ public class Player : MonoBehaviour{
 		myVillages = new List<Village>();
 	}
 	
-	public void initPlayer(string pName, string pPass, int color){
+	public void initPlayer(string pName, string pPass, int pColor){
 		username = pName;
 		password = pPass;
-		color = color;
+		color = pColor;
 	}
 	[RPC]
 	void addVillageNet(NetworkViewID villageID){
