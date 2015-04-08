@@ -505,6 +505,10 @@ public class VillageManager : MonoBehaviour {
 		} else {
 			v.buildCastle();
 		}
-
 	}	
+
+	public void buildCannon(Village v, GameObject go){
+
+	}
+
 }

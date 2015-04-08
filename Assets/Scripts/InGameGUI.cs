@@ -518,5 +518,17 @@ public class InGameGUI : MonoBehaviour {
 		VillageCanvas.enabled = false;
 		menuUp = false;
 	}
-	
+
+	public void buildCannonPressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.buildCannon (v,UnitPrefab);
+		int redrawUnits = v.getUnitSize ();
+		int redrawGold = v.getGold();
+		_UnitsText.text = redrawUnits.ToString();
+		_GoldText.text = redrawGold.ToString();
+		VillageCanvas.enabled = false;
+		menuUp = false;
+	}
+
 }
