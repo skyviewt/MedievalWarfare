@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
 	public bool isServer = true;
 
 	public List<Player> players = new List<Player>();
+	public Player curPlayer;
 
 	public int finalMapChoice = -1;
 	public MapGenerator MapGen;
@@ -83,10 +84,9 @@ public class GameManager : MonoBehaviour {
 	public void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)
 	{
 		bool isExist = (this.players.Where(player => ((player.getName() == name) && (player.getPassword() == pass) )).Count() > 0);
-		Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
-		if (!isExist && !players.Contains (p)) 
+		if (!isExist) 
 		{
-
+			Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
 			p.ipAddress = ip;
 		
 			this.players.Add (p);	

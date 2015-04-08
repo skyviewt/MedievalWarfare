@@ -131,7 +131,8 @@ public class mainMenu : MonoBehaviour {
 		                                   RegisterPassword1.text, 
 		                                   Network.player.ipAddress, 
 		                                  GM.players.Count, GM.gameObject);
-		GM.addPlayer(p);
+		GM.addPlayer (p);
+		GM.curPlayer = p;
 		RegisterCanvas.enabled = false;
 		LoginCanvas.enabled = false;
 		MainMenuCanvas.enabled = true;
@@ -265,11 +266,12 @@ public class mainMenu : MonoBehaviour {
 	{
 		if (GM.finalMapChoice != -1) 
 		{	
-			List<Player> players = GM.getPlayers();
-			Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
-			GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
+			GameObject game = GameObject.Instantiate ();
+			GM.finalMap = GM.MapGen.getMap(GM.finalMapChoice);
+			GM.MapGen.initializeColorAndVillagesOnMap(GM.players, GM.finalMapChoice, GM.finalMap);
 			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
-			GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
+			GM.players = GM.getPlayers();
+			GM.game = Game.Instantiate(GM.players,GM.finalMap,game);
 			StartLevel();
 		}
 	}
