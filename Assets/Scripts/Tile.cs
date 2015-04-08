@@ -19,7 +19,7 @@ public class Tile : MonoBehaviour
 	private List<Tile> neighbours;
 	private LandType myType;
 	private Unit occupyingUnit;
-	private Structure occupyingStructure;
+	private Structure occupyingStructure = null;
 	private Village myVillage;
 	private int color;
 	public Shader outline;
