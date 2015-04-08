@@ -491,7 +491,7 @@ public class InGameGUI : MonoBehaviour {
 	public void buildRoadPressed()
 	{
 		Unit u = _Unit.GetComponent<Unit>();
-		Village v = u.getVillage();
+		//Village v = u.getVillage();
 		Tile t = u.getLocation ();
 		ErrorCanvas.enabled = true;
 		if (u.getUnitType () != UnitType.PEASANT) {
@@ -509,4 +509,14 @@ public class InGameGUI : MonoBehaviour {
 		ClearSelections();
 	}
 
+	public void buildCastlePressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.buildCastle (v);
+		int redrawWood = v.getWood();
+		_WoodText.text = redrawWood.ToString();
+		VillageCanvas.enabled = false;
+		menuUp = false;
+	}
+	
 }

@@ -39,7 +39,7 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType vAction = v.getAction ();
 		if (vType == VillageType.Fort) 
 		{
-			gameGUI.displayError(@"The Fort is your strongest village! ¯\(°_o)/¯");
+			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle ¯\(°_o)/¯");
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
@@ -57,7 +57,7 @@ public class VillageManager : MonoBehaviour {
 	{
 		Village myVillage = newTile.getVillage ();
 		List<Tile> neighbours = newTile.getNeighbours();
-		int mySize = myVillage.getRegionSize ();
+		//int mySize = myVillage.getRegionSize ();
 		Player myPlayer = myVillage.getPlayer ();
 		List<Village> villagesToMerge = new List<Village>();
 		villagesToMerge.Add (myVillage);
@@ -490,4 +490,21 @@ public class VillageManager : MonoBehaviour {
 
 		//t.gameObject.renderer.material.color = Color.yellow;
 	}
+
+	public void buildCastle(Village v)
+	{
+		int vWood = v.getWood ();
+		VillageType vType = v.getMyType ();
+		VillageActionType vAction = v.getAction ();
+		if (vType != VillageType.Fort) {
+			gameGUI.displayError (@"Upgrade to a Fort before building a Castle");
+		} else if (vWood < 12) {
+			gameGUI.displayError (@"Castles require more lumber (12)");
+		} else if (vAction != VillageActionType.ReadyForOrders) {
+			gameGUI.displayError (@"You cant queue build orders :/");
+		} else {
+			v.buildCastle();
+		}
+
+	}	
 }
