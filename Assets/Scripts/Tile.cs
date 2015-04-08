@@ -105,17 +105,30 @@ public class Tile : MonoBehaviour
 
 	public void colorTile()
 	{
-		if( this.color == 0 )
+	
+		if( color == 1 )
 		{
-			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
+			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.7f);
 		}
-		else if ( this.color == 1 )
+		else if ( color == 2 )
 		{
-			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.7f);
 		}
-		else
+		else if ( color == 3 )
 		{
-			gameObject.renderer.material.color = Color.white;
+			gameObject.renderer.material.color = new Color(0.2f, 0.0f, 0.0f, 0.7f);
+		}
+		else if ( color == 4 )
+		{
+			gameObject.renderer.material.color = new Color(0.0f, 0.2f, 0.0f, 0.7f);
+		}
+		else if ( color == 5 )
+		{
+			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 0.2f, 0.7f);
+		}
+		else if ( color == 6 )
+		{
+			gameObject.renderer.material.color = new Color(0.1f, 0.0f, 0.0f, 0.7f);
 		}
 	}
 	
@@ -225,25 +238,30 @@ public class Tile : MonoBehaviour
 	void setAndColor(int newColor){
 		color = newColor;
 		// 0 is the neutral color
+	
 		if( color == 1 )
 		{
-			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.05f);
+			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.7f);
 		}
 		else if ( color == 2 )
 		{
-			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.7f);
 		}
 		else if ( color == 3 )
 		{
-			gameObject.renderer.material.color = new Color(0.5f, 0.2f, 1.0f, 0.05f);
+			gameObject.renderer.material.color = new Color(0.2f, 0.0f, 0.0f, 0.7f);
 		}
 		else if ( color == 4 )
 		{
-			gameObject.renderer.material.color = new Color(0.2f, 0.0f, 0.60f, 0.5f);
+			gameObject.renderer.material.color = new Color(0.0f, 0.2f, 0.0f, 0.7f);
 		}
 		else if ( color == 5 )
 		{
-			gameObject.renderer.material.color = new Color(0.0f, 0.2f, 0.6f, 0.1f);
+			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 0.2f, 0.7f);
+		}
+		else if ( color == 6 )
+		{
+			gameObject.renderer.material.color = new Color(0.1f, 0.0f, 0.0f, 0.7f);
 		}
 	}
 	
@@ -280,38 +298,17 @@ public class Tile : MonoBehaviour
 	void changeMapLayer( int mapNum )
 	{
 		bool hasPref = this.getLandType () != LandType.Grass;
-		switch (mapNum) 
-		{
-		case 0:
-			this.gameObject.layer = LayerMask.NameToLayer ("map1");
-			if( hasPref )
-				this.prefab.layer = LayerMask.NameToLayer ("map1");	
-			break;
-		case 1:
-			this.gameObject.layer = LayerMask.NameToLayer ("map2");
-			if( hasPref )
-				this.prefab.layer = LayerMask.NameToLayer ("map2");
-			break;
-		case 2:
-			this.gameObject.layer = LayerMask.NameToLayer ("map3");
-			if( hasPref )
-				this.prefab.layer = LayerMask.NameToLayer ("map3");
-			break;
-		case 3:
-			this.gameObject.layer = LayerMask.NameToLayer ("map4");
-			if( hasPref )
-				this.prefab.layer = LayerMask.NameToLayer ("map4");
-			break;
-		case 4:
-			this.gameObject.layer = LayerMask.NameToLayer ("map5");
-			if( hasPref )
-				this.prefab.layer = LayerMask.NameToLayer("map5");
-			break;
-		case 5:
-			this.gameObject.layer = LayerMask.NameToLayer ("map6");
-			if( hasPref )
-				this.prefab.layer = LayerMask.NameToLayer("map6");
-			break;		
-		}
+		switch (mapNum) {
+				case 0:
+						this.gameObject.layer = LayerMask.NameToLayer ("map1");
+						if (hasPref)
+								this.prefab.layer = LayerMask.NameToLayer ("map1");	
+						break;
+				case 1:
+						this.gameObject.layer = LayerMask.NameToLayer ("map2");
+						if (hasPref)
+								this.prefab.layer = LayerMask.NameToLayer ("map2");
+						break;
+				}
 	}
 }

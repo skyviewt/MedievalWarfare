@@ -242,14 +242,6 @@ public class mainMenu : MonoBehaviour {
 		hideStartGameButtons ();
 		MainMenuCanvas.enabled = false;
 		JoinGameCanvas.enabled = true;
-		GM.gameObject.networkView.RPC ("addPlayerNet", 
-		                    RPCMode.AllBuffered, 
-		                    LoginUserName.text,
-		                    LoginPassword.text,
-		                    GM.players.Count+1, 
-		                    0, 
-		                    0,
-		                    Network.player.ipAddress);
 		GM.setIsServer (false);
 	}
 
@@ -278,6 +270,14 @@ public class mainMenu : MonoBehaviour {
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
+		GM.networkView.RPC ("addPlayerNet", 
+		                               RPCMode.AllBuffered, 
+		                               LoginUserName.text,
+		                               LoginPassword.text,
+		                               GM.players.Count+1, 
+		                               0, 
+		                               0,
+		                               Network.player.ipAddress);
 		showMiniMapMenu ();
 	}
 
@@ -287,7 +287,7 @@ public class mainMenu : MonoBehaviour {
 		GM.initGame (GM.ipAddress, GM.port);
 
 	
-		GM.gameObject.networkView.RPC ("addPlayerNet", 
+		GM.networkView.RPC ("addPlayerNet", 
 		                    RPCMode.AllBuffered, 
 		                    LoginUserName.text,
 		                    LoginPassword.text,
@@ -339,6 +339,21 @@ public class mainMenu : MonoBehaviour {
 	public void showLobby()
 	{
 		LobbyCanvas.enabled = true;
+//		Player p = Player.CreateComponent ("hi", "lo", "123", GM.players.Count+1, GM.gameObject);
+//		GM.players.Add (p);
+
+//		Player p3 = Player.CreateComponent ("jaa", "hoo", "1113", GM.players.Count + 1, GM.gameObject);
+//		GM.players.Add (p3);
+//
+//		Player p4 = Player.CreateComponent ("jdsaa", "hwwoo", "111333", GM.players.Count + 1, GM.gameObject);
+//		GM.players.Add (p4);
+//
+//		Player p5 = Player.CreateComponent ("jdsdsdsaa", "hwwoo", "11133333", GM.players.Count + 1, GM.gameObject);
+//		GM.players.Add (p5);
+//
+//		Player p6 = Player.CreateComponent ("dd", "ho", "1133", GM.players.Count + 1, GM.gameObject);
+//		GM.players.Add (p6);
+
 	}
 
 	[RPC]
@@ -367,9 +382,11 @@ public class mainMenu : MonoBehaviour {
 			Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
 			GM.finalMap = finalMap;
 			GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
-			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
-//			GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
-			this.gameObject.networkView.RPC("startLevel", RPCMode.AllBuffered);
+			if(GM.isServer)
+			{
+				GM.MapGen.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
+			}
+			this.networkView.RPC("startLevel", RPCMode.AllBuffered);
 		}
 	}
 	
@@ -393,8 +410,8 @@ public class mainMenu : MonoBehaviour {
 			if (GM.isServer) 
 			{
 				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
-				this.gameObject.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
-				this.gameObject.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
+				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
+				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
 				// only counting the joining players.
 				for (int i = 0; i<Network.connections.Length; i++) 
 				{
@@ -409,7 +426,7 @@ public class mainMenu : MonoBehaviour {
 						Player playa = GM.players[j];
 						if( playa.ipAddress == Network.connections[i].ipAddress )
 						{
-							this.gameObject.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, i+1, playa.getName());
+							this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, i+1, playa.getName());
 							break;
 						}
 					}
@@ -423,7 +440,7 @@ public class mainMenu : MonoBehaviour {
 				{
 					if(GM.players[i].getName () == connectedPlayerText[i].text)
 					{
-						this.gameObject.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, i, "Map " + mapChoice.ToString());
+						this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, i, "Map " + mapChoice.ToString());
 					}
 				}
 				LaunchText.GetComponent<Button> ().enabled = false;	
