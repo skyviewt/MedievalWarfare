@@ -31,6 +31,7 @@ public class Game : MonoBehaviour
 		theGame.playerStatuses = new List<PlayerStatus> ();
 		for (int i = 0; i < theGame.numberOfPlayers; i++) 
 		{
+			print ("player count: "+ i);
 			theGame.playerStatuses[i] = PlayerStatus.PLAYING;
 		}
 
@@ -38,24 +39,7 @@ public class Game : MonoBehaviour
 		return theGame;
 	}
 	
-	public Player setNextPlayerInTurnOrder()
-	{
-		for(int i = 0; i < players.Count; i++)
-		{
-			int nextPlayerTurn = currentTurn + i;
-			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
-			{
-				setTurn (nextPlayerTurn);
-				return players[currentTurn];
-			}
-			else
-			{
-				continue;
-			}
-		}
-		print ("if we reach this point then there's a bug somewhere.");
-		return null;
-	}
+
 	/********* GETTERS ****************/
 	public List<Player> getPlayers()
 	{
@@ -65,6 +49,16 @@ public class Game : MonoBehaviour
 	public Graph getMap()
 	{
 		return this.gameMap;
+	}
+
+	public int getCurrentTurn()
+	{
+		return this.currentTurn;
+	}
+
+	public List<PlayerStatus> getStatuses()
+	{
+		return this.playerStatuses;
 	}
 
 	//Sets the turn to be Player p

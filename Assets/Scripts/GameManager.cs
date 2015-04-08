@@ -17,10 +17,12 @@ public class GameManager : MonoBehaviour {
 
 	public Game game;
 	public Graph finalMap = null;
-	
+	private VillageManager villageManager;
+
 	// Use this for initialization
 	void Start () 
 	{
+		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager> ();
 	}
 
 	public NetworkConnectionError initGame(string ip, int pPort)
@@ -78,6 +80,36 @@ public class GameManager : MonoBehaviour {
 	{
 		return this.players;
 	}
+
+	public void beginTurn(Game g, Player p)
+	{
+		g.setTurn (p);
+		List<Village> villagesToUpdate = p.getVillages ();
+		foreach (Village v in villagesToUpdate)
+		{
+			villageManager.updateVillages(v);
+		}
+	}
+	
+	public void setNextPlayerInTurnOrder()
+	{
+		int currentTurn = game.getCurrentTurn();
+		List<PlayerStatus> playerStatuses = game.getStatuses ();
+		for(int i = 0; i < players.Count; i++)
+		{
+			int nextPlayerTurn = currentTurn + i;
+			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
+			{
+				game.setTurn (nextPlayerTurn);
+			}
+			else
+			{
+				continue;
+			}
+		}
+		print ("if we reach this point then there's a bug somewhere.");
+	}
+
 
 	[RPC]
 	public void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)

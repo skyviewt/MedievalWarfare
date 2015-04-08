@@ -41,7 +41,7 @@ public class InGameGUI : MonoBehaviour {
 
 	private VillageManager villageManager;
 	private UnitManager unitManager;
-	private TurnManager turnManager;
+	private GameManager gameManager;
 
 	private bool menuUp;
 	// Use this for initialization

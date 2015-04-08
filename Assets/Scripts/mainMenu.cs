@@ -273,10 +273,12 @@ public class mainMenu : MonoBehaviour {
 		{	
 			List<Player> players = GM.getPlayers();
 			Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
+			GM.finalMap = finalMap;
 			GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
 			GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
-			GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
-			StartLevel();
+
+			//GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
+			StartLevel(); // this needs to be rpc to all teh connections
 		}
 	}
 	
