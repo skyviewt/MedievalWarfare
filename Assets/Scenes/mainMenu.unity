@@ -3700,7 +3700,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ef408c563b2e404cb976c3fa162e82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInGame: 0
   ipAddress: 
   port: 25000
   isServer: 1
@@ -3740,8 +3739,8 @@ MonoBehaviour:
   MeadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
   TreePrefab: {fileID: 126030, guid: bd74097a43dd548b0ae6323a66bb8952, type: 2}
   HovelPrefab: {fileID: 164132, guid: 32744c9f3c5c23d49834ce1d47d4f310, type: 2}
-  numTiles: 100
-  removeTiles: 10
+  numTiles: 300
+  removeTiles: 50
 --- !u!148 &358982968
 NetworkView:
   m_ObjectHideFlags: 0
@@ -3767,17 +3766,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myVillages: []
   ipAddress: 
---- !u!114 &358982970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 358982964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4091372033f391248a2e1153cdaee893, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &364215935
 GameObject:
   m_ObjectHideFlags: 0
@@ -12893,8 +12881,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isInGame: 0
   meadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
-  roadPrefab: {fileID: 176012, guid: a6de6709a3566dd46ab3da6442f5b28a, type: 2}
-  treePrefab: {fileID: 126030, guid: bd74097a43dd548b0ae6323a66bb8952, type: 2}
   hovelPrefab: {fileID: 164132, guid: 32744c9f3c5c23d49834ce1d47d4f310, type: 2}
   tombPrefab: {fileID: 194460, guid: b215a2f23ae10499d8104a83046896cb, type: 2}
   towerPrefab: {fileID: 100000, guid: aa9594eb6985dc148a2de3dabda40128, type: 2}

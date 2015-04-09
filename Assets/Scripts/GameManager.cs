@@ -6,10 +6,6 @@ using System.Linq;
 [System.Serializable]
 public class GameManager : MonoBehaviour {
 
-	public static int ERROR = -1;
-	public bool isInGame = false;
-	private InGameGUI gameGUI;
-
 	public string ipAddress;
 	public int port = 25000;
 	public bool isServer = true;
@@ -24,16 +20,14 @@ public class GameManager : MonoBehaviour {
 
 	private Player localPlayer; // has getter
 	private int localTurn; //has getter and setter
-	private int turnsSoFar;
 	private VillageManager villageManager;
 
 	// Use this for initialization
 	void Start () 
 	{
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager> ();
-		game = gameObject.GetComponent<Game> ();
 	}
-	
+
 	public NetworkConnectionError initGame(string ip, int pPort)
 	{
 		print ("in initGame");
@@ -54,21 +48,6 @@ public class GameManager : MonoBehaviour {
 			return Network.Connect (ip, pPort);
 		}
 	}
-
-	public NetworkConnectionError initOldGame(string ip, int pPort)
-	{
-		print ("in initOldGame");
-		if (isServer) {
-			print ("in isServer----");
-			Network.InitializeServer (32, port);
-			mapGen = gameObject.GetComponent<MapGenerator> ();
-			//mapGen.initOldMap (i);
-			return NetworkConnectionError.NoError;
-		} else {
-			return Network.Connect (ip, pPort);
-		}
-	}
-
 	public void setIsServer(bool b)
 	{
 		this.isServer = b;
@@ -126,86 +105,54 @@ public class GameManager : MonoBehaviour {
 		this.finalMap = mapGen.getMap(finalMapChoice);
 	}
 
-	[RPC]
-	public void createNewGame ()
-	{
-		game.gameObject.networkView.RPC ("setMap",RPCMode.AllBuffered);
-		game.gameObject.networkView.RPC ("setPlayers",RPCMode.AllBuffered);
-		game.gameObject.networkView.RPC ("initializeStatuses",RPCMode.AllBuffered);
-		game.gameObject.networkView.RPC ("setStartingPlayer",RPCMode.AllBuffered,0);
-		game.gameObject.networkView.RPC ("setTurnsPlayed",RPCMode.AllBuffered,0);
-		turnsSoFar = game.getTurnsPlayed();
-	}
-	[RPC]
-	public void createSavedGame()
-	{
 
-	}
+//	public void createNewGame ()
+//	{
+//		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
+//	}
 
-	[RPC]
-	public void setNextPlayer(int nextTurn)
+	private void beginNextTurn()
 	{
-		Debug.Log ("inSetNextPlayer");
-		game.setTurn(nextTurn);
+		Player p = game.getCurrentPlayer ();
+		List<Village> villagesToUpdate = p.getVillages ();
+		foreach (Village v in villagesToUpdate)
+		{
+			villageManager.updateVillages(v);
+		}
+	}
+	
+	public int getLocalTurn()
+	{
+		return this.localTurn;
 	}
 
-	public int findNextPlayer()
+	//TODO RPC
+	public void setLocalTurn(int turnNumber)
 	{
+		this.localTurn = turnNumber;
+	}
 
-		gameGUI.disableInteractions ();
+	//TODO networking
+	public void setNextPlayerInTurnOrder()
+	{
 		int currentTurn = game.getCurrentTurn();
 		int numberOfPlayers = game.getPlayers().Count;
 		List<PlayerStatus> playerStatuses = game.getPlayerStatuses();
-		
+
 		for(int i = 0; i < numberOfPlayers; i++)
 		{
 			int nextPlayerTurn = (currentTurn + i) % numberOfPlayers;
 			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
 			{
-				Debug.Log ("Next Player Turn is: " + nextPlayerTurn);
-				Debug.Log ("My player turn is: " + localTurn);
-				return nextPlayerTurn;
+				game.setTurn (nextPlayerTurn);
+				beginNextTurn();
+				break;
 			}
 			else
 			{
 				continue;
 			}
 		}
-		Debug.Log ("this shouldnt get printed");
-		return ERROR; // ERROR = -1
-	}
-
-
-	public void initializeNextPlayersVillages()
-	{
-		Debug.Log ("in initialize next player villages");
-		Player p = game.getCurrentPlayer ();
-		Debug.Log ("current player in turn to play is: " + p);
-		List<Village> villagesToUpdate = p.getVillages ();
-		Debug.Log ("number of villages of current player :" +villagesToUpdate.Count);
-		foreach (Village v in villagesToUpdate)
-		{
-			Debug.Log ("in update village loop");
-			Debug.Log ("updating village: "+v);
-			villageManager.gameObject.networkView.RPC("updateVillageNet",RPCMode.AllBuffered,v.gameObject.networkView.viewID);
-		}
-	}
-
-	public Player getLocalPlayer()
-	{
-		return this.localPlayer;
-	}
-	public int getLocalTurn()
-	{
-		return this.localTurn;
-	}
-
-	[RPC]
-	public void setLocalTurnAndPlayer(int turnNumber)
-	{
-		this.localTurn = turnNumber;
-		List<Player> temp = game.getPlayers ();
-		this.localPlayer = temp[turnNumber];
 	}
 
 
@@ -225,11 +172,6 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if( isInGame && (gameGUI == null) )
-		{
-			Debug.Log ("finding attaching GUI");
-			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
-			Debug.Log (gameGUI);
-		}
+	
 	}
 }

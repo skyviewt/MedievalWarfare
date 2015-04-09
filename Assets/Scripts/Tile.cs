@@ -28,7 +28,7 @@ public class Tile : MonoBehaviour
 	public GameObject prefab;
 	public GameObject roadPrefab;
 
-	public bool isRoad; // NEEDS TO GET IMPLEMENTED
+	private bool isRoad; // NEEDS TO GET IMPLEMENTED
 
 	private bool visited;
 

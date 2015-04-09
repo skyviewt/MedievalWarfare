@@ -19,8 +19,6 @@ public class VillageManager : MonoBehaviour {
 	private InGameGUI gameGUI;
 	// Use this for initialization
 	public GameObject meadowPrefab;
-	public GameObject roadPrefab;
-	public GameObject treePrefab;
 	public GameObject hovelPrefab;
 	public GameObject tombPrefab;
 	public GameObject towerPrefab;
@@ -494,95 +492,52 @@ public class VillageManager : MonoBehaviour {
 		//t.gameObject.renderer.material.color = Color.yellow;
 	}
 
-	public void tombstonePhase (Village v)
+	//TODO prefab drawing/destroying
+	//TODO networking component
+	public void updateVillages(Village v)
 	{
 		List<Tile> controlledRegion = v.getControlledRegion ();
-		foreach (Tile tile in controlledRegion) {
-			LandType currentTileType = tile.getLandType ();
-			if (currentTileType == LandType.Tombstone) 
-			{
-				tile.setLandType (LandType.Trees);
-				Destroy (tile.roadPrefab);
-				tile.roadPrefab = null; 	// TODO is this how you remove a prefab?
-				Destroy (tile.prefab); 		// TODO is this how you remove a prefab?
-//				tile.prefab = Instantiate (treePrefab, new Vector3 (tile.point.x, 0, tile.point.y), treePrefab.transform.rotation, 0) as GameObject;
-				tile.prefab.transform.eulerAngles = new Vector3 (0, Random.Range (0, 360), 0); //give it a random rotation		
-			}
-		}
-	}
-
-	public void updateUnitActions (Village v)
-	{
-		List<Unit> units = v.getControlledUnits();
-		foreach (Unit u in units) 
+		foreach (Tile tile in controlledRegion)
 		{
-			UnitActionType currentUnitAction = u.getAction();
-			if(currentUnitAction == UnitActionType.StartedCultivating)
+			LandType type = tile.getLandType();
+			if (type == LandType.Tombstone)
 			{
-				u.setAction (UnitActionType.FinishedCultivating);
+				tile.setLandType(LandType.Trees);
 			}
-			else if (currentUnitAction == UnitActionType.FinishedCultivating)
+			
+			Unit unitOnTile = tile.getOccupyingUnit(); //grabs the occupying unit on tile
+			if (unitOnTile != null)
 			{
-				Tile tile = u.getLocation();
-				tile.setLandType(LandType.Meadow);
-				tile.prefab = Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation) as GameObject;
-				u.setAction (UnitActionType.ReadyForOrders);
+				UnitActionType action = unitOnTile.getAction(); //get the action of the unit on tile
+				
+				if (action == UnitActionType.StartCultivating)
+				{
+					unitOnTile.setAction(UnitActionType.FinishCultivating);
+				}
+				if (action == UnitActionType.FinishCultivating)
+				{
+					unitOnTile.setAction(UnitActionType.ReadyForOrders);
+					tile.setLandType(LandType.Meadow);
+				}
+				if (action == UnitActionType.BuildingRoad)
+				{
+					unitOnTile.setAction(UnitActionType.ReadyForOrders);
+					tile.buildRoad();
+				}
 			}
-			else if(currentUnitAction == UnitActionType.BuildingRoad)
+			
+			if (type == LandType.Grass)
 			{
-				Tile tile = u.getLocation();
-				tile.roadPrefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
-				u.setAction (UnitActionType.ReadyForOrders);
-			}
-			else if(currentUnitAction == UnitActionType.UpgradingCombining)
-			{
-				u.setAction(UnitActionType.ReadyForOrders);
-			}
-			else
-			{
-				u.setAction(UnitActionType.ReadyForOrders);
-			}
-
-		}
-	}
-
-	public void updateVillageActions (Village v)
-	{
-		VillageActionType action = v.getAction ();
-		if (action == VillageActionType.StartedUpgrading) 
-		{
-			v.setAction (VillageActionType.FinishedUpgrading);
-		} 
-		else if (action == VillageActionType.FinishedUpgrading) 
-		{
-			v.setAction (VillageActionType.ReadyForOrders);
-			//should update the village prefab here instead of immediately 
-			//TODO prefab drawing/destroying
-		}
-	}
-
-	public void incomePhase(Village v)
-	{
-		Debug.Log ("in IncomePhase");
-		List<Tile> controlledRegion = v.getControlledRegion ();
-		foreach (Tile tile in controlledRegion) 
-		{
-			LandType currentTileType = tile.getLandType();
-			if (currentTileType == LandType.Grass) 
-			{
-				v.addGold (1); //add gold by 1
+				v.addGold(1); //add gold by 1
 				
 			}
-			if (currentTileType == LandType.Meadow) 
+			if (type == LandType.Meadow)
 			{
 				
-				v.addGold (2); //add gold by 2
+				v.addGold(2); //add gold by 2
 			}
 		}
-	}
-
-	public void paymentPhase (Village v)
-	{
+		
 		int totalWages = v.getTotalWages ();
 		int villageGold = v.getGold ();
 		if (villageGold >= totalWages) { //means have enough money to pay units
@@ -591,18 +546,6 @@ public class VillageManager : MonoBehaviour {
 		else {
 			v.retireAllUnits();
 		}
-	}
-
-	[RPC]
-	public void updateVillageNet(NetworkViewID villageID)
-	{
-		Debug.Log ("in update village net");
-		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
-		tombstonePhase(v);
-		updateUnitActions(v);
-		updateVillageActions(v);
-		incomePhase(v);
-		paymentPhase(v);
 	}
 
 	public void buildCastle(Village v)

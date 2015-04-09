@@ -87,7 +87,6 @@ MonoBehaviour:
   outline: {fileID: 0}
   prefab: {fileID: 0}
   roadPrefab: {fileID: 176012, guid: a6de6709a3566dd46ab3da6442f5b28a, type: 2}
-  isRoad: 0
 --- !u!148 &14870412
 NetworkView:
   m_ObjectHideFlags: 1
