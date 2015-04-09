@@ -122,7 +122,7 @@ public class VillageManager : MonoBehaviour {
 		pluderingVillage.addWood(wood);
 		pluderingVillage.addGold(gold);
 
-		Destroy (dest.prefab); // destroy the village, create a meadow
+		//Destroy (dest.prefab); // destroy the village, create a meadow
 		dest.prefab = Instantiate (meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation) as GameObject;
 		dest.replace (meadowPrefab);
 
@@ -189,7 +189,7 @@ public class VillageManager : MonoBehaviour {
 		}
 	}
 	*/
-	private Tile getTileForRespawn(List<Tile> region){
+	public Tile getTileForRespawn(List<Tile> region){
 		System.Random rand = new System.Random();
 		List<Tile> validTiles = new List<Tile>();
 		int randomTileIndex;

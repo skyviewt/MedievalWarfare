@@ -388,5 +388,22 @@ public class Village : MonoBehaviour {
 		this.transform.FindChild("Castle").gameObject.SetActive (true);
 		setMyType (VillageType.Castle);
 	}
+
+	public void takeDamage(){
+		--health;
+		if (health <= 0) {
+			gold = 0;
+			wood = 0;
+			this.transform.FindChild("Hovel").gameObject.SetActive (true);
+			this.transform.FindChild("Town").gameObject.SetActive (false);
+			this.transform.FindChild("Fort").gameObject.SetActive (false);
+			this.transform.FindChild("Castle").gameObject.SetActive (false);
+
+			Tile respawnLocation = vm.getTileForRespawn(controlledRegion);
+			respawnLocation.replace (null);
+			this.transform.position = new Vector3(respawnLocation.point.x, 0.1f, respawnLocation.point.y);
+			locatedAt = respawnLocation;
+		}
+	}
 	
 }

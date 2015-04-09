@@ -605,9 +605,13 @@ public class InGameGUI : MonoBehaviour {
 	public void fireCannonPressed()
 	{
 		UnitCanvas.enabled = false;
+		menuUp = false;
+		if (_Unit.GetComponent<Unit> ().getVillage ().getWood () < 1) {
+			this.displayError("You need ammo to shoot (1 wood)");
+			return;
+		}
 		_isACannonSelected = true;
 		this.displayError("Aim up to 2 tiles away");
-		menuUp = false;
 	}
 
 	public void validateAttack(RaycastHit hit){
@@ -624,7 +628,7 @@ public class InGameGUI : MonoBehaviour {
 		}
 		if (neighbours.Contains (destTile)) {
 			this.displayError ("BOOM goes the dynamite!");
-			//TODO actually shoot
+			unitManager.fireCannon (u,destTile);
 		} else {
 			this.displayError("Invalid shot");
 		}

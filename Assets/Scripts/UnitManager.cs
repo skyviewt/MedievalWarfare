@@ -269,4 +269,42 @@ public class UnitManager : MonoBehaviour {
 	{
 		u.setAction (UnitActionType.StartedCultivating);
 	}
+
+	public void fireCannon(Unit cannon, Tile t){
+		Player you = cannon.getVillage ().controlledBy;
+		Player them;
+		if (t.getVillage () != null) { // stupid null checks to prevent errors
+			them = t.getVillage ().controlledBy;
+		} else { // check if neutral
+			gameGUI.displayError (@"No need to fire on neutral land");
+			return;
+		}
+		if (you == them) { // dont fire on yourself
+			gameGUI.displayError (@"Dont shoot yourself!!");
+			return;
+		} else { // finally, give em hell!
+			Structure s = t.getStructure();
+			Unit u = t.getOccupyingUnit();
+			Village v = t.getVillage ();
+			Tile l = v.getLocatedAt();
+			if (s!=null){
+				t.replace (null);
+				t.setStructure(null);
+			}
+			if (u!=null){
+				v.removeUnit(u);
+				t.setOccupyingUnit(null);
+				t.replace (null);
+				t.setLandType(LandType.Tombstone);
+				GameObject tombPrefab = villageManager.tombPrefab;
+				t.prefab = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
+				Destroy (u.gameObject);
+			}
+			if (t==l){
+				v.takeDamage ();
+			}
+		
+		}
+
+	}
 }
