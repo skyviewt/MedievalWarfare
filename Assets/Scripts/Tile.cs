@@ -13,6 +13,7 @@ public enum LandType
 }
 
 //Tile Data Structure for building Graphs
+[System.Serializable]
 public class Tile : MonoBehaviour
 {
 	public Vector2 point;
