@@ -3705,7 +3705,7 @@ MonoBehaviour:
   isServer: 1
   players: []
   finalMapChoice: -1
-  MapGen: {fileID: 0}
+  mapGen: {fileID: 0}
   game: {fileID: 0}
 --- !u!224 &358982966
 RectTransform:
@@ -15862,8 +15862,6 @@ MonoBehaviour:
   cam2: {fileID: 954646264}
   resCam1: {fileID: 1659408200}
   resCam2: {fileID: 2122886179}
-  curPlayers: 0
-  updatedLobby: 0
   countMapChoices: 0000000000000000
   mapChoice: -1
   _ipInput: {fileID: 754496120}

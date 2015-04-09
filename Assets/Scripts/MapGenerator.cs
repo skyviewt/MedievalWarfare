@@ -47,13 +47,11 @@ public class MapGenerator : MonoBehaviour {
 		maps.Add (i, map);
 		unvisited_vertices = new List<Tile>();
 		unvisited_vertices.Add(firstTile);
-		Debug.Log (unvisited_vertices.Count);
 
 		int maxNumberTile = rand.Next (Mathf.FloorToInt(numTiles * .85f), Mathf.FloorToInt(numTiles * 1.25f));
 		
 		while(map.getVertices().Count < maxNumberTile)
 		{
-//			Debug.Log (unvisited_vertices.Count);
 			Tile curr = unvisited_vertices[0];
 
 			GameObject upPref = Network.Instantiate(GrassPrefab, new Vector3(curr.point.x+1, 0, curr.point.y), GrassPrefab.transform.rotation, 0) as GameObject;
@@ -233,14 +231,15 @@ public class MapGenerator : MonoBehaviour {
 	
 		foreach ( Tile t in map.getVertices() )
 		{
+			print ("the gm has players: "+ players.Count);
 			int color = rand.Next(0,players.Count+1);
-			//print ("color: "+color);
+			print ("rand color: "+color);
 			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
 		}
 
 		foreach ( Tile t in map.getVertices() )
 		{
-			// player.count is the neutral color.
+			// 0 is the neutral color.
 			if ( t.getVisited() == false  && t.getColor() != 0 )
 			{
 				List<Tile> TilesToReturn = new List<Tile>();
@@ -302,17 +301,6 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 
-		cleanVisitedTiles( i );
-	}
-
-	public void cleanVisitedTiles( int i )
-	{
-		Graph map;
-		maps.TryGetValue (i, out map);
-		foreach(Tile t in map.getVertices())
-		{
-			t.setVisited(false);
-		}
 	}
 
 	public void searchVillages(Tile toSearch, List<Tile> TilesToReturn, int color )
@@ -354,7 +342,7 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	[RPC]
-	void perserveFinalMap(int mapchoice)
+	void preserveFinalMap(int mapchoice)
 	{
 		Graph wantedMap;
 		maps.TryGetValue (mapchoice, out wantedMap);
@@ -385,6 +373,7 @@ public class MapGenerator : MonoBehaviour {
 		DontDestroyOnLoad (GameObject.Find ("VillageManager"));
 		DontDestroyOnLoad (GameObject.Find ("TileManager"));
 	}
+
 	[RPC]
 	void logMsg(string text){
 		Debug.Log (text);

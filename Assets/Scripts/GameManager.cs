@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour {
 
 	public Game game;
 
+	private Player localPlayer; // has getter
+	private int localTurn; //has getter and setter
 	private VillageManager villageManager;
 
 	// Use this for initialization
@@ -82,17 +84,32 @@ public class GameManager : MonoBehaviour {
 		return this.players;
 	}
 
-	public void InitializeFinalMap ()
+	public void initializeSelectedMap ()
 	{
-		this.finalMap = mapGen.getMap(finalMapChoice);
-		mapGen.initializeColorAndVillagesOnMap(players, finalMapChoice, this.finalMap); // this needs to be RPC
-		mapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
+		mapGen.initializeColorAndVillagesOnMap(players, finalMapChoice, this.finalMap);
 	}
 
-	public void createNewGame ()
+	public Graph getMap()
 	{
-		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
+		return this.finalMap;
 	}
+
+	public void preserveMostVotedMap()
+	{
+		mapGen.gameObject.networkView.RPC("preserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
+	}
+
+	[RPC]
+	public void setFinalMap(int finalMapChoice)
+	{
+		this.finalMap = mapGen.getMap(finalMapChoice);
+	}
+
+
+//	public void createNewGame ()
+//	{
+//		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
+//	}
 
 	private void beginNextTurn()
 	{
@@ -102,6 +119,17 @@ public class GameManager : MonoBehaviour {
 		{
 			villageManager.updateVillages(v);
 		}
+	}
+	
+	public int getLocalTurn()
+	{
+		return this.localTurn;
+	}
+
+	//TODO RPC
+	public void setLocalTurn(int turnNumber)
+	{
+		this.localTurn = turnNumber;
 	}
 
 	//TODO networking

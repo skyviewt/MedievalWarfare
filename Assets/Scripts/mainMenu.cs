@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-[System.Serializable]
+
 public class mainMenu : MonoBehaviour {
 
 	public Canvas ExitCanvas;
@@ -126,7 +126,7 @@ public class mainMenu : MonoBehaviour {
 		WWWForm form = new WWWForm();
 		form.AddField("user", LoginUserName.text);
 		form.AddField("password", LoginPassword.text);
-		WWW w = new WWW("http://medievalwarfare.site90.net/login.php", form);
+		WWW w = new WWW("http://iconstanto.com/login.php", form);
 		StartCoroutine(login(w));
 	}
 
@@ -207,7 +207,7 @@ public class mainMenu : MonoBehaviour {
 		form.AddField("user", RegisterUserNameInput.text);
 		form.AddField("password", RegisterPassword1.text);
 		form.AddField ("ipaddress", Network.player.ipAddress);
-		WWW w = new WWW("http://medievalwarfare.site90.net/register.php", form);
+		WWW w = new WWW("http://iconstanto.com/register.php", form);
 		StartCoroutine(registerFunc(w));
 	}
 
@@ -242,14 +242,6 @@ public class mainMenu : MonoBehaviour {
 		hideStartGameButtons ();
 		MainMenuCanvas.enabled = false;
 		JoinGameCanvas.enabled = true;
-		GM.gameObject.networkView.RPC ("addPlayerNet", 
-		                    RPCMode.AllBuffered, 
-		                    LoginUserName.text,
-		                    LoginPassword.text,
-		                    GM.players.Count+1, 
-		                    0, 
-		                    0,
-		                    Network.player.ipAddress);
 		GM.setIsServer (false);
 	}
 
@@ -278,6 +270,7 @@ public class mainMenu : MonoBehaviour {
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
+
 		showMiniMapMenu ();
 	}
 
@@ -285,9 +278,7 @@ public class mainMenu : MonoBehaviour {
 	{
 		GM.setIsServer (true);
 		GM.initGame (GM.ipAddress, GM.port);
-
-	
-		GM.gameObject.networkView.RPC ("addPlayerNet", 
+		GM.networkView.RPC ("addPlayerNet", 
 		                    RPCMode.AllBuffered, 
 		                    LoginUserName.text,
 		                    LoginPassword.text,
@@ -359,28 +350,52 @@ public class mainMenu : MonoBehaviour {
 		}
 	}
 
-	public void launchGamePressed()
+	// when a client connects
+	void OnConnectedToServer()
 	{
-		if (GM.finalMapChoice != -1) 
-		{	
-			//List<Player> players = GM.getPlayers();
-			//Graph finalMap = GM.MapGen.getMap(GM.finalMapChoice);
-			//GM.finalMap = finalMap;
-			//GM.MapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
-			//GM.MapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
-			//GM.game = Game.CreateComponent(players,finalMap,GM.gameObject);
-			GM.InitializeFinalMap();
-			GM.createNewGame();
-			this.gameObject.networkView.RPC("startLevel", RPCMode.AllBuffered);
-		}
+		GM.networkView.RPC ("addPlayerNet", 
+		                    RPCMode.AllBuffered, 
+		                    LoginUserName.text,
+		                    LoginPassword.text,
+		                    GM.players.Count+1, 
+		                    0, 
+		                    0,
+		                    Network.player.ipAddress);
 	}
+
+
+	public void launchGamePressed()
+	{	
+		List<Player> players = GM.getPlayers();
+		Graph finalMap = GM.mapGen.getMap(GM.finalMapChoice);
+		GM.networkView.RPC("setFinalMap",RPCMode.AllBuffered, GM.finalMapChoice);
+		GM.initializeSelectedMap(); //initializes the graph 
+		if(GM.isServer)
+		{
+			GM.preserveMostVotedMap(); // preserves the choice 
+		}
+		//GM.createNewGame();
+		this.networkView.RPC("startLevel", RPCMode.AllBuffered);
+	}
+
 	public void launchSavedGamePressed()
 	{
 
 	}
 
-	void Update()
+	void OnPlayerConnected()
 	{
+		GM.networkView.RPC ("addPlayerNet", 
+                    RPCMode.AllBuffered, 
+                    LoginUserName.text,
+                    LoginPassword.text,
+                    GM.players.Count + 1, 
+                    0, 
+                    0,
+                    Network.player.ipAddress);
+	}
+
+	void Update(){
 		//updates the lobby
 		if ( LobbyCanvas.enabled == true ) 
 		{
@@ -395,15 +410,17 @@ public class mainMenu : MonoBehaviour {
 					GM.finalMapChoice = 1;
 			}
 		
+			map1PlayerCount.text = countMapChoices [0].ToString ();
+			map2PlayerCount.text = countMapChoices [1].ToString ();
 			if (GM.isServer) 
 			{
 				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
-				this.gameObject.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
-				this.gameObject.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
+				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
+				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
 				// only counting the joining players.
 				for (int i = 0; i<Network.connections.Length; i++) 
 				{
-
+					
 					print ("-----joining players ip-----");
 					Debug.Log (Network.connections[i].ipAddress);
 					//get the player with the same ipAddress
@@ -414,7 +431,7 @@ public class mainMenu : MonoBehaviour {
 						Player playa = GM.players[j];
 						if( playa.ipAddress == Network.connections[i].ipAddress )
 						{
-							this.gameObject.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, i+1, playa.getName());
+							this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, i+1, playa.getName());
 							break;
 						}
 					}
@@ -424,20 +441,21 @@ public class mainMenu : MonoBehaviour {
 			}
 			else
 			{
+				LaunchText.GetComponent<Button> ().enabled = false;
+
 				for(int i = 0; i<GM.players.Count; i++)
 				{
-					if(GM.players[i].getName () == connectedPlayerText[i].text)
+					for(int j =0; j<connectedPlayerText.Count; j++)
 					{
-						this.gameObject.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, i, "Map " + mapChoice.ToString());
+						if(GM.players[i].getName () == connectedPlayerText[j].text)
+						{
+							this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, j, "Map " + mapChoice.ToString());
+							break;
+						}
 					}
 				}
-				LaunchText.GetComponent<Button> ().enabled = false;	
+					
 			}
-
-
-			map1PlayerCount.text = countMapChoices [0].ToString ();
-			map2PlayerCount.text = countMapChoices [1].ToString ();
-
 		}
 	}
 
