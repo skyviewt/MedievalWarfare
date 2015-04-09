@@ -133,6 +133,7 @@ public class UnitManager : MonoBehaviour {
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
 
+<<<<<<< HEAD
 		if (destLandType == LandType.Meadow) {
 			if (srcUnitType==UnitType.CANNON||srcUnitType==UnitType.SOLDIER||srcUnitType==UnitType.KNIGHT){
 				if (dest.checkRoad ()){
@@ -144,6 +145,30 @@ public class UnitManager : MonoBehaviour {
 				}
 				if (srcUnitType == UnitType.CANNON){
 					unit.setAction (UnitActionType.CannonMoved);
+=======
+		if (srcUnitType == UnitType.KNIGHT) 
+		{
+			bool destHasRoad = dest.checkRoad ();
+			if (destLandType == LandType.Meadow && destHasRoad == false) 
+			{
+				dest.setLandType (LandType.Grass);
+				Destroy (dest.prefab);
+			}
+			unit.setAction (UnitActionType.Moved);
+		} 
+		else //if (srcUnitType != UnitType.KNIGHT)
+		{
+			if(destLandType == LandType.Meadow)
+			{
+				if(srcUnitType == UnitType.SOLDIER)
+				{
+					bool destHasRoad = dest.checkRoad ();
+					if (destHasRoad == false) 
+					{
+						dest.setLandType (LandType.Grass);
+						Destroy (dest.prefab);
+					}
+>>>>>>> parent of ec36179... Merge remote-tracking branch 'origin/master'
 				}
 			}
 		} else if (destLandType == LandType.Trees) {
@@ -183,7 +208,7 @@ public class UnitManager : MonoBehaviour {
 		}
 		// friendly checks
 		if (t.getVillage ()==null || t.getVillage ().controlledBy == u.getVillage ().controlledBy) {
-			if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && (u.getUnitType() == UnitType.KNIGHT || u.getUnitType() == UnitType.CANNON)){
+			if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && u.getUnitType() == UnitType.KNIGHT){
 				gameGUI.displayError (@"Knights are too fancy to do manual labour. ¯\(°_o)/¯");
 				return false;
 			} else if (t.getStructure ()!=null){
@@ -200,9 +225,6 @@ public class UnitManager : MonoBehaviour {
 			if (u.getUnitType()==UnitType.PEASANT){
 				gameGUI.displayError (@"Peasants cant attack! ¯\(°_o)/¯");
 				return false;
-			} else if (u.getUnitType()==UnitType.CANNON){
-				gameGUI.displayError (@"Cannons cant move into enemy territory");
-				return false;
 			} else if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && u.getUnitType() == UnitType.KNIGHT){
 				gameGUI.displayError (@"Knights are too fancy to do manual labour. ¯\(°_o)/¯");
 				return false;
@@ -210,10 +232,6 @@ public class UnitManager : MonoBehaviour {
 				gameGUI.displayError (@"Only a knight can take a tower. ¯\(°_o)/¯");
 				return false;
 			} else if (t.getOccupyingUnit()!=null && u.getUnitType()<=t.getOccupyingUnit().getUnitType()){
-				if (t.getOccupyingUnit().getUnitType()==UnitType.CANNON && u.getUnitType()<=UnitType.SOLDIER){
-					gameGUI.displayError (@"You need a knight to take out their cannon");
-					return false;
-				} 
 				gameGUI.displayError (@"Your unit cant fight theirs. ¯\(°_o)/¯");
 				return false;
 			} else {

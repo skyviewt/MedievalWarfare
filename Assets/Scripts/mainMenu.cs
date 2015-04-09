@@ -16,7 +16,6 @@ public class mainMenu : MonoBehaviour {
 	public Canvas RegisterCanvas;
 	public Canvas LoginBoxCanvas;
 	public Canvas ErrorCanvas;
-	public Canvas StatsCanvas;
 	public Transform HostText;
 	public Transform JoinText;
 	public Transform StatsText;
@@ -24,8 +23,6 @@ public class mainMenu : MonoBehaviour {
 
 	public Transform LaunchText;
 	public Text ErrorLobbyMsg;
-
-	public List<Text> statsTableTexts;
 
 	public Text ErrorJoinRegisterLoginMsg;
 
@@ -76,7 +73,6 @@ public class mainMenu : MonoBehaviour {
 		LobbyCanvas.enabled = false;
 		RegisterCanvas.enabled = false;
 		LoginBoxCanvas.enabled = false;
-		StatsCanvas.enabled = false;
 		ErrorCanvas.enabled = true;
 		cam1.enabled = false;
 		cam2.enabled = false;
@@ -134,14 +130,6 @@ public class mainMenu : MonoBehaviour {
 		StartCoroutine(login(w));
 	}
 
-	public void statsButtonPressed()
-	{
-		WWWForm form = new WWWForm();
-		form.AddField("user", "test");
-		WWW w = new WWW("http://iconstanto.com/showStats.php", form);
-		StartCoroutine(stats(w));
-	}
-	
 	public void returnToLoginPressed()
 	{
 		ErrorJoinRegisterLoginMsg.enabled = false;
@@ -150,49 +138,6 @@ public class mainMenu : MonoBehaviour {
 		LoginCanvas.enabled = true;
 	}
 
-	public void logoutButtonPressed()
-	{
-
-	}
-
-	public void clearStatsTable()
-	{
-		for(int i=0; i< statsTableTexts.Count; i++)
-		{
-			statsTableTexts[i].text = "";
-		}
-	}
-
-	IEnumerator stats(WWW w)
-	{
-		ErrorJoinRegisterLoginMsg.enabled = false;
-		this.clearStatsTable ();
-		yield return w;
-		if (w.error == null)
-		{
-			StatsCanvas.enabled = true;
-			string returntext = w.text;
-			string[] words = returntext.Split('#');
-			foreach (string word in words)
-			{
-				string[] parts = word.Split('-');
-				for(int i=0; i<parts.Length; i++)
-				{
-					string s = parts[i];
-					string[] latterParts = s.Split(':');
-					statsTableTexts[i].text += (latterParts[1] + '\n');
-				}
-			}
-		}
-		else
-		{
-			ErrorJoinRegisterLoginMsg.text += "ERROR: " + w.error;
-			ErrorJoinRegisterLoginMsg.enabled = true;
-		}
-	}
-
-
-			
 	IEnumerator login(WWW w)
 	{
 		ErrorJoinRegisterLoginMsg.enabled = false;
@@ -258,14 +203,6 @@ public class mainMenu : MonoBehaviour {
 			ErrorJoinRegisterLoginMsg.enabled = true;
 			return;
 		}
-		else if(RegisterUserNameInput.text.Contains("-") || RegisterUserNameInput.text.Contains(":") ||
-		        RegisterUserNameInput.text.Contains("#") || RegisterPassword1.text.Contains("-") ||
-		        RegisterPassword1.text.Contains(":") || RegisterPassword1.text.Contains("#"))
-		{
-			ErrorJoinRegisterLoginMsg.text = "Inputs cannot contains symbols -, : or #. ";
-			ErrorJoinRegisterLoginMsg.enabled = true;
-			return;
-		}
 		WWWForm form = new WWWForm();
 		form.AddField("user", RegisterUserNameInput.text);
 		form.AddField("password", RegisterPassword1.text);
@@ -293,7 +230,6 @@ public class mainMenu : MonoBehaviour {
 
 	public void returntoMainMenuCanvas()
 	{
-		StatsCanvas.enabled = false;
 		JoinGameCanvas.enabled = false;
 		MainMenuCanvas.enabled = true;
 		showStartGameButtons ();
