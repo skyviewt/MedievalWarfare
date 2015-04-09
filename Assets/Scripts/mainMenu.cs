@@ -278,7 +278,14 @@ public class mainMenu : MonoBehaviour {
 	{
 		GM.setIsServer (true);
 		GM.initGame (GM.ipAddress, GM.port);
-
+		GM.networkView.RPC ("addPlayerNet", 
+		                    RPCMode.AllBuffered, 
+		                    LoginUserName.text,
+		                    LoginPassword.text,
+		                    GM.players.Count+1, 
+		                    0, 
+		                    0,
+		                    Network.player.ipAddress);
 		showMiniMapMenu ();
 	}
 
@@ -356,18 +363,6 @@ public class mainMenu : MonoBehaviour {
 		                    Network.player.ipAddress);
 	}
 
-	// from the server to clients
-	void OnConnected()
-	{
-		GM.networkView.RPC ("addPlayerNet", 
-		                    RPCMode.AllBuffered, 
-		                    LoginUserName.text,
-		                    LoginPassword.text,
-		                    GM.players.Count+1, 
-		                    0, 
-		                    0,
-		                    Network.player.ipAddress);
-	}
 
 	public void launchGamePressed()
 	{
@@ -391,8 +386,16 @@ public class mainMenu : MonoBehaviour {
 
 	}
 
-	void Update()
+	void OnPlayerConnected()
 	{
+		GM.networkView.RPC ("addPlayerNet", 
+		                    RPCMode.AllBuffered, 
+		                    LoginUserName.text,
+		                    LoginPassword.text,
+		                    GM.players.Count+1, 
+		                    0, 
+		                    0,
+		                    Network.player.ipAddress);
 		//updates the lobby
 		if ( LobbyCanvas.enabled == true ) 
 		{
@@ -409,51 +412,52 @@ public class mainMenu : MonoBehaviour {
 		
 			if (GM.isServer) 
 			{
-//				print ("number of players------");
-//				Debug.Log(GM.players.Count);
-//				Player host = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
-//				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, host.getName());
-//				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
-//
-//				int currTextIdx = 1;
-//				for (int i = 0; i<GM.players.Count; i++) 
-//				{
-//					for(int j = 0; j<connectedPlayerText.Count; j++)
-//					{
-//						if(connectedPlayerText[j].text == "")
-//						{
-//							currTextIdx = j;
-//						}
-//					}
-//
-//					if(GM.players[i].getName() != host.getName())
-//					{
-//						this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, currTextIdx, GM.players[i].getName());
-//					}
-//				}
-				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
-				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
+				print ("number of players------");
+				Debug.Log(GM.players.Count);
+				Player host = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
+				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, host.getName());
 				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
-				// only counting the joining players.
-				for (int i = 0; i<Network.connections.Length; i++) 
+
+				int currTextIdx = 1;
+				for (int i = 0; i<GM.players.Count; i++) 
 				{
-					
-					print ("-----joining players ip-----");
-					Debug.Log (Network.connections[i].ipAddress);
-					//get the player with the same ipAddress
-					Debug.Log (GM.players.Count);
-					for(int j = 0; j<GM.players.Count; j++)
+					for(int j = 0; j<connectedPlayerText.Count; j++)
 					{
-						print ("what is j:"+j);
-						Player playa = GM.players[j];
-						if( playa.ipAddress == Network.connections[i].ipAddress )
+						if(connectedPlayerText[j].text == "")
 						{
-							this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, i+1, playa.getName());
+							currTextIdx = j;
 							break;
 						}
 					}
+
+					if(GM.players[i].getName() != host.getName())
+					{
+						this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, currTextIdx, GM.players[i].getName());
+					}
 				}
-			
+//				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
+//				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
+//				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
+//				// only counting the joining players.
+//				for (int i = 0; i<Network.connections.Length; i++) 
+//				{
+//					
+//					print ("-----joining players ip-----");
+//					Debug.Log (Network.connections[i].ipAddress);
+//					//get the player with the same ipAddress
+//					Debug.Log (GM.players.Count);
+//					for(int j = 0; j<GM.players.Count; j++)
+//					{
+//						print ("what is j:"+j);
+//						Player playa = GM.players[j];
+//						if( playa.ipAddress == Network.connections[i].ipAddress )
+//						{
+//							this.networkView.RPC ("changePlayerTextNet",RPCMode.AllBuffered, i+1, playa.getName());
+//							break;
+//						}
+//					}
+//				}
+//			
 				LaunchText.GetComponent<Button> ().enabled = true;	
 			}
 			else
