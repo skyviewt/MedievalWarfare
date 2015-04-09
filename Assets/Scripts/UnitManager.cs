@@ -39,7 +39,8 @@ public class UnitManager : MonoBehaviour {
 		
 		Unit destUnit = dest.getOccupyingUnit ();
 		UnitType srcUnitType = unit.getUnitType();
-		
+
+		//TODO add in cannon permissions
 		bool unitPermitted = canUnitMove (unit, dest);
 		
 		//if the move is allowed to move onto the tile
@@ -289,4 +290,5 @@ public class UnitManager : MonoBehaviour {
 		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
 		upgradeUnit (u, (UnitType)newlvl);
 	}
+
 }

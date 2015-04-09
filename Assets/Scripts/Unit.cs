@@ -9,7 +9,8 @@ public enum UnitType
 	PEASANT,
 	INFANTRY,
 	SOLDIER,
-	KNIGHT
+	KNIGHT,
+	CANNON
 };
 
 [System.Serializable]
@@ -219,4 +220,5 @@ public class Unit : MonoBehaviour {
 			break;
 		}
 	}
+
 }
