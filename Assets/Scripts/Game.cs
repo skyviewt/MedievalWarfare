@@ -17,9 +17,9 @@ public class Game : MonoBehaviour
 	private Graph gameMap;
 	private List<Player> players;														//stores the list of players in the game
 	private List<PlayerStatus> playerStatuses = new List<PlayerStatus> ();				//stores the status of players in the game
-	private Player currentPlayer;
 	private int currentTurn;
-	private GameManager GM = GameObject.Find("perserveGM").GetComponent<GameManager>();
+	private int turnsPlayed;
+	private GameManager GM;
 	
 	//constructor
 //	public static Game CreateComponent ( List<Player> participants, Graph map,  GameObject g) 
@@ -36,9 +36,13 @@ public class Game : MonoBehaviour
 //		theGame.setTurn(0);
 //		return theGame;
 //	}
+	void Start()
+	{
+		GM = GameObject.Find("preserveGM").GetComponent<GameManager>();
+	}
 
 	[RPC]
-	public void setMap(Graph map)
+	public void setMap()
 	{
 		this.gameMap = GM.getMap();
 	}
@@ -62,7 +66,11 @@ public class Game : MonoBehaviour
 	public void setStartingPlayer(int playerTurn)
 	{
 		this.currentTurn = playerTurn;
-		this.currentPlayer = players [playerTurn];
+	}
+	[RPC]
+	public void setTurnsPlayed(int turnsPlayed)
+	{
+		this.turnsPlayed = turnsPlayed;
 	}
 
 	/********* GETTERS ****************/
@@ -82,27 +90,26 @@ public class Game : MonoBehaviour
 	}
 	public Player getCurrentPlayer()
 	{
-		return this.currentPlayer;
+		return this.players [currentTurn];
 	}
 
 	public List<PlayerStatus> getPlayerStatuses()
 	{
 		return this.playerStatuses;
 	}
-
-	//Sets the turn to be Player p
+	
 	public void setTurn(int turnNumber)
 	{
 		this.currentTurn = turnNumber;
-		this.currentPlayer = players[turnNumber];
 	}
-
+	public int getTurnsPlayed()
+	{
+		return this.turnsPlayed;
+	}
 	//Remove player from List<Player> Players
 	public void removePlayer(Player p)
 	{
 		this.players.Remove (p);
 	}
-
-
 
 }

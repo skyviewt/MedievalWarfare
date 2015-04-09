@@ -23,11 +23,10 @@ public enum UnitActionType
 	ChoppingTree,
 	ClearingTombstone, 
 	UpgradingCombining, 
-	StartCultivating, 
-	FinishCultivating,
+	StartedCultivating, 
+	FinishedCultivating,
 	CapturingNeutral,
 	CapturingEnemy,
-	EndOfTurn	
 };
 
 [System.Serializable]
@@ -166,35 +165,40 @@ public class Unit : MonoBehaviour {
 	{
 		this.locatedAt = t;
 	}
-	
 	public void setAction(UnitActionType action)
 	{
 		this.myAction = action;
+	}
+
+	[RPC]
+	public void setActionNet(int action)
+	{
+		this.myAction = (UnitActionType)action;
 	}
 	
 	public UnitActionType getAction()
 	{
 		return this.myAction;
 	}
+
 	public int getWage()
 	{
-		if(this.myType == UnitType.PEASANT)
-		{
-			return TWO;
-		}
-		else if(this.myType == UnitType.INFANTRY)
-		{
-			return SIX;
-		}
-		else if(this.myType == UnitType.SOLDIER)
-		{
-			return EIGHTEEN;
-		}
-		else
-		{
-			return FIFTY_FOUR;
+		switch (myType) {
+		case UnitType.PEASANT:
+			return 2;
+		case UnitType.INFANTRY:
+			return 6;
+		case UnitType.SOLDIER:
+			return 18;
+		case UnitType.KNIGHT:
+			return 54;
+		case UnitType.CANNON:
+			return 5;
+		default:
+			return 0;
 		}
 	}
+
 	public void upgrade(UnitType newLevel)
 	{
 		this.myType = newLevel;

@@ -67,7 +67,7 @@ public class mainMenu : MonoBehaviour {
 	void Start () {
 		Instantiate(PrefabFire);
 		Instantiate(PrefabLight);
-		GM = GameObject.Find("perserveGM").GetComponent<GameManager>();
+		GM = GameObject.Find("preserveGM").GetComponent<GameManager>();
 		LoginCanvas.enabled = true;
 		MainMenuCanvas.enabled = false;
 		ExitCanvas.enabled = false;
@@ -349,6 +349,13 @@ public class mainMenu : MonoBehaviour {
 		showMiniMapMenu ();
 	}
 
+//	public void hostSavedGameButtonPressed()
+//	{
+//		GM.setIsServer (true);
+//		GM.initGame (GM.ipAddress, GM.port);
+//
+//	}
+
 	public void showMiniMapMenu()
 	{
 
@@ -459,13 +466,17 @@ public class mainMenu : MonoBehaviour {
 		{
 			GM.preserveMostVotedMap(); // preserves the choice 
 		}
-		//GM.createNewGame();
+		GM.createNewGame();
+		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.
+		for (int i = 0; i < Network.connections.Length; i++) {
+			GM.networkView.RPC ("setLocalTurnAndPlayer",Network.connections[i],i);
+		}
 		this.networkView.RPC("startLevel", RPCMode.AllBuffered);
 	}
 
 	public void launchSavedGamePressed()
 	{
-
+		//i.e load saved game, TODO
 	}
 
 //	void OnPlayerConnected()

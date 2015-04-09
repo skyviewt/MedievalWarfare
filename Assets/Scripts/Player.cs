@@ -6,7 +6,7 @@ using System.Linq;
 [System.Serializable]
 public class Player : MonoBehaviour{
 	
-	private string username;
+	public string username;
 	private string password;
 	private int wins;
 	private int losses;

@@ -7,7 +7,8 @@ using System.Linq;
 public enum VillageActionType
 {
 	ReadyForOrders,
-	BuildStageOne
+	StartedUpgrading,
+	FinishedUpgrading
 };
 
 [System.Serializable]
@@ -214,6 +215,10 @@ public class Village : MonoBehaviour {
 		return locatedAt;
 	}
 
+	public void setAction(VillageActionType action)
+	{
+		myAction = action;
+	}
 
 	//increment / decrement
 	// used only until calling method is networked
@@ -231,8 +236,7 @@ public class Village : MonoBehaviour {
 		supportedUnits.Add (u);
 		u.setVillage (this);
 	}
-
-
+	
 	public void removeUnit(Unit u)
 	{
 		supportedUnits.Remove(u);
@@ -256,8 +260,7 @@ public class Village : MonoBehaviour {
 	{
 		controlledRegion.Remove (t);
 	}
-
-
+	
 	public void addRegion(List<Tile> regions)
 	{	
 		//doing exactly what the gameManager.addregion(List<Tile>, Village village) is doing
@@ -274,8 +277,6 @@ public class Village : MonoBehaviour {
 		}
 	}
 
-	//needs getWage in Units
-
 	public int getTotalWages()
 	{
 		int totalWage = 0;
@@ -283,54 +284,28 @@ public class Village : MonoBehaviour {
 			int tempWage = u.getWage();
 			totalWage += tempWage;
 		}
+		if (myType == VillageType.Castle) {
+			totalWage+=80;
+		}
 		return totalWage;
 	}
 
 
-	//needs setLocation and setVillage and setOccupyingUnit in Tile
-
+	//TODO think this needs to be done over the network
 	public void retireAllUnits()
 	{
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.setOccupyingUnit(null);
-			unitLocation.setLandType(LandType.Tombstone);
-			u.setLocation(null);
-			u.setVillage(null);
+			Destroy (unitLocation.prefab);
 			GameObject tombPrefab = vm.tombPrefab;
-			GameObject tomb = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 0.4f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
+			unitLocation.prefab = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 0.4f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
 			unitLocation.setLandType(LandType.Tombstone);
-			//unitLocation.replace (tomb);
-			//unitLocation.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tomb.networkView.viewID);
-			//unitLocation.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Tombstone);
-
 			supportedUnits.Remove(u);
 			Destroy (u.gameObject);
 		}
 	}
-
-
-	public void upgrade()
-	{
-		//TODO uncomment following line after demo
-		//myAction = VillageActionType.BuildStageOne;
-
-		wood -= 8;
-		if (myType == VillageType.Hovel) 
-		{
-			this.transform.FindChild("Hovel").gameObject.SetActive (false);
-			this.transform.FindChild("Town").gameObject.SetActive (true);
-			setMyType (VillageType.Town);
-			health = 2;
-		}
-		else if (myType == VillageType.Town) 
-		{
-			transform.FindChild("Town").gameObject.SetActive (false);
-			transform.FindChild("Fort").gameObject.SetActive (true);
-			setMyType (VillageType.Fort);
-			health = 5;
-		}
-	}
+	
 	//sets gold to 0 and returns the previous gold value
 	public int pillageGold()
 	{
@@ -363,15 +338,21 @@ public class Village : MonoBehaviour {
 		controlledBy = pls [playerIndex];
 	}
 
-	public void buildCastle(){
-		wood -= 12;
-		wage = 80;
-		health = 10;
-		this.transform.FindChild("Hovel").gameObject.SetActive (false);
-		this.transform.FindChild("Town").gameObject.SetActive (false);
-		this.transform.FindChild("Fort").gameObject.SetActive (false);
-		this.transform.FindChild("Castle").gameObject.SetActive (true);
-		setMyType (VillageType.Castle);
+	public void takeDamage(){
+		--health;
+		if (health <= 0) {
+			gold = 0;
+			wood = 0;
+			this.transform.FindChild("Hovel").gameObject.SetActive (true);
+			this.transform.FindChild("Town").gameObject.SetActive (false);
+			this.transform.FindChild("Fort").gameObject.SetActive (false);
+			this.transform.FindChild("Castle").gameObject.SetActive (false);
+
+			Tile respawnLocation = vm.getTileForRespawn(controlledRegion);
+			respawnLocation.replace (null);
+			this.transform.position = new Vector3(respawnLocation.point.x, 0.1f, respawnLocation.point.y);
+			locatedAt = respawnLocation;
+		}
 	}
 	
 }

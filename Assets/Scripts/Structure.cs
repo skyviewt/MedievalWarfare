@@ -8,8 +8,6 @@ public class Structure : MonoBehaviour {
 
 	private UnitType myType = UnitType.INFANTRY;
 	public GameObject structurePrefab;
-
-	// private Tile locatedAt is the relation to its parent Tile
-	// this is not kept in script, but object hierarchy
-
+	public Village myVillage;
+	public Tile locatedAt;
 }

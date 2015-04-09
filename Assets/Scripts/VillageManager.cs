@@ -19,6 +19,8 @@ public class VillageManager : MonoBehaviour {
 	private InGameGUI gameGUI;
 	// Use this for initialization
 	public GameObject meadowPrefab;
+	public GameObject roadPrefab;
+	public GameObject treePrefab;
 	public GameObject hovelPrefab;
 	public GameObject tombPrefab;
 	public GameObject towerPrefab;
@@ -43,7 +45,8 @@ public class VillageManager : MonoBehaviour {
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
-			v.upgrade ();
+			v.setAction (VillageActionType.StartedUpgrading);
+			v.addWood(-8);
 		} 
 	}	
 
@@ -120,18 +123,11 @@ public class VillageManager : MonoBehaviour {
 		pluderingVillage.addWood(wood);
 		pluderingVillage.addGold(gold);
 
-		Destroy (dest.prefab); // destroy the village, create a meadow
+		//Destroy (dest.prefab); // destroy the village, create a meadow
 		dest.prefab = Instantiate (meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation) as GameObject;
 		dest.replace (meadowPrefab);
 
-		/*/ respawn enemy hovel happens during the split
-		List<Tile> validTiles = plunderedVillage.getControlledRegion ();
-		Tile respawnLocation = getTileForRespawn (validTiles);
-		respawnLocation.replace (null);
-		Destroy (respawnLocation.prefab);
-		GameObject hovel = Network.Instantiate(hovelPrefab, new Vector3 (respawnLocation.point.x, 0.2f, respawnLocation.point.y), hovelPrefab.transform.rotation, 0) as GameObject;
-		plunderedVillage.setLocation (respawnLocation);
-		*/
+		// respawn enemy hovel happens during the split
 	}
 
 	/*
@@ -146,48 +142,8 @@ public class VillageManager : MonoBehaviour {
 		invadedVillage.removeTile(dest);
 		splitRegion(dest, invadedVillage);
 	}
-	/*
-	// network component ?
-		// shouldnt need to be networked, this is just a helper function
-	private List<Tile> getValidTilesForRespawn(List<Tile> region)
-	{
-		List<Tile> validTiles = new List<Tile> ();
-		foreach (Tile t in region) 
-		{
-			if(t.getStructure() == null)
-			{
-				validTiles.Add(t);
-			}
-		}
-		return validTiles;
-	}
 
-	//TODO needs networking component
-	private void respawnHovel(Village v)
-	{
-		print ("made it to respawnhovel");
-		List<Tile> validTiles = getValidTilesForRespawn (v.getControlledRegion ());
-		System.Random rand = new System.Random();
-		int randomTileIndex;
-		Tile respawnLocation;
-		if(validTiles.Count == 0) // all tiles occupied by structures, then "repurpose" one of them
-		{
-			randomTileIndex = rand.Next (0, v.getRegionSize());
-			respawnLocation = validTiles[randomTileIndex];
-			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
-			// replace destroys the current prefab and sets the new one
-			v.setLocation(respawnLocation);
-		}
-		else
-		{
-			randomTileIndex = rand.Next (0, validTiles.Count);
-			respawnLocation = validTiles[randomTileIndex];
-			respawnLocation.replace (hovelPrefab); // TODO needs to use RPC replace
-			v.setLocation(respawnLocation);
-		}
-	}
-	*/
-	private Tile getTileForRespawn(List<Tile> region){
+	public Tile getTileForRespawn(List<Tile> region){
 		System.Random rand = new System.Random();
 		List<Tile> validTiles = new List<Tile>();
 		int randomTileIndex;
@@ -293,18 +249,28 @@ public class VillageManager : MonoBehaviour {
 					newTown.transform.FindChild("Hovel").gameObject.SetActive (true);
 					newTown.transform.FindChild("Town").gameObject.SetActive (false);
 					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
+					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
 				}
 				else if (vType == VillageType.Town) 
 				{
 					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
 					newTown.transform.FindChild("Town").gameObject.SetActive (true);
 					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
+					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
 				}
 				else if (vType == VillageType.Fort) 
 				{					
 					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
 					newTown.transform.FindChild("Town").gameObject.SetActive (false);
 					newTown.transform.FindChild("Fort").gameObject.SetActive (true);
+					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+				}
+				else if (vType == VillageType.Castle) 
+				{					
+					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
+					newTown.transform.FindChild("Town").gameObject.SetActive (false);
+					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
+					newTown.transform.FindChild("Castle").gameObject.SetActive (true);
 				}
 			}
 
@@ -333,7 +299,7 @@ public class VillageManager : MonoBehaviour {
 				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
 				t.setLandType(LandType.Tombstone);
 			}
-			t.setStructure(false); // helper method needs to be finished
+			t.setStructure(null); // helper method needs to be finished
 		}
 	}
 
@@ -479,65 +445,129 @@ public class VillageManager : MonoBehaviour {
 	//TODO needs networking
 	public void buildTower(Village v, Tile t)
 	{
-
 		GameObject tower = Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity) as GameObject;
 		tower.transform.localScale = new Vector3 (0.03f,0.03f,0.03f);
 		tower.transform.eulerAngles = new Vector3(-90,0,0);
 
 		Structure s = tower.GetComponent<Structure> ();
+		s.myVillage = v;
 		t.replace (tower);
 		t.setStructure (s);
 		v.addWood (-5);
-
-		//t.gameObject.renderer.material.color = Color.yellow;
 	}
 
-	//TODO prefab drawing/destroying
-	//TODO networking component
-	public void updateVillages(Village v)
+	public void tombstonePhase (Village v)
 	{
 		List<Tile> controlledRegion = v.getControlledRegion ();
-		foreach (Tile tile in controlledRegion)
-		{
-			LandType type = tile.getLandType();
-			if (type == LandType.Tombstone)
+		foreach (Tile tile in controlledRegion) {
+			LandType currentTileType = tile.getLandType ();
+			if (currentTileType == LandType.Tombstone) 
 			{
-				tile.setLandType(LandType.Trees);
-			}
-			
-			Unit unitOnTile = tile.getOccupyingUnit(); //grabs the occupying unit on tile
-			if (unitOnTile != null)
-			{
-				UnitActionType action = unitOnTile.getAction(); //get the action of the unit on tile
-				
-				if (action == UnitActionType.StartCultivating)
-				{
-					unitOnTile.setAction(UnitActionType.FinishCultivating);
+				if (!tile.checkRoad()){
+					tile.prefab = Instantiate (treePrefab, new Vector3 (tile.point.x, 0, tile.point.y), treePrefab.transform.rotation) as GameObject;
+					tile.prefab.transform.eulerAngles = new Vector3 (0, Random.Range (0, 360), 0); //give it a random rotation		
+					tile.replace (tile.prefab);
+					tile.setLandType (LandType.Trees);
 				}
-				if (action == UnitActionType.FinishCultivating)
-				{
-					unitOnTile.setAction(UnitActionType.ReadyForOrders);
-					tile.setLandType(LandType.Meadow);
-				}
-				if (action == UnitActionType.BuildingRoad)
-				{
-					unitOnTile.setAction(UnitActionType.ReadyForOrders);
-					tile.buildRoad();
-				}
-			}
-			
-			if (type == LandType.Grass)
-			{
-				v.addGold(1); //add gold by 1
-				
-			}
-			if (type == LandType.Meadow)
-			{
-				
-				v.addGold(2); //add gold by 2
 			}
 		}
-		
+	}
+
+	public void updateUnitActions (Village v)
+	{
+		List<Unit> units = v.getControlledUnits();
+		foreach (Unit u in units) 
+		{
+			UnitActionType currentUnitAction = u.getAction();
+			if(currentUnitAction == UnitActionType.StartedCultivating)
+			{
+				u.setAction (UnitActionType.FinishedCultivating);
+			}
+			else if (currentUnitAction == UnitActionType.FinishedCultivating)
+			{
+				Tile tile = u.getLocation();
+				tile.setLandType(LandType.Meadow);
+				tile.prefab = Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation) as GameObject;
+				u.setAction (UnitActionType.ReadyForOrders);
+			}
+			else if(currentUnitAction == UnitActionType.BuildingRoad)
+			{
+				Tile tile = u.getLocation();
+				tile.isRoad = true;
+				tile.prefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
+				u.setAction (UnitActionType.ReadyForOrders);
+			}
+			else if(currentUnitAction == UnitActionType.UpgradingCombining)
+			{
+				u.setAction(UnitActionType.ReadyForOrders);
+			}
+			else
+			{
+				u.setAction(UnitActionType.ReadyForOrders);
+			}
+
+		}
+	}
+
+	public void updateVillageActions (Village v)
+	{
+		VillageActionType action = v.getAction ();
+		if (action == VillageActionType.StartedUpgrading) 
+		{
+			v.setAction (VillageActionType.FinishedUpgrading);
+		} 
+		else if (action == VillageActionType.FinishedUpgrading) 
+		{
+			v.setAction (VillageActionType.ReadyForOrders);
+			//should update the village prefab here instead of immediately 
+			VillageType vType = v.getMyType();
+			if (vType == VillageType.Hovel) 
+			{
+				this.transform.FindChild("Hovel").gameObject.SetActive (false);
+				this.transform.FindChild("Town").gameObject.SetActive (true);
+				v.setMyType(VillageType.Town);
+				v.health = 2;
+			}
+			else if (vType == VillageType.Town) 
+			{
+				transform.FindChild("Town").gameObject.SetActive (false);
+				transform.FindChild("Fort").gameObject.SetActive (true);
+				v.setMyType(VillageType.Fort);
+				v.health=5;
+			}
+			else if (vType == VillageType.Fort) 
+			{
+				transform.FindChild("Fort").gameObject.SetActive (false);
+				transform.FindChild("Castle").gameObject.SetActive (true);
+				v.setMyType(VillageType.Castle);
+				v.health=10;
+				v.wage=80;
+			}
+		}
+	}
+
+	public void incomePhase(Village v)
+	{
+		Debug.Log ("in IncomePhase");
+		List<Tile> controlledRegion = v.getControlledRegion ();
+		foreach (Tile tile in controlledRegion) 
+		{
+			LandType currentTileType = tile.getLandType();
+			if (currentTileType == LandType.Grass) 
+			{
+				v.addGold (1); //add gold by 1
+				
+			}
+			if (currentTileType == LandType.Meadow) 
+			{
+				
+				v.addGold (2); //add gold by 2
+			}
+		}
+	}
+
+	public void paymentPhase (Village v)
+	{
 		int totalWages = v.getTotalWages ();
 		int villageGold = v.getGold ();
 		if (villageGold >= totalWages) { //means have enough money to pay units
@@ -546,6 +576,18 @@ public class VillageManager : MonoBehaviour {
 		else {
 			v.retireAllUnits();
 		}
+	}
+
+	[RPC]
+	public void updateVillageNet(NetworkViewID villageID)
+	{
+		Debug.Log ("in update village net");
+		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
+		tombstonePhase(v);
+		updateUnitActions(v);
+		updateVillageActions(v);
+		incomePhase(v);
+		paymentPhase(v);
 	}
 
 	public void buildCastle(Village v)
@@ -560,7 +602,8 @@ public class VillageManager : MonoBehaviour {
 		} else if (vAction != VillageActionType.ReadyForOrders) {
 			gameGUI.displayError (@"You cant queue build orders :/");
 		} else {
-			v.buildCastle();
+			v.setAction(VillageActionType.StartedUpgrading);
+			v.addWood (-12);
 		}
 	}	
 
