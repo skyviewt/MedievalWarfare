@@ -40,6 +40,7 @@ public class Game : MonoBehaviour
 	{
 		GM = GameObject.Find("preserveGM").GetComponent<GameManager>();
 	}
+
 	[RPC]
 	public void setMap()
 	{

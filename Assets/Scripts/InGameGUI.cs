@@ -12,6 +12,7 @@ public class InGameGUI : MonoBehaviour {
 	public Canvas HUDCanvas;
 	public Canvas ErrorCanvas;
 	public Canvas YourTurnCanvas;
+	public Canvas EscapeMenu;
 
 	public int myTurn;
 	public int turnOrder;
@@ -72,6 +73,22 @@ public class InGameGUI : MonoBehaviour {
 		this.networkView.RPC ("setTurnButton", RPCMode.AllBuffered);					//reenables gui interaction after map is updated
 	}
 
+	public void returnToGamePressed()
+	{
+		EscapeMenu.enabled = false;
+		menuUp = false;
+	}
+
+	public void forfeitGamePressed()
+	{
+
+	}
+	public void exitGamePressed()
+	{
+
+	}
+
+
 	public void disableInteractions()
 	{
 		currentlyUpdatingGame = true;
@@ -125,6 +142,7 @@ public class InGameGUI : MonoBehaviour {
 		UnitCanvas.enabled = false;
 		ErrorCanvas.enabled = false;
 		YourTurnCanvas.enabled = false;
+		EscapeMenu.enabled = false;
 		menuUp = false;
 	}
 	//Functions for when a Village is selected
@@ -287,8 +305,7 @@ public class InGameGUI : MonoBehaviour {
 
 	public void displayError(string error)
 	{
-		VillageCanvas.enabled = false;
-		UnitCanvas.enabled = false;
+		disableAllCanvases ();
 		_ErrorText.text = error;
 		ErrorCanvas.enabled = true;
 
@@ -489,32 +506,35 @@ public class InGameGUI : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.Escape)) 
 		{
-			if(VillageCanvas.enabled == true)
+			if(VillageCanvas.enabled == true && menuUp == true)
 			{
 				VillageCanvas.enabled = false;
 				menuUp = false;
 			}
-			if(UnitCanvas.enabled == true)
+			else if(UnitCanvas.enabled == true && menuUp == true)
 			{
 				UnitCanvas.enabled = false;
 				_isAUnitSelected = false;
 				menuUp = false;
 			}
-			if(ErrorCanvas.enabled == true)
-			{
-				ErrorCanvas.enabled = false;
-				menuUp = false;
-			}
-			if(YourTurnCanvas.enabled == true)
+			else if(YourTurnCanvas.enabled == true && menuUp == true)
 			{
 				YourTurnCanvas.enabled = false;
 				menuUp = false;
 			}
-
-			//TODO: bring up the esc menu
-			else
+			else if (EscapeMenu.enabled == true && menuUp == true)
 			{
-
+				EscapeMenu.enabled = false;
+				menuUp = false;
+			}
+			else if (EscapeMenu.enabled == false && menuUp == false)
+			{
+				EscapeMenu.enabled = true;
+				menuUp = true;
+			}
+			else if(ErrorCanvas.enabled == true)
+			{
+				ErrorCanvas.enabled = false;
 			}
 		}
 
@@ -565,13 +585,12 @@ public class InGameGUI : MonoBehaviour {
 		Unit u = _Unit.GetComponent<Unit>();
 		//Village v = u.getVillage();
 		Tile t = u.getLocation ();
-		ErrorCanvas.enabled = true;
 		if (u.getUnitType () != UnitType.PEASANT) {
 			this.displayError ("Only peasants can build roads");
 		} else if (t.checkRoad ()) {
 			this.displayError ("This tile already has a road");
 		} else {
-			//TODO RPC this, delay until next turn
+			//TODO RPC this and need to delay until next turn
 			t.buildRoad ();
 			u.setAction(UnitActionType.BuildingRoad);
 		}

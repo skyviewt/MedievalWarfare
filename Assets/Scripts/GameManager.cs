@@ -129,6 +129,7 @@ public class GameManager : MonoBehaviour {
 	[RPC]
 	public void createNewGame ()
 	{
+		Debug.Log ("In create new game");
 		game.gameObject.networkView.RPC ("setMap",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("setPlayers",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("initializeStatuses",RPCMode.AllBuffered);

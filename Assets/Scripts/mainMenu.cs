@@ -455,7 +455,7 @@ public class mainMenu : MonoBehaviour {
 
 	public void launchSavedGamePressed()
 	{
-		List<Player> players = GM.getPlayers();
+		//i.e load saved game, TODO
 	}
 
 	void OnPlayerConnected()
