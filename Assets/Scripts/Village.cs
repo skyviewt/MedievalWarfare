@@ -236,8 +236,7 @@ public class Village : MonoBehaviour {
 		supportedUnits.Add (u);
 		u.setVillage (this);
 	}
-
-
+	
 	public void removeUnit(Unit u)
 	{
 		supportedUnits.Remove(u);
@@ -261,8 +260,7 @@ public class Village : MonoBehaviour {
 	{
 		controlledRegion.Remove (t);
 	}
-
-
+	
 	public void addRegion(List<Tile> regions)
 	{	
 		//doing exactly what the gameManager.addregion(List<Tile>, Village village) is doing
@@ -279,8 +277,6 @@ public class Village : MonoBehaviour {
 		}
 	}
 
-	//needs getWage in Units
-
 	public int getTotalWages()
 	{
 		int totalWage = 0;
@@ -288,64 +284,28 @@ public class Village : MonoBehaviour {
 			int tempWage = u.getWage();
 			totalWage += tempWage;
 		}
+		if (myType == VillageType.Castle) {
+			totalWage+=80;
+		}
 		return totalWage;
 	}
 
 
-	//needs setLocation and setVillage and setOccupyingUnit in Tile
 	//TODO think this needs to be done over the network
 	public void retireAllUnits()
 	{
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.setOccupyingUnit(null);
-			unitLocation.setLandType(LandType.Tombstone);
-			u.setLocation(null);
-			u.setVillage(null);
+			Destroy (unitLocation.prefab);
 			GameObject tombPrefab = vm.tombPrefab;
 			unitLocation.prefab = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 0.4f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
 			unitLocation.setLandType(LandType.Tombstone);
-			//unitLocation.replace (tomb);
-			//unitLocation.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tomb.networkView.viewID);
-			//unitLocation.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Tombstone);
-
 			supportedUnits.Remove(u);
 			Destroy (u.gameObject);
 		}
 	}
-
-
-	public void upgrade()
-	{
-		myAction = VillageActionType.StartedUpgrading;
-		// TODO delay upgrade until finished upgrading...
-		if (myType == VillageType.Hovel) 
-		{
-			wood -= 8;
-			this.transform.FindChild("Hovel").gameObject.SetActive (false);
-			this.transform.FindChild("Town").gameObject.SetActive (true);
-			myType = VillageType.Town;
-			health = 2;
-		}
-		else if (myType == VillageType.Town) 
-		{
-			wood -= 8;
-			transform.FindChild("Town").gameObject.SetActive (false);
-			transform.FindChild("Fort").gameObject.SetActive (true);
-			myType = VillageType.Fort;
-			health = 5;
-		}
-		/*
-		else if (myType == VillageType.Fort)
-		{
-			wood -= 12;
-			wage = 80;
-			health = 10;
-			this.transform.FindChild("Fort").gameObject.SetActive (false);
-			this.transform.FindChild("Castle").gameObject.SetActive (true);
-			myType = VillageType.Castle;
-		}*/
-	}
+	
 	//sets gold to 0 and returns the previous gold value
 	public int pillageGold()
 	{
@@ -376,17 +336,6 @@ public class Village : MonoBehaviour {
 	void setControlledByNet(NetworkViewID objectId, int playerIndex){
 		Player[] pls = NetworkView.Find(objectId).gameObject.GetComponents<Player>();
 		controlledBy = pls [playerIndex];
-	}
-
-	public void buildCastle(){
-		wood -= 12;
-		wage = 80;
-		health = 10;
-		this.transform.FindChild("Hovel").gameObject.SetActive (false);
-		this.transform.FindChild("Town").gameObject.SetActive (false);
-		this.transform.FindChild("Fort").gameObject.SetActive (false);
-		this.transform.FindChild("Castle").gameObject.SetActive (true);
-		setMyType (VillageType.Castle);
 	}
 
 	public void takeDamage(){

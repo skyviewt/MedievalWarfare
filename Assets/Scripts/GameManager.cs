@@ -152,7 +152,6 @@ public class GameManager : MonoBehaviour {
 
 	public int findNextPlayer()
 	{
-
 		gameGUI.disableInteractions ();
 		int currentTurn = game.getCurrentTurn();
 		int numberOfPlayers = game.getPlayers().Count;
@@ -181,13 +180,9 @@ public class GameManager : MonoBehaviour {
 	{
 		Debug.Log ("in initialize next player villages");
 		Player p = game.getCurrentPlayer ();
-		Debug.Log ("current player in turn to play is: " + p);
 		List<Village> villagesToUpdate = p.getVillages ();
-		Debug.Log ("number of villages of current player :" +villagesToUpdate.Count);
 		foreach (Village v in villagesToUpdate)
 		{
-			Debug.Log ("in update village loop");
-			Debug.Log ("updating village: "+v);
 			villageManager.gameObject.networkView.RPC("updateVillageNet",RPCMode.AllBuffered,v.gameObject.networkView.viewID);
 		}
 	}
