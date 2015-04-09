@@ -67,7 +67,7 @@ public class mainMenu : MonoBehaviour {
 	void Start () {
 		Instantiate(PrefabFire);
 		Instantiate(PrefabLight);
-		GM = GameObject.Find("perserveGM").GetComponent<GameManager>();
+		GM = GameObject.Find("preserveGM").GetComponent<GameManager>();
 		LoginCanvas.enabled = true;
 		MainMenuCanvas.enabled = false;
 		ExitCanvas.enabled = false;

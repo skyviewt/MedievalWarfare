@@ -4023,9 +4023,8 @@ GameObject:
   - 114: {fileID: 358982967}
   - 148: {fileID: 358982968}
   - 114: {fileID: 358982969}
-  - 114: {fileID: 358982970}
   m_Layer: 5
-  m_Name: perserveGM
+  m_Name: preserveGM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6779,7 +6778,7 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 667475202}
-  m_LocalRotation: {x: 0, y: 0, z: -.707106829, w: .707106709}
+  m_LocalRotation: {x: 0, y: 0, z: -.707106888, w: .707106769}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: .99999994, z: 1}
   m_Children:

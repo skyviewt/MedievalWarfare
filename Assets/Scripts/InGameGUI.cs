@@ -56,7 +56,7 @@ public class InGameGUI : MonoBehaviour {
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
 		villageManager.isInGame = true;
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
-		gameManager = GameObject.Find("perserveGM").GetComponent<GameManager> ();
+		gameManager = GameObject.Find("preserveGM").GetComponent<GameManager> ();
 		gameManager.isInGame = true;
 		HUDCanvas.enabled = true;
 		disableAllCanvases ();

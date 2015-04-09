@@ -38,7 +38,7 @@ public class Game : MonoBehaviour
 //	}
 	void Start()
 	{
-		GM = GameObject.Find("perserveGM").GetComponent<GameManager>();
+		GM = GameObject.Find("preserveGM").GetComponent<GameManager>();
 	}
 	[RPC]
 	public void setMap()
