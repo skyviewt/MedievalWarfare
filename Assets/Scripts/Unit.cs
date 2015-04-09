@@ -9,7 +9,8 @@ public enum UnitType
 	PEASANT,
 	INFANTRY,
 	SOLDIER,
-	KNIGHT
+	KNIGHT,
+	CANNON
 };
 
 [System.Serializable]
@@ -17,6 +18,7 @@ public enum UnitActionType
 {
 	ReadyForOrders,
 	Moved,
+	CannonMoved,
 	BuildingRoad, 
 	ChoppingTree,
 	ClearingTombstone, 
@@ -219,4 +221,5 @@ public class Unit : MonoBehaviour {
 			break;
 		}
 	}
+
 }

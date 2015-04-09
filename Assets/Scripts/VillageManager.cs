@@ -564,8 +564,28 @@ public class VillageManager : MonoBehaviour {
 		}
 	}	
 
-	public void buildCannon(Village v, GameObject go)
+	public void buildCannon(Village v, GameObject cannonPrefab)
 	{
-
+		Tile tileAt = v.getLocatedAt ();
+		int vGold = v.getGold ();
+		int vWood = v.getWood ();
+		if (vGold >= 35 && vWood>=12) {
+			if(v.getMyType() >= VillageType.Fort)
+			{
+				//TODO create cannon prefab, separate from normal units, since it cant upgrade
+				GameObject cannon = Network.Instantiate(cannonPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+				// initialize the cannon
+				cannon.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.CANNON, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -35);
+				v.gameObject.networkView.RPC("addWoodNet", RPCMode.AllBuffered, -12);
+				v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, cannon.networkView.viewID);
+			}
+			else
+			{
+				gameGUI.displayError(@"Please upgrade your village to a Fort first. ¯\(°_o)/¯");
+			}
+		} else {
+			gameGUI.displayError(@"Cannons cost 35 gold and 12 wood");
+		}
 	}
 }

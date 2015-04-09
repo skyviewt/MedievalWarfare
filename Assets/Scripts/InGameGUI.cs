@@ -18,6 +18,7 @@ public class InGameGUI : MonoBehaviour {
 
 	// prefabs
 	public GameObject UnitPrefab;
+	public GameObject cannonPrefab;
 
 	//selections
 	public GameObject _Village;
@@ -521,7 +522,7 @@ public class InGameGUI : MonoBehaviour {
 	public void buildCannonPressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
-		villageManager.buildCannon (v,UnitPrefab);
+		villageManager.buildCannon (v,cannonPrefab);
 		int redrawUnits = v.getUnitSize ();
 		int redrawGold = v.getGold();
 		_UnitsText.text = redrawUnits.ToString();

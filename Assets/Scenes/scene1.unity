@@ -948,6 +948,7 @@ MonoBehaviour:
   myTurn: 0
   turnOrder: 0
   UnitPrefab: {fileID: 168650, guid: 1c1c75f75bd321e4f87a5f5a48a1b2ea, type: 2}
+  cannonPrefab: {fileID: 171120, guid: 6e2a8ceb8053f442bba752d33bf4de82, type: 2}
   _Village: {fileID: 0}
   _Unit: {fileID: 0}
   _Tile: {fileID: 0}
