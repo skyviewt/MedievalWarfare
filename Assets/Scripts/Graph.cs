@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 //The Graph Class used to store the map as a grid
+[System.Serializable]
 public class Graph
 {
-	
-	public List<Tile> vertices;
-	public Tile start;
-	public Tile end;
+	private List<Tile> vertices;
+	private Tile start;
+	private Tile end;
 	
 	public Graph()
 	{
@@ -24,7 +24,18 @@ public class Graph
 		this.vertices.Add(firstTile);
 		
 	}
-	
+	public Tile getStartingTile()
+	{
+		return this.start;
+	}
+	public Tile getEndingTile()
+	{
+		return this.end;
+	}
+	public List<Tile> getVertices()
+	{
+		return this.vertices;
+	}
 	public bool addTileUnique(Tile t)
 	{
 		if (!this.Contains(t.point.x, t.point.y)) 

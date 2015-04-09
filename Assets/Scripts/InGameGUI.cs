@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
-
+[System.Serializable]
 public class InGameGUI : MonoBehaviour {
 	public Camera myCamera;
 	public Canvas VillageCanvas;
@@ -46,6 +46,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		myCamera =  GameObject.FindGameObjectWithTag("MainCamera").camera;
 		villageManager = GameObject.Find("VillageManager").GetComponent<VillageManager>();
+		villageManager.isInGame = true;
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
 		HUDCanvas.enabled = true;
 		VillageCanvas.enabled = false;
@@ -109,7 +110,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.hirePeasant (v,UnitPrefab);
-		int redrawUnits = v.getControlledUnits().Count();
+		int redrawUnits = v.getUnitSize();
 		int redrawGold = v.getGold();
 		_UnitsText.text = redrawUnits.ToString();
 		_GoldText.text = redrawGold.ToString();
@@ -121,7 +122,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.hireInfantry (v,UnitPrefab);
-		int redrawUnits = v.getControlledUnits().Count();
+		int redrawUnits = v.getUnitSize();
 		int redrawGold = v.getGold();
 		_UnitsText.text = redrawUnits.ToString();
 		_GoldText.text = redrawGold.ToString();
@@ -133,7 +134,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.hireSoldier (v,UnitPrefab);
-		int redrawUnits = v.getControlledUnits().Count();
+		int redrawUnits = v.getUnitSize ();
 		int redrawGold = v.getGold();
 		_UnitsText.text = redrawUnits.ToString();
 		_GoldText.text = redrawGold.ToString();
@@ -145,7 +146,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		Village v = _Village.GetComponent<Village> ();
 		villageManager.hireKnight (v,UnitPrefab);
-		int redrawUnits = v.getControlledUnits().Count();
+		int redrawUnits = v.getUnitSize ();
 		int redrawGold = v.getGold();
 		_UnitsText.text = redrawUnits.ToString();
 		_GoldText.text = redrawGold.ToString();
@@ -259,7 +260,7 @@ public class InGameGUI : MonoBehaviour {
 			Tile selection = _Tile.GetComponent<Tile> ();
 			print (selection != null);
 			//Debug.Log (_Unit.GetComponent<Unit> ().getLocation ().neighbours);
-			if (_Unit.GetComponent<Unit> ().getLocation ().neighbours.Contains (selection)) {
+			if (_Unit.GetComponent<Unit> ().getLocation ().getNeighbours().Contains (selection)) {
 					_move = selection;
 			}
 			//Debug.LogWarning (_move);
@@ -276,7 +277,7 @@ public class InGameGUI : MonoBehaviour {
 					
 					if (selection.getVillage () == null) {
 							v.addTile (selection);
-							int redrawRegion = v.getControlledRegion ().Count;
+							int redrawRegion = v.getRegionSize();
 							_RegionText.text = redrawRegion.ToString ();
 					}
 					
@@ -329,13 +330,13 @@ public class InGameGUI : MonoBehaviour {
 				{
 					case "Town":
 					{
-						
+					Debug.Log("inTown");
 						_Village = hit.collider.gameObject;
 						Village v = _Village.GetComponent<Village>();
 						int redrawWood = v.getWood();
 						int redrawGold = v.getGold();
-						int redrawRegion = v.getControlledRegion().Count();
-						int redrawUnits = v.getControlledUnits().Count();
+						int redrawRegion = v.getRegionSize();
+						int redrawUnits = v.getUnitSize();
 						_WoodText.text = redrawWood.ToString();
 						_GoldText.text = redrawGold.ToString();
 						_RegionText.text = redrawRegion.ToString();
@@ -356,8 +357,8 @@ public class InGameGUI : MonoBehaviour {
 						Village v = u.getVillage();
 						int redrawWood = v.getWood();
 						int redrawGold = v.getGold();
-						int redrawRegion = v.getControlledRegion().Count();
-						int redrawUnits = v.getControlledUnits().Count();
+						int redrawRegion = v.getRegionSize();
+						int redrawUnits = v.getUnitSize();
 						_WoodText.text = redrawWood.ToString();
 						_GoldText.text = redrawGold.ToString();
 						_RegionText.text = redrawRegion.ToString();
@@ -378,10 +379,11 @@ public class InGameGUI : MonoBehaviour {
 							_Tile = hit.collider.gameObject;
 							Tile t = _Tile.GetComponent<Tile>();
 							Village v = t.getVillage ();
+							Debug.Log(v);
 							int redrawWood = v.getWood();
 							int redrawGold = v.getGold();
-							int redrawRegion = v.getControlledRegion().Count();
-							int redrawUnits = v.getControlledUnits().Count();
+							int redrawRegion = v.getRegionSize();
+							int redrawUnits = v.getUnitSize();
 							_WoodText.text = redrawWood.ToString();
 							_GoldText.text = redrawGold.ToString();
 							_RegionText.text = redrawRegion.ToString();
