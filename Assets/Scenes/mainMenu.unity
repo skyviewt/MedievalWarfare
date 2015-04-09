@@ -3705,7 +3705,7 @@ MonoBehaviour:
   isServer: 1
   players: []
   finalMapChoice: -1
-  MapGen: {fileID: 0}
+  mapGen: {fileID: 0}
   game: {fileID: 0}
 --- !u!224 &358982966
 RectTransform:
