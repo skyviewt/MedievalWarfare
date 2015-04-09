@@ -14,7 +14,7 @@ public class InGameGUI : MonoBehaviour {
 	public Canvas YourTurnCanvas;
 
 	public int myTurn;
-	public int turnOrder = 0;
+	public int turnOrder;
 
 	// prefabs
 	public GameObject UnitPrefab;
@@ -34,9 +34,9 @@ public class InGameGUI : MonoBehaviour {
 	public Text _RegionText;
 	public Text _UnitsText;
 	public Text _ErrorText;
+	public Text _TurnText;
 	public Transform EndButton;
-
-	private Game _game;
+	
 	private Tile _move;
 
 	private VillageManager villageManager;
@@ -44,6 +44,9 @@ public class InGameGUI : MonoBehaviour {
 	private GameManager gameManager;
 
 	private bool menuUp;
+
+	private bool currentlyUpdatingGame; // boolean is used to prevent players from touching the map while it is being updated
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -52,61 +55,74 @@ public class InGameGUI : MonoBehaviour {
 		villageManager.isInGame = true;
 		unitManager = GameObject.Find("UnitManager").GetComponent<UnitManager>();
 		gameManager = GameObject.Find("perserveGM").GetComponent<GameManager> ();
+		gameManager.isInGame = true;
 		HUDCanvas.enabled = true;
-		VillageCanvas.enabled = false;
-		UnitCanvas.enabled = false;
-		ErrorCanvas.enabled = false;
-		YourTurnCanvas.enabled = false;
-		menuUp = false;
-		myTurn = 0;
-		//gameObject.networkView.RPC ("setOtherToTurn0", RPCMode.OthersBuffered);
-	}
-
-	[RPC]
-	void setOtherToTurn1(){
-		myTurn = 1;
-	}
-
-	[RPC]
-	void incrementTurnOrderNet(){
-		turnOrder = (turnOrder+1)%2;
-
-		GameObject[] allUnits = GameObject.FindGameObjectsWithTag("Unit");
-		foreach (GameObject u in allUnits) {
-			Debug.Log("Found 1 unit");
-			u.GetComponent<Unit>().setAction(UnitActionType.ReadyForOrders);
-		}
 		disableAllCanvases ();
-		if(myTurn == turnOrder)
+		myTurn = gameManager.getLocalTurn ();
+	}
+	
+	//Functions on the HUD
+	public void endTurnPressed()
+	{	
+		Debug.Log ("inEndTurn");
+		gameManager.networkView.RPC ("setNextPlayer", RPCMode.AllBuffered,gameManager.findNextPlayer()); // disables gui interaction while map is updating
+		gameManager.initializeNextPlayersVillages();
+		this.networkView.RPC ("setTurnButton", RPCMode.AllBuffered);					//reenables gui interaction after map is updated
+	}
+
+	public void disableInteractions()
+	{
+		currentlyUpdatingGame = true;
+	}
+	public void allowInteractions()
+	{
+		this.currentlyUpdatingGame = false;
+	}
+
+	[RPC]
+	public void setTurnButton()
+	{
+		disableAllCanvases ();
+		turnOrder = gameManager.game.getCurrentTurn ();
+		Debug.Log ("Turn order is: "+turnOrder);
+		if (turnOrder == myTurn) 
 		{
-			EndButton.GetComponent<Button>().interactable = true;
-			notifyTurnStart ();
+			Debug.Log ("setTurnButton My Turn");
+			EndButton.GetComponent<Button> ().interactable = true;
 		}
-		else
+		else 
 		{
+			Debug.Log ("setTurnButton Not My Turn");
 			EndButton.GetComponent<Button>().interactable = false;
 		}
-
-
+		notifyTurnStart();
+		this.allowInteractions();
 	}
 
-	void OnConnectedToServer(){
-		gameObject.networkView.RPC ("setOtherToTurn1", RPCMode.Others);
-	}
-
-	//Functions on the HUD
-
-	public void endTurnPressed()
+	public void notifyTurnStart()
 	{
-		//disableAllCanvases ();
-		gameManager.setNextPlayerInTurnOrder ();
-		gameObject.networkView.RPC ("incrementTurnOrderNet", RPCMode.AllBuffered);
+		disableAllCanvases ();
+		ClearSelections ();
+		if (turnOrder == myTurn) 
+		{
+			Debug.Log ("notifyTurnStart My Turn");
+			_TurnText.text = "ヽ(≧Д≦)ノ\nIt is now your turn!";
+		}
+		else if (turnOrder != myTurn)
+		{
+			Debug.Log ("notifyTurnStart Not my Turn");
+			_TurnText.text = "ヽ(≧Д≦)ノ\nIt is now Player "+(turnOrder+1).ToString()+"'s turn!";
+		}
+		YourTurnCanvas.enabled = true;
+		menuUp = true;
 	}
+	
 	private void disableAllCanvases()
 	{
 		VillageCanvas.enabled = false;
 		UnitCanvas.enabled = false;
 		ErrorCanvas.enabled = false;
+		YourTurnCanvas.enabled = false;
 		menuUp = false;
 	}
 	//Functions for when a Village is selected
@@ -179,9 +195,31 @@ public class InGameGUI : MonoBehaviour {
 	public void cultivatePressed()
 	{
 		Unit u = _Unit.GetComponent<Unit>();
-
-		unitManager.cultivateMeadow(u);
-
+		UnitType unitType = u.getUnitType ();
+		LandType landType = u.getLocation ().getLandType ();
+		if (unitType == UnitType.PEASANT) 
+		{
+			if(u.getLocation ().checkVillagePrefab() == true)
+			{
+				displayError (@"It would be unwise to replace your town with a meadow.");
+			}
+			else if(landType == LandType.Grass)
+			{
+				unitManager.gameObject.networkView.RPC("cultivateMeadowNet",RPCMode.AllBuffered,u.gameObject.networkView.viewID);
+			}
+			else if (landType == LandType.Meadow)
+			{
+				displayError (@"There is already a lovely meadow here.");
+			}
+			else
+			{
+				displayError (@"WARNING: ERROR with the logic if this message is displayed");
+			}
+		} 
+		else 
+		{
+			displayError (@"Only peasants are willing to cultivate meadows.");
+		}
 		UnitCanvas.enabled = false;
 		menuUp = false;
 	}
@@ -253,15 +291,11 @@ public class InGameGUI : MonoBehaviour {
 		ErrorCanvas.enabled = true;
 
 	}
-	public void notifyTurnStart()
-	{
-		disableAllCanvases ();
-		ClearSelections ();
-		YourTurnCanvas.enabled = true;
-	}
+
 	public void beginTurnPressed()
 	{
 		YourTurnCanvas.enabled = false;
+		menuUp = false;
 	}
 	void validateMove(RaycastHit hit)
 	{
@@ -319,7 +353,7 @@ public class InGameGUI : MonoBehaviour {
 			ClearSelections();
 		}
 	}
-	
+
 	void ClearSelections()
 	{
 		_Unit = null;
@@ -332,11 +366,10 @@ public class InGameGUI : MonoBehaviour {
 	// Update is called once per frame
 	void Update()
 	{
-
 		Ray ray = myCamera.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		//if clicked
-		if (Input.GetMouseButtonDown(0)&& !menuUp)
+		if (Input.GetMouseButtonDown(0)&& !menuUp && !currentlyUpdatingGame)
 		{
 
 			if (Physics.Raycast(ray, out hit)){
@@ -345,9 +378,14 @@ public class InGameGUI : MonoBehaviour {
 				{
 					case "Town":
 					{
-					Debug.Log("inTown");
+						Debug.Log("inTown");
 						_Village = hit.collider.gameObject;
 						Village v = _Village.GetComponent<Village>();
+						VillageActionType action = v.getAction ();
+						Player owningPlayer = v.getPlayer ();
+						Player localPlayer = gameManager.getLocalPlayer ();
+						Debug.Log ("Village Owner: "+owningPlayer);
+						Debug.Log ("trying to access: " +localPlayer);
 						int redrawWood = v.getWood();
 						int redrawGold = v.getGold();
 						int redrawRegion = v.getRegionSize();
@@ -356,10 +394,18 @@ public class InGameGUI : MonoBehaviour {
 						_GoldText.text = redrawGold.ToString();
 						_RegionText.text = redrawRegion.ToString();
 						_UnitsText.text = redrawUnits.ToString();
-						if(myTurn != turnOrder)
+						
+						if(myTurn == turnOrder) //&& owningPlayer == localPlayer)
 						{
-							VillageCanvas.enabled = true;
-							menuUp = true;
+							if(action == VillageActionType.ReadyForOrders)
+							{
+								VillageCanvas.enabled = true;
+								menuUp = true;
+							}
+							else
+							{
+								displayError (@"This village cannot perform actions until it is done upgrading.");
+							}
 						}
 						break;
 					}
@@ -369,7 +415,10 @@ public class InGameGUI : MonoBehaviour {
 						_Unit = hit.collider.gameObject;
 						
 						Unit u = _Unit.GetComponent<Unit>();
+						UnitActionType action = u.getAction ();
 						Village v = u.getVillage();
+						Player owningPlayer = v.getPlayer ();
+						Player localPlayer = gameManager.getLocalPlayer ();
 						int redrawWood = v.getWood();
 						int redrawGold = v.getGold();
 						int redrawRegion = v.getRegionSize();
@@ -378,12 +427,18 @@ public class InGameGUI : MonoBehaviour {
 						_GoldText.text = redrawGold.ToString();
 						_RegionText.text = redrawRegion.ToString();
 						_UnitsText.text = redrawUnits.ToString();
-
-						//Tile onIt = _Unit.GetComponent<Unit>().getLocation();
-						if(myTurn != turnOrder)
+						
+						if(myTurn == turnOrder) //&& owningPlayer == localPlayer)
 						{
-							UnitCanvas.enabled = true;
-							menuUp = true;
+							if(action == UnitActionType.ReadyForOrders || action == UnitActionType.Moved)
+							{
+								UnitCanvas.enabled = true;
+								menuUp = true;
+							}
+							else
+							{
+								displayError (@"This unit has already performed an action this turn.");
+							}
 						}
 						break;
 					}
@@ -409,6 +464,13 @@ public class InGameGUI : MonoBehaviour {
 								_GoldText.text = redrawGold.ToString();
 								_RegionText.text = redrawRegion.ToString();
 								_UnitsText.text = redrawUnits.ToString();
+							}
+							else if(v == null){
+								Debug.Log ("neutral tile");
+								_WoodText.text = "";
+								_GoldText.text = "";
+								_RegionText.text = "";
+								_UnitsText.text = "";
 							}
 						}
 
@@ -436,6 +498,11 @@ public class InGameGUI : MonoBehaviour {
 			if(ErrorCanvas.enabled == true)
 			{
 				ErrorCanvas.enabled = false;
+				menuUp = false;
+			}
+			if(YourTurnCanvas.enabled == true)
+			{
+				YourTurnCanvas.enabled = false;
 				menuUp = false;
 			}
 

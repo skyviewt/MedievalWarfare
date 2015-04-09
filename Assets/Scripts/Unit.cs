@@ -21,11 +21,10 @@ public enum UnitActionType
 	ChoppingTree,
 	ClearingTombstone, 
 	UpgradingCombining, 
-	StartCultivating, 
-	FinishCultivating,
+	StartedCultivating, 
+	FinishedCultivating,
 	CapturingNeutral,
 	CapturingEnemy,
-	EndOfTurn	
 };
 
 [System.Serializable]
@@ -164,10 +163,15 @@ public class Unit : MonoBehaviour {
 	{
 		this.locatedAt = t;
 	}
-	
 	public void setAction(UnitActionType action)
 	{
 		this.myAction = action;
+	}
+
+	[RPC]
+	public void setActionNet(int action)
+	{
+		this.myAction = (UnitActionType)action;
 	}
 	
 	public UnitActionType getAction()

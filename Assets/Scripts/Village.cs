@@ -7,7 +7,8 @@ using System.Linq;
 public enum VillageActionType
 {
 	ReadyForOrders,
-	BuildStageOne
+	StartedUpgrading,
+	FinishedUpgrading
 };
 
 [System.Serializable]
@@ -214,6 +215,10 @@ public class Village : MonoBehaviour {
 		return locatedAt;
 	}
 
+	public void setAction(VillageActionType action)
+	{
+		myAction = action;
+	}
 
 	//increment / decrement
 	// used only until calling method is networked
@@ -288,7 +293,7 @@ public class Village : MonoBehaviour {
 
 
 	//needs setLocation and setVillage and setOccupyingUnit in Tile
-
+	//TODO think this needs to be done over the network
 	public void retireAllUnits()
 	{
 		foreach (Unit u in supportedUnits) {
@@ -298,7 +303,7 @@ public class Village : MonoBehaviour {
 			u.setLocation(null);
 			u.setVillage(null);
 			GameObject tombPrefab = vm.tombPrefab;
-			GameObject tomb = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 0.4f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
+			unitLocation.prefab = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 0.4f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
 			unitLocation.setLandType(LandType.Tombstone);
 			//unitLocation.replace (tomb);
 			//unitLocation.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tomb.networkView.viewID);
@@ -313,23 +318,34 @@ public class Village : MonoBehaviour {
 	public void upgrade()
 	{
 		//TODO uncomment following line after demo
-		//myAction = VillageActionType.BuildStageOne;
+		myAction = VillageActionType.StartedUpgrading;
 
-		wood -= 8;
+
 		if (myType == VillageType.Hovel) 
 		{
+			wood -= 8;
 			this.transform.FindChild("Hovel").gameObject.SetActive (false);
 			this.transform.FindChild("Town").gameObject.SetActive (true);
-			setMyType (VillageType.Town);
+			myType = VillageType.Town;
 			health = 2;
 		}
 		else if (myType == VillageType.Town) 
 		{
+			wood -= 8;
 			transform.FindChild("Town").gameObject.SetActive (false);
 			transform.FindChild("Fort").gameObject.SetActive (true);
-			setMyType (VillageType.Fort);
+			myType = VillageType.Fort;
 			health = 5;
 		}
+//		else if (myType == VillageType.Fort)
+//		{
+//			wood -= 12;
+//			wage = 80;
+//			health = 10;
+//			this.transform.FindChild("Fort").gameObject.SetActive (false);
+//			this.transform.FindChild("Castle").gameObject.SetActive (true);
+//			myType = VillageType.Castle;
+//		}
 	}
 	//sets gold to 0 and returns the previous gold value
 	public int pillageGold()
