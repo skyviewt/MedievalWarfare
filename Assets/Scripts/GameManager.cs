@@ -87,8 +87,13 @@ public class GameManager : MonoBehaviour {
 	public void InitializeFinalMap ()
 	{
 		this.finalMap = mapGen.getMap(finalMapChoice);
-		mapGen.initializeColorAndVillagesOnMap(players, finalMapChoice, this.finalMap); // this needs to be RPC
+		mapGen.initializeColorAndVillagesOnMap(players, finalMapChoice, this.finalMap);
 		mapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
+	}
+	[RPC]
+	public void setFinalMap(int finalMapChoice)
+	{
+		this.finalMap = mapGen.getMap(finalMapChoice);
 	}
 
 
