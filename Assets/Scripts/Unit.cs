@@ -18,6 +18,7 @@ public enum UnitActionType
 {
 	ReadyForOrders,
 	Moved,
+	CannonMoved,
 	BuildingRoad, 
 	ChoppingTree,
 	ClearingTombstone, 
