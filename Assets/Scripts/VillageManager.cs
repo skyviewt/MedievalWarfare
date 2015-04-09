@@ -481,17 +481,15 @@ public class VillageManager : MonoBehaviour {
 	//TODO needs networking
 	public void buildTower(Village v, Tile t)
 	{
-
 		GameObject tower = Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity) as GameObject;
 		tower.transform.localScale = new Vector3 (0.03f,0.03f,0.03f);
 		tower.transform.eulerAngles = new Vector3(-90,0,0);
 
 		Structure s = tower.GetComponent<Structure> ();
+		s.myVillage = v;
 		t.replace (tower);
 		t.setStructure (s);
 		v.addWood (-5);
-
-		//t.gameObject.renderer.material.color = Color.yellow;
 	}
 
 	public void tombstonePhase (Village v)

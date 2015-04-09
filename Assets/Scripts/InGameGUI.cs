@@ -552,6 +552,7 @@ public class InGameGUI : MonoBehaviour {
 			} else if (selection == v.getLocatedAt()){
 				this.displayError ("Towers go AROUND your village");
 			} else {
+				//villageManager.networkView.RPC ("buildTowerNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID, _Tile.gameObject.networkView.viewID);
 				villageManager.buildTower(v, selection);
 			}
 			//selection.gameObject.renderer.material.color = Color.yellow;
