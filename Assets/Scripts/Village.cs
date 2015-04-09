@@ -1,25 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
+[System.Serializable]
 public enum VillageActionType
 {
 	ReadyForOrders,
 	BuildStageOne
 };
 
+[System.Serializable]
 public enum VillageType
 {
 	Hovel,
 	Town,
-	Fort
+	Fort,
+	Castle
 }
 
-
+[System.Serializable]
 public class Village : MonoBehaviour {
 
-	private List<Tile> controlledRegion;
-	private Player controlledBy;
+	public List<Tile> controlledRegion;
+	public Player controlledBy;
 	private Tile locatedAt;
 	private List<Unit> supportedUnits;
 	private VillageType myType;
@@ -35,7 +39,7 @@ public class Village : MonoBehaviour {
 		outline = Shader.Find("Glow");
 		GameObject go = GameObject.Find("VillageManager");
 		vm = go.GetComponent<VillageManager> ();
-
+		Debug.Log (vm);
 	}
 	
 	// Update is called once per frame
@@ -69,15 +73,15 @@ public class Village : MonoBehaviour {
 	}
 
 	//constructor
-	public static Village CreateComponent ( Player p, List<Tile> regions, Tile locatedAt, GameObject locationPrefab ) 
+	public static Village CreateComponent ( Player p, List<Tile> regions, Tile locatedAt, GameObject villagePrefab ) 
 	{
 		Debug.Log ("-----Village.CreateComponent() CALLED--------");
-		Village myVillage = locationPrefab.AddComponent<Village>();
+		Village myVillage = villagePrefab.AddComponent<Village>();
 		myVillage.controlledRegion = regions;//todo
 		myVillage.controlledBy = p;//TODO: Currently set in Mapgenerator
 		myVillage.myType = VillageType.Hovel;
 		myVillage.supportedUnits = new List<Unit> ();
-		locatedAt.replace (locationPrefab);//to check : Set in Mapgenerator
+		locatedAt.replace (villagePrefab);//to check : Set in Mapgenerator
 		myVillage.locatedAt = locatedAt;//done
 		locatedAt.setVillage (myVillage);//done
 		myVillage.myAction = VillageActionType.ReadyForOrders;
@@ -97,9 +101,6 @@ public class Village : MonoBehaviour {
 		supportedUnits = new List<Unit> ();
 		//need to be set over network: controlledRegion, controlledBy, locatedAt.Replace(), locatedAt, locatedAt.setVillage(), pdateControlledRegionNet()
 		controlledRegion = new List<Tile> ();
-
-
-
 		myAction = VillageActionType.ReadyForOrders;
 		gold = 0;
 		wood = 0;
@@ -184,9 +185,19 @@ public class Village : MonoBehaviour {
 		return controlledRegion;
 	}
 
+	public int getRegionSize()
+	{
+		return this.controlledRegion.Count;
+	}
+
 	public List<Unit> getControlledUnits()
 	{
 		return supportedUnits;
+	}
+
+	public int getUnitSize()
+	{
+		return this.getControlledUnits().Count;
 	}
 
 	public void setLocation(Tile t)
@@ -201,45 +212,33 @@ public class Village : MonoBehaviour {
 
 
 	//increment / decrement
-
+	// used only until calling method is networked
 	public void addGold(int i)
 	{
 		gold += i;
-	}
-	public void removeGold(int i)
-	{
-		gold -= i;
 	}
 	public void addWood(int i)
 	{
 		wood += i;
 	}
 
-	public void removeWood(int i)
-	{
-		wood -= i;
-	}
-
-
 	public void addUnit(Unit u)
 	{
 		supportedUnits.Add (u);
 		u.setVillage (this);
 	}
-	//needs unit's setters and getters along with the Tombstone Landtype
-	/*
+
+
 	public void removeUnit(Unit u)
 	{
-		Tile unitLocation = u.getLocation ();
-		unitLocation.setOccupyingUnit (null);
-		u.setLocation (null);
-		u.setVillage(null);
-		unitLocation.setLandType(LandType.Tombstone);
 		supportedUnits.Remove(u);
+		u.setVillage(null);
 	}
-*/
 
-	//Needs setVillage in Tile. Remove comment once setVillage is implemented
+	/*
+	 * Function adds t to village region and colors.
+	 * this function does NOT remove the tile from the old village.
+	 */
 	public void addTile(Tile t)
 	{
 		controlledRegion.Add(t);
@@ -264,7 +263,7 @@ public class Village : MonoBehaviour {
 
 			//if there is a unit on the tile
 			Unit u = t.getOccupyingUnit();
-			if(u != null){
+			if(u != null && u.getVillage()!=this){
 				u.setVillage(this);
 				supportedUnits.Add(u);
 			}
@@ -291,10 +290,18 @@ public class Village : MonoBehaviour {
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.setOccupyingUnit(null);
-			unitLocation.setLandType(LandType.TombStone);
+			unitLocation.setLandType(LandType.Tombstone);
 			u.setLocation(null);
 			u.setVillage(null);
+			GameObject tombPrefab = vm.tombPrefab;
+			GameObject tomb = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 0.4f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
+			unitLocation.setLandType(LandType.Tombstone);
+			//unitLocation.replace (tomb);
+			//unitLocation.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tomb.networkView.viewID);
+			//unitLocation.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Tombstone);
+
 			supportedUnits.Remove(u);
+			Destroy (u.gameObject);
 		}
 	}
 

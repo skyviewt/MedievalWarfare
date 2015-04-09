@@ -3,29 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+[System.Serializable]
 public enum LandType
 {
 	Grass,
 	Trees,
 	Meadow,
-	TombStone
+	Tombstone
 }
 
 //Tile Data Structure for building Graphs
 public class Tile : MonoBehaviour
 {
 	public Vector2 point;
-	public List<Tile> neighbours;
+	private List<Tile> neighbours;
 	private LandType myType;
 	private Unit occupyingUnit;
-	private bool visited;
-	private int color;
-	private bool isRoad;
+	private Structure occupyingStructure;
 	private Village myVillage;
+	private int color;
 	public Shader outline;
 	public System.Random rand = new System.Random();
 	public GameObject prefab;
-	private Structure occupyingStructure;
+
+	private bool isRoad; // NEEDS TO GET IMPLEMENTED
+
+	private bool visited;
 
 
 	//This function should not be used, the Tile component is now always attached to a Grass Tile
@@ -47,10 +50,10 @@ public class Tile : MonoBehaviour
 
 	public void addNeighbour(Tile t)
 	{
-		if(this.neighbours.Where(
+		if(this.getNeighbours().Where(
 			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
 		{
-			this.neighbours.Add(t);
+			this.getNeighbours().Add(t);
 		}
 	}
 	//This method shouldn't be called
@@ -61,6 +64,21 @@ public class Tile : MonoBehaviour
 		this.setLandType( LandType.Trees );
 	}
 
+	public bool checkVillagePrefab()
+	{
+		if (prefab == null) 
+		{
+			return false;
+		} 
+		else if (this.prefab.CompareTag ("Town")) 
+		{
+			return true;
+		} 
+		else 
+		{
+			return false;
+		}
+	}
 
 	//This method shouldn't be called
 	public void InstantiateMeadow( GameObject MeadowPrefab )
@@ -75,6 +93,9 @@ public class Tile : MonoBehaviour
 		outline = Shader.Find("Glow");
 	}
 
+	// seriously, what the fuck is this method for?
+	// it doesnt ACTUALLY switch out prefabs...
+	// it just destroys the old and adds a reference to a new one
 	public void replace(GameObject newPref)
 	{
 		Destroy (this.prefab);
@@ -90,6 +111,10 @@ public class Tile : MonoBehaviour
 		else if ( this.color == 1 )
 		{
 			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.05f);
+		}
+		else
+		{
+			gameObject.renderer.material.color = Color.white;
 		}
 	}
 	
@@ -221,10 +246,10 @@ public class Tile : MonoBehaviour
 	public void addNeighbourN(NetworkViewID tileID)
 	{
 		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
-		if(this.neighbours.Where(
+		if(this.getNeighbours().Where(
 			n => n.point.x == t.point.x && n.point.y == t.point.y).Count() == 0)
 		{
-			this.neighbours.Add(t);
+			this.getNeighbours().Add(t);
 		}
 	}
 	[RPC]
@@ -240,4 +265,42 @@ public class Tile : MonoBehaviour
 		myVillage = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
 	}
 
+	[RPC]
+	void changeMapLayer( int mapNum )
+	{
+		bool hasPref = this.getLandType () != LandType.Grass;
+		switch (mapNum) 
+		{
+		case 0:
+			this.gameObject.layer = LayerMask.NameToLayer ("map1");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer ("map1");	
+			break;
+		case 1:
+			this.gameObject.layer = LayerMask.NameToLayer ("map2");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer ("map2");
+			break;
+		case 2:
+			this.gameObject.layer = LayerMask.NameToLayer ("map3");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer ("map3");
+			break;
+		case 3:
+			this.gameObject.layer = LayerMask.NameToLayer ("map4");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer ("map4");
+			break;
+		case 4:
+			this.gameObject.layer = LayerMask.NameToLayer ("map5");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer("map5");
+			break;
+		case 5:
+			this.gameObject.layer = LayerMask.NameToLayer ("map6");
+			if( hasPref )
+				this.prefab.layer = LayerMask.NameToLayer("map6");
+			break;		
+		}
+	}
 }
