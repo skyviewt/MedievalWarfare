@@ -29,6 +29,7 @@ public class InGameGUI : MonoBehaviour {
 
 	public bool _isAUnitSelected;
 	public bool _isVillageSelected;
+	public bool _isACannonSelected;
 
 	public Text _WoodText;
 	public Text _GoldText;
@@ -306,7 +307,7 @@ public class InGameGUI : MonoBehaviour {
 		{
 			_Tile = hit.collider.gameObject;
 			Tile selection = _Tile.GetComponent<Tile> ();
-			print (selection != null);
+			//print (selection != null);
 			//Debug.Log (_Unit.GetComponent<Unit> ().getLocation ().neighbours);
 			if (_Unit.GetComponent<Unit> ().getLocation ().getNeighbours().Contains (selection)) {
 					_move = selection;
@@ -448,6 +449,9 @@ public class InGameGUI : MonoBehaviour {
 						if (_isAUnitSelected == true){
 							ErrorCanvas.enabled = true;
 							validateMove(hit);
+						} else if (_isAUnitSelected == true){
+							ErrorCanvas.enabled = true;
+							validateAttack(hit);
 						} else if (_isVillageSelected==true){
 							ErrorCanvas.enabled = true;
 							validateBuild(hit);
@@ -596,6 +600,36 @@ public class InGameGUI : MonoBehaviour {
 		_GoldText.text = redrawGold.ToString();
 		VillageCanvas.enabled = false;
 		menuUp = false;
+	}
+
+	public void fireCannonPressed()
+	{
+		UnitCanvas.enabled = false;
+		_isACannonSelected = true;
+		this.displayError("Aim up to 2 tiles away");
+		menuUp = false;
+	}
+
+	public void validateAttack(RaycastHit hit){
+		Unit u = _Unit.GetComponent<Unit> ();
+		Tile srcTile = u.getLocation ();
+		_Tile = hit.collider.gameObject;
+		Tile destTile = _Tile.GetComponent<Tile> ();
+		List<Tile> neighbours = new List<Tile> ();
+		foreach (Tile n in srcTile.getNeighbours()) {
+			neighbours.Add (n);
+			foreach (Tile nn in n.getNeighbours()){
+				neighbours.Add(nn);
+			}
+		}
+		if (neighbours.Contains (destTile)) {
+			this.displayError ("BOOM goes the dynamite!");
+			//TODO actually shoot
+		} else {
+			this.displayError("Invalid shot");
+		}
+
+		
 	}
 
 }
