@@ -371,7 +371,7 @@ public class mainMenu : MonoBehaviour {
 			{
 				GM.preserveMostVotedMap(); // preserves the choice 
 			}
-			GM.createNewGame();
+			//GM.createNewGame();
 			this.networkView.RPC("startLevel", RPCMode.AllBuffered);
 		}
 	}
