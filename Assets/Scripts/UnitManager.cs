@@ -5,7 +5,7 @@ using System.Linq;
 
 [System.Serializable]
 public class UnitManager : MonoBehaviour {
-
+	
 	public GameObject meadowPrefab;
 	public GameObject curEffect;
 	public GameObject attackEffect1;
@@ -14,23 +14,23 @@ public class UnitManager : MonoBehaviour {
 	public TileManager tileManager;
 	public InGameGUI gameGUI;
 	public readonly int TEN = 10;
-
+	
 	// Use this for initialization
-
+	
 	void Start () {
 		villageManager = GameObject.Find ("VillageManager").GetComponent<VillageManager>();
 		tileManager = GameObject.Find ("TileManager").GetComponent<TileManager> ();
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
-
+	
 	[RPC]
 	void moveUnitNet(NetworkViewID unitID, NetworkViewID tileID){
 		Unit unitToMove = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
 		Tile dest = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
 		moveUnit (unitToMove, dest);
 	}
-
-
+	
+	
 	public void moveUnit(Unit unit, Tile dest)
 	{
 		Village destVillage = dest.getVillage ();
@@ -38,7 +38,7 @@ public class UnitManager : MonoBehaviour {
 		
 		Unit destUnit = dest.getOccupyingUnit ();
 		UnitType srcUnitType = unit.getUnitType();
-
+		
 		bool unitPermitted = canUnitMove (unit, dest);
 		
 		//if the move is allowed to move onto the tile
@@ -62,7 +62,7 @@ public class UnitManager : MonoBehaviour {
 					unit.setAction(UnitActionType.CapturingNeutral);
 					originalLocation.setOccupyingUnit(null);
 				}
-
+				
 				// TODO taking over enemy tiles and networking it
 				else if (srcUnitType == UnitType.PEASANT)
 				{ 
@@ -77,7 +77,7 @@ public class UnitManager : MonoBehaviour {
 						gameGUI.displayError (@"That area is being protected");
 						return;
 					}
-
+					
 					// unit on unit combat!!
 					// if there is any enemy unit
 					if (destUnit!=null){
@@ -91,14 +91,14 @@ public class UnitManager : MonoBehaviour {
 							//adding an attack effect
 							curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y), attackEffect1.transform.rotation) as GameObject;
 							//unit.animation.CrossFadeQueued("idle");
-
+							
 						} else {
 							gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
 							return;
 						}
 					}
 					// if the tile contains the enemy village
-						// pillage, then move the hovel
+					// pillage, then move the hovel
 					if (destVillage.getLocatedAt()==dest){
 						if (srcUnitType > UnitType.INFANTRY){
 							// plunder village will handle stealing resources
@@ -114,82 +114,56 @@ public class UnitManager : MonoBehaviour {
 						dest.setStructure(false);
 						dest.replace (null);
 					}
-
+					
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
 					villageManager.MergeAlliedRegions(dest);
 					performMove(unit,dest);
 					unit.setAction(UnitActionType.CapturingEnemy);
 					originalLocation.setOccupyingUnit(null);
-
+					
 				} 
 			}
 		}
 	}
-
-	private void performMove(Unit unit, Tile dest)
-	{
+	
+	private void performMove(Unit unit, Tile dest){
 		dest.setOccupyingUnit(unit);
 		unit.setLocation(dest);
 		Village srcVillage = unit.getVillage ();
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
 
-		if (srcUnitType == UnitType.KNIGHT) 
-		{
-			bool destHasRoad = dest.checkRoad ();
-			if (destLandType == LandType.Meadow && destHasRoad == false) 
-			{
-				dest.setLandType (LandType.Grass);
-				Destroy (dest.prefab);
-			}
-			unit.setAction (UnitActionType.Moved);
-			if (srcUnitType == UnitType.CANNON){
-				unit.setAction (UnitActionType.CannonMoved);
-			}
-		} 
-		else //if (srcUnitType != UnitType.KNIGHT)
-		{
-			if(destLandType == LandType.Meadow)
-			{
-				if(srcUnitType == UnitType.SOLDIER)
-				{
-					bool destHasRoad = dest.checkRoad ();
-					if (destHasRoad == false) 
-					{
-						dest.setLandType (LandType.Grass);
-						Destroy (dest.prefab);
-					}
+		if (destLandType == LandType.Meadow) {
+			if (srcUnitType==UnitType.CANNON||srcUnitType==UnitType.SOLDIER||srcUnitType==UnitType.KNIGHT){
+				if (dest.checkRoad ()){
+					unit.setAction (UnitActionType.Moved);
+				} else {
+					gameGUI.displayError (@"You have trampled the crops!");
+					dest.setLandType (LandType.Grass);
+					Destroy (dest.prefab);
 				}
-				unit.setAction (UnitActionType.Moved);
+				if (srcUnitType == UnitType.CANNON){
+					unit.setAction (UnitActionType.CannonMoved);
+				}
 			}
-			else if (destLandType == LandType.Trees)
-			{
-				//print ("entered cutting trees");
-				unit.setAction(UnitActionType.ChoppingTree);
-				//unit.animation.CrossFade("attack");
-				Destroy (dest.prefab);
-				dest.prefab = null;
-
-				//unit.animation.CrossFadeQueued("idle");
-				srcVillage.addWood(1);
-				dest.setLandType(LandType.Grass);
-			}
-			else if (destLandType == LandType.Tombstone)
-			{
-				unit.setAction(UnitActionType.ClearingTombstone);
-				Destroy (dest.prefab);
-				dest.prefab = null;
-				dest.setLandType(LandType.Grass);
-			}
+		} else if (destLandType == LandType.Trees) {
+			unit.setAction(UnitActionType.ChoppingTree);
+			dest.replace (null);
+			srcVillage.addWood(1);
+			dest.setLandType(LandType.Grass);
+		} else if (destLandType == LandType.Tombstone) {
+			unit.setAction(UnitActionType.ClearingTombstone);
+			dest.replace (null);
+			dest.setLandType(LandType.Grass);
 		}
 		movePrefab (unit,new Vector3 (dest.point.x, 0.15f,dest.point.y));
 	}
-
+	
 	private void movePrefab(Unit u, Vector3 vector)
 	{
 		u.transform.localPosition = vector;
 	}
-
+	
 	private bool canUnitMove(Unit u, Tile t)
 	{
 		// castle check
@@ -221,7 +195,7 @@ public class UnitManager : MonoBehaviour {
 			} else {
 				return true;
 			}
-		// enemy checks
+			// enemy checks
 		} else if (t.getVillage ().controlledBy != u.getVillage ().controlledBy){
 			if (u.getUnitType()==UnitType.PEASANT){
 				gameGUI.displayError (@"Peasants cant attack! ¯\(°_o)/¯");
@@ -249,7 +223,7 @@ public class UnitManager : MonoBehaviour {
 		//default
 		return false;
 	}
-
+	
 	public void upgradeUnit(Unit u, UnitType newLevel)
 	{
 		Village unitVillage = u.getVillage();
@@ -278,13 +252,13 @@ public class UnitManager : MonoBehaviour {
 			}
 		}
 	}
-
+	
 	[RPC]
 	void upgradeUnitNet(NetworkViewID unitID, int newlvl){
 		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
 		upgradeUnit (u, (UnitType)newlvl);
 	}
-
+	
 	[RPC]
 	public void cultivateMeadowNet (NetworkViewID unitID)
 	{

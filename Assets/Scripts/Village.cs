@@ -317,10 +317,8 @@ public class Village : MonoBehaviour {
 
 	public void upgrade()
 	{
-		//TODO uncomment following line after demo
 		myAction = VillageActionType.StartedUpgrading;
-
-
+		// TODO delay upgrade until finished upgrading...
 		if (myType == VillageType.Hovel) 
 		{
 			wood -= 8;
@@ -337,15 +335,16 @@ public class Village : MonoBehaviour {
 			myType = VillageType.Fort;
 			health = 5;
 		}
-//		else if (myType == VillageType.Fort)
-//		{
-//			wood -= 12;
-//			wage = 80;
-//			health = 10;
-//			this.transform.FindChild("Fort").gameObject.SetActive (false);
-//			this.transform.FindChild("Castle").gameObject.SetActive (true);
-//			myType = VillageType.Castle;
-//		}
+		/*
+		else if (myType == VillageType.Fort)
+		{
+			wood -= 12;
+			wage = 80;
+			health = 10;
+			this.transform.FindChild("Fort").gameObject.SetActive (false);
+			this.transform.FindChild("Castle").gameObject.SetActive (true);
+			myType = VillageType.Castle;
+		}*/
 	}
 	//sets gold to 0 and returns the previous gold value
 	public int pillageGold()
