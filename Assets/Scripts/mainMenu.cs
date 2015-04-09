@@ -20,7 +20,7 @@ public class mainMenu : MonoBehaviour {
 	public Transform HostText;
 	public Transform JoinText;
 	public Transform StatsText;
-	public Transform QuitText;
+	public Transform LogoutText;
 
 	public Transform LaunchText;
 	public Text ErrorLobbyMsg;
@@ -150,10 +150,6 @@ public class mainMenu : MonoBehaviour {
 		LoginCanvas.enabled = true;
 	}
 
-	public void logoutButtonPressed()
-	{
-
-	}
 
 	public void clearStatsTable()
 	{
@@ -280,7 +276,7 @@ public class mainMenu : MonoBehaviour {
 		HostText.GetComponent<Button>().enabled = true;
 		JoinText.GetComponent<Button>().enabled = true;
 		StatsText.GetComponent<Button>().enabled = true;
-		QuitText.GetComponent<Button>().enabled = true;
+		LogoutText.GetComponent<Button>().enabled = true;
 	}
 
 	public void hideStartGameButtons()
@@ -288,7 +284,7 @@ public class mainMenu : MonoBehaviour {
 		HostText.GetComponent<Button>().enabled = false;
 		JoinText.GetComponent<Button>().enabled = false;
 		StatsText.GetComponent<Button>().enabled = false;
-		QuitText.GetComponent<Button>().enabled = false;
+		LogoutText.GetComponent<Button>().enabled = false;
 	}
 
 	public void returntoMainMenuCanvas()
@@ -375,6 +371,31 @@ public class mainMenu : MonoBehaviour {
 		
 	}
 
+	public void logoutButtonPressed()
+	{
+		WWWForm form = new WWWForm();
+		form.AddField("user", LoginUserName.text);
+		WWW w = new WWW("http://iconstanto.com/logoff.php", form);
+		StartCoroutine(logoff(w));
+	}
+
+	IEnumerator logoff(WWW w)
+	{
+		ErrorJoinRegisterLoginMsg.enabled = false;
+		yield return w;
+		if (w.error == null) 
+		{
+			
+			MainMenuCanvas.enabled = false;
+			LoginCanvas.enabled = true;
+		} 
+		else 
+		{
+			ErrorJoinRegisterLoginMsg.text = "ERROR: " + w.error;
+			ErrorJoinRegisterLoginMsg.enabled = true;	
+		}
+
+	}
 	[RPC]
 	public void increaseMapChoiceNet(int i)
 	{
@@ -447,17 +468,17 @@ public class mainMenu : MonoBehaviour {
 
 	}
 
-	void OnPlayerConnected()
-	{
-		GM.networkView.RPC ("addPlayerNet", 
-                    RPCMode.AllBuffered, 
-                    LoginUserName.text,
-                    LoginPassword.text,
-                    GM.players.Count + 1, 
-                    0, 
-                    0,
-                    Network.player.ipAddress);
-	}
+//	void OnPlayerConnected()
+//	{
+//		GM.networkView.RPC ("addPlayerNet", 
+//                    RPCMode.AllBuffered, 
+//                    LoginUserName.text,
+//                    LoginPassword.text,
+//                    GM.players.Count + 1, 
+//                    0, 
+//                    0,
+//                    Network.player.ipAddress);
+//	}
 
 	void Update(){
 		//updates the lobby
