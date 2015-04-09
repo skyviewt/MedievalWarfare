@@ -84,12 +84,21 @@ public class GameManager : MonoBehaviour {
 		return this.players;
 	}
 
-	public void InitializeFinalMap ()
+	public void initializeSelectedMap ()
 	{
-		this.finalMap = mapGen.getMap(finalMapChoice);
 		mapGen.initializeColorAndVillagesOnMap(players, finalMapChoice, this.finalMap);
-		mapGen.gameObject.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
 	}
+
+	public Graph getMap()
+	{
+		return this.finalMap;
+	}
+
+	public void preserveMostVotedMap()
+	{
+		mapGen.gameObject.networkView.RPC("preserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
+	}
+
 	[RPC]
 	public void setFinalMap(int finalMapChoice)
 	{
@@ -97,10 +106,10 @@ public class GameManager : MonoBehaviour {
 	}
 
 
-	public void createNewGame ()
-	{
-		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
-	}
+//	public void createNewGame ()
+//	{
+//		game = Game.CreateComponent (this.players,this.finalMap,this.gameObject); // this needs to be RPC
+//	}
 
 	private void beginNextTurn()
 	{
