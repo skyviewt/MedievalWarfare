@@ -335,7 +335,7 @@ public class VillageManager : MonoBehaviour {
 				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
 				t.setLandType(LandType.Tombstone);
 			}
-			t.setStructure(false); // helper method needs to be finished
+			t.setStructure(null); // helper method needs to be finished
 		}
 	}
 

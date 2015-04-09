@@ -111,7 +111,7 @@ public class UnitManager : MonoBehaviour {
 					}
 					// destroy towers
 					if (dest.getStructure()!=null && srcUnitType>UnitType.INFANTRY){
-						dest.setStructure(false);
+						dest.setStructure(null);
 						dest.replace (null);
 					}
 					
