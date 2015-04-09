@@ -366,10 +366,10 @@ public class mainMenu : MonoBehaviour {
 			List<Player> players = GM.getPlayers();
 			Graph finalMap = GM.mapGen.getMap(GM.finalMapChoice);
 			GM.networkView.RPC("setFinalMap",RPCMode.AllBuffered, GM.finalMapChoice);
-			GM.mapGen.initializeColorAndVillagesOnMap(players, GM.finalMapChoice, finalMap);
+			GM.initializeSelectedMap(); //initializes the graph 
 			if(GM.isServer)
 			{
-				GM.mapGen.networkView.RPC("perserveFinalMap", RPCMode.AllBuffered, GM.finalMapChoice);
+				GM.preserveMostVotedMap(); // preserves the choice 
 			}
 			GM.createNewGame();
 			this.networkView.RPC("startLevel", RPCMode.AllBuffered);

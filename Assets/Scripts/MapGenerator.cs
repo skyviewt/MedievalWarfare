@@ -342,7 +342,7 @@ public class MapGenerator : MonoBehaviour {
 	}
 
 	[RPC]
-	void perserveFinalMap(int mapchoice)
+	void preserveFinalMap(int mapchoice)
 	{
 		Graph wantedMap;
 		maps.TryGetValue (mapchoice, out wantedMap);
@@ -373,6 +373,7 @@ public class MapGenerator : MonoBehaviour {
 		DontDestroyOnLoad (GameObject.Find ("VillageManager"));
 		DontDestroyOnLoad (GameObject.Find ("TileManager"));
 	}
+
 	[RPC]
 	void logMsg(string text){
 		Debug.Log (text);
