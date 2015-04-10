@@ -251,7 +251,7 @@ public class SaveLoad : MonoBehaviour {
 		int playerNb = 1;
 		//save player
 		foreach (Player t in playerList) {
-			PlayerPrefs.SetInt(id+name+pID+clr, t.getColor());
+			PlayerPrefs.SetInt(id+name+pID+playerNb+clr, t.getColor());
 			
 			//getting the villages
 			List<Village> villageList = t.getVillages();
@@ -377,7 +377,7 @@ public class SaveLoad : MonoBehaviour {
 		Debug.LogError ("NUMBEROFPLAYERS" + nbOfPlayer);
 		//get player and color
 		for (int playerID=1; playerID <=nbOfPlayer; playerID++) {
-			int color = PlayerPrefs.GetInt(id+name+pID+clr);
+			int color = PlayerPrefs.GetInt(id+name+pID+playerID+clr);
 			//Debugging. Can be removed
 			if (color ==0){
 				Debug.LogError("SaveLoad-> Player Color is 0");
@@ -391,7 +391,8 @@ public class SaveLoad : MonoBehaviour {
 			Player newPlayer = game.getPlayers()[playerID-1];
 			newPlayer.setColor(color);
 			playerList.Add(newPlayer);
-			
+
+
 			//Villages:
 			int nbOfVillages = PlayerPrefs.GetInt(id+name+pID+vNum);
 			Debug.Log(nbOfVillages);
