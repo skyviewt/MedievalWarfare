@@ -66,9 +66,9 @@ public class Player : MonoBehaviour{
 	}
 	
 	[RPC]
-	void ColorPlayer(NetworkViewID pID, int c)
+	void colorPlayerNet(int c)
 	{
-		NetworkView.Find (pID).gameObject.GetComponent<Player> ().color = c;
+		color = c;
 	}
 	public void addWin()
 	{

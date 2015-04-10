@@ -549,9 +549,18 @@ public class mainMenu : MonoBehaviour {
 	{
 		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
 	}
+
 	public void launchGamePressed()
 	{	if (GM.isServer) 
 		{
+			// actually setting colors properlly
+			for(int i=0; i<GM.players.Count; i++)
+			{
+				Player p = GM.players[i];
+				string name = p.getName ();
+				GM.networkView.RPC ("setPlayerColorsNet", RPCMode.AllBuffered, name, i+1);
+			}
+
 			if(!isALoadGame)
 			{
 				Graph finalMap = GM.mapGen.getMap (GM.finalMapChoice);
@@ -575,13 +584,13 @@ public class mainMenu : MonoBehaviour {
 
 			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
 			networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
-
+			/*
 			//setting up the colors properly
 			for(int i=0; i<GM.players.Count; i++)
 			{
 				Player p = GM.players[i];
 				p.networkView.RPC ("ColorPlayer", RPCMode.AllBuffered, p.gameObject.networkView.viewID, i+1);
-			}
+			}*/
 		}
 
 		List<Player> players = GM.getPlayers();

@@ -231,4 +231,11 @@ public class GameManager : MonoBehaviour {
 			Debug.Log (gameGUI);
 		}
 	}
+
+	[RPC]
+	public void setPlayerColorsNet(string name, int color){
+		Player p = players.Find(i => i.getName() == name); 
+		//Player p = this.players.Where (player => (player.getName () == name));
+		p.setColor (color);
+	}
 }
