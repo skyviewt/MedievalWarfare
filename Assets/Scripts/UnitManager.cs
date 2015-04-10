@@ -43,6 +43,7 @@ public class UnitManager : MonoBehaviour {
 			{
 				performMove(unit,dest);
 				originalLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
+				//TODO STOPPED HERE
 			}
 			else if (srcVillage != destVillage)
 			{
@@ -51,6 +52,10 @@ public class UnitManager : MonoBehaviour {
 				{
 					//srcVillage.addTile(dest);
 					srcVillage.gameObject.networkView.RPC ("addTileNet",RPCMode.AllBuffered,dest.gameObject.networkView.viewID);
+					dest.gameObject.networkView.RPC ("setVillageNet",RPCMode.AllBuffered,srcVillage.gameObject.networkView.viewID);
+					int color = srcVillage.getPlayer().getColor();
+					dest.gameObject.networkView.RPC ("setAndColor",RPCMode.AllBuffered,color);
+
 					performMove(unit,dest);
 					villageManager.MergeAlliedRegions(dest);
 					unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.CapturingNeutral);
@@ -150,7 +155,6 @@ public class UnitManager : MonoBehaviour {
 				if (srcUnitType == UnitType.CANNON)
 				{
 					unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.CannonMoved);
-
 				}
 			}
 		} 

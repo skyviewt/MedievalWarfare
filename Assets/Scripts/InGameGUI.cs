@@ -431,7 +431,7 @@ public class InGameGUI : MonoBehaviour {
 						VillageActionType action = v.getAction ();
 						Player owningPlayer = v.getPlayer ();
 						Player localPlayer = gameManager.getLocalPlayer ();
-						Debug.Log ("Village Owner: "+owningPlayer);
+						Debug.Log ("Village Owner: "+owningPlayer.getName ());
 						Debug.Log ("trying to access: " +localPlayer);
 						int redrawWood = v.getWood();
 						int redrawGold = v.getGold();
