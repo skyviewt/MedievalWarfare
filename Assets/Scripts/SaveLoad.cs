@@ -388,9 +388,18 @@ public class SaveLoad : MonoBehaviour {
 			Game game = GM.GetComponent<GameManager>().game;
 
 			//New player TODO: RECHECK
-			Player newPlayer = game.getPlayers()[playerID-1];
-			newPlayer.setColor(color);
-			playerList.Add(newPlayer);
+			//Player newPlayer = game.getPlayers()[playerID-1];
+			//newPlayer.setColor(color);
+			//playerList.Add(newPlayer);
+			Player newPlayer;
+			foreach(Player p in game.getPlayers()){
+				if (p.getColor()==color){
+					newPlayer = p;
+					playerList.Add(newPlayer);
+					Debug.LogError("ADDED PLAYER: " + newPlayer.name+ " Color: "+ color);
+					break;
+				}
+			}
 
 
 			//Villages:

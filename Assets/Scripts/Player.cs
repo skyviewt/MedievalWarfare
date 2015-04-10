@@ -62,7 +62,6 @@ public class Player : MonoBehaviour{
 		foreach(Player p in ply){
 			if( p.getColor()==color){
 				p.myVillages.Add(vil);
-				Debug.LogError("PlayerFound:" + p.name+ " color "+p.getColor());
 				break;
 			}
 		}
