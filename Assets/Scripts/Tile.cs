@@ -329,12 +329,23 @@ public class Tile : MonoBehaviour
 				case 0:
 						this.gameObject.layer = LayerMask.NameToLayer ("map1");
 						if (hasPref)
-								this.prefab.layer = LayerMask.NameToLayer ("map1");	
+							this.prefab.layer = LayerMask.NameToLayer ("map1");	
 						break;
 				case 1:
 						this.gameObject.layer = LayerMask.NameToLayer ("map2");
 						if (hasPref)
-								this.prefab.layer = LayerMask.NameToLayer ("map2");
+							this.prefab.layer = LayerMask.NameToLayer ("map2");
+						break;
+			//TODO: do this for units and villages.
+				case 2:
+						this.gameObject.layer = LayerMask.NameToLayer("loadedMap");
+						this.gameObject.tag = "LoadedMap";
+						if (hasPref)
+						{
+							this.prefab.layer = LayerMask.NameToLayer ("loadedMap");
+							this.prefab.tag = "LoadedMap";
+						}
+							
 						break;
 				}
 	}

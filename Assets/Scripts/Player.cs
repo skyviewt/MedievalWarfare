@@ -59,6 +59,12 @@ public class Player : MonoBehaviour{
 		myVillages.Add (vil);
 	}
 
+	[RPC]
+	void ColorPlayer(NetworkViewID pID, int c)
+	{
+		NetworkView.Find (pID).gameObject.GetComponent<Player> ().color = c;
+	}
+
 	public void addWin()
 	{
 		this.wins++;

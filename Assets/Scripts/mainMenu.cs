@@ -17,15 +17,19 @@ public class mainMenu : MonoBehaviour {
 	public Canvas LoginBoxCanvas;
 	public Canvas ErrorCanvas;
 	public Canvas StatsCanvas;
+	public Canvas LoadGameCanvas;
+
 	public Transform HostText;
 	public Transform JoinText;
 	public Transform StatsText;
 	public Transform LogoutText;
+	public Transform LoadGameText;
 
 	public Transform LaunchText;
 	public Text ErrorLobbyMsg;
 
 	public List<Text> statsTableTexts;
+	public List<Text> gameNameTexts;
 
 	public Text ErrorJoinRegisterLoginMsg;
 
@@ -41,11 +45,17 @@ public class mainMenu : MonoBehaviour {
 
 	public Camera resCam1;
 	public Camera resCam2;
+	public Camera loadCam;
 
 	public int[] countMapChoices = new int[2];
 
 	// 1-based
 	public int mapChoice = -1;
+
+	public bool isALoadGame = false;
+
+	// game load choice
+	public int gameLoadChoice = -1;
 
 	public Text _ipInput;
 	public Text _portInput;
@@ -76,6 +86,7 @@ public class mainMenu : MonoBehaviour {
 		LobbyCanvas.enabled = false;
 		RegisterCanvas.enabled = false;
 		LoginBoxCanvas.enabled = false;
+		LoadGameCanvas.enabled = false;
 		StatsCanvas.enabled = false;
 		ErrorCanvas.enabled = true;
 		cam1.enabled = false;
@@ -232,7 +243,13 @@ public class mainMenu : MonoBehaviour {
 		}
 
 	}
-
+	public void actualLoadGamePressed()
+	{
+		isALoadGame = true;
+		LoadGameCanvas.enabled = false;
+		loadThisGame (gameLoadChoice);
+		showLobby();
+	}
 	public void actualRegistrationPressed()
 	{
 		ErrorJoinRegisterLoginMsg.enabled = false;
@@ -276,6 +293,7 @@ public class mainMenu : MonoBehaviour {
 		HostText.GetComponent<Button>().enabled = true;
 		JoinText.GetComponent<Button>().enabled = true;
 		StatsText.GetComponent<Button>().enabled = true;
+		LoadGameText.GetComponent<Button>().enabled = true;
 		LogoutText.GetComponent<Button>().enabled = true;
 	}
 
@@ -285,12 +303,64 @@ public class mainMenu : MonoBehaviour {
 		JoinText.GetComponent<Button>().enabled = false;
 		StatsText.GetComponent<Button>().enabled = false;
 		LogoutText.GetComponent<Button>().enabled = false;
+		LoadGameText.GetComponent<Button>().enabled = false;
+	}
+	public void loadGameButtonPressed()
+	{
+		for (int i =0; i<gameNameTexts.Count; i++) 
+		{
+			gameNameTexts[i].text += getSaveName(i+1);	
+		}
+		LoadGameCanvas.enabled = true;
+	}
+
+	public void game1Pressed()
+	{
+		gameLoadChoice = 1;
+	}
+	public void game2Pressed()
+	{
+		gameLoadChoice = 2;
+	}
+	public void game3Pressed()
+	{
+		gameLoadChoice = 3;
+	}
+	public void game4Pressed()
+	{
+		gameLoadChoice = 4;
+	}
+	public void game5Pressed()
+	{
+		gameLoadChoice = 5;
+	}
+
+	public void game6Pressed()
+	{
+		gameLoadChoice = 6;
+	}
+	public void game7Pressed()
+	{
+		gameLoadChoice = 7;
+	}
+	public void game8Pressed()
+	{
+		gameLoadChoice = 8;
+	}
+	public void game9Pressed()
+	{
+		gameLoadChoice = 9;
+	}
+	public void game10Pressed()
+	{
+		gameLoadChoice = 10;
 	}
 
 	public void returntoMainMenuCanvas()
 	{
 		StatsCanvas.enabled = false;
 		JoinGameCanvas.enabled = false;
+		LoadGameCanvas.enabled = false;
 		MainMenuCanvas.enabled = true;
 		showStartGameButtons ();
 		GM.setIsServer (true);
@@ -462,24 +532,43 @@ public class mainMenu : MonoBehaviour {
 	// 4. 
 
 	[RPC]
-	void DontDestroyManagers(NetworkViewID mID)
+	void DontDestroy(NetworkViewID mID)
 	{
 		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
 	}
 	public void launchGamePressed()
-	{	if(GM.isServer)
+	{	if (GM.isServer) 
 		{
-			Graph finalMap = GM.mapGen.getMap(GM.finalMapChoice);
-			Debug.Log (finalMap);
-			print ("final map choice" + GM.finalMapChoice);
-			GM.setFinalMap(finalMap);
-			GM.initializeSelectedMap(); //initializes the graph 
+			if(!isALoadGame)
+			{
+				Graph finalMap = GM.mapGen.getMap (GM.finalMapChoice);
+				Debug.Log (finalMap);
+				print ("final map choice" + GM.finalMapChoice);
+				GM.setFinalMap (finalMap);
+				GM.initializeSelectedMap (); //initializes the graph 
 
-			GM.mapGen.preserveFinalMap( GM.finalMapChoice ); // preserves the choice 
-			GM.villageManager.networkView.RPC("DontDestroyManagers", RPCMode.AllBuffered, GM.villageManager.gameObject.networkView.viewID);
+				GM.mapGen.preserveFinalMap (GM.finalMapChoice); // preserves the choice 
+			}
+			else
+			{
+				GameObject[] allTiles = GameObject.FindGameObjectsWithTag("LoadedMap");
+				foreach(GameObject o in allTiles)
+				{
+					o.networkView.RPC("DontDestroy", RPCMode.AllBuffered, o.gameObject.networkView.viewID);
+				}
+
+			}
+			GM.villageManager.networkView.RPC("DontDestroy", RPCMode.AllBuffered, GM.villageManager.gameObject.networkView.viewID);
 
 			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
-			tileManager.networkView.RPC("DontDestroyManagers", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
+			tileManager.networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
+
+			//setting up the colors properly
+			for(int i=0; i<GM.players.Count; i++)
+			{
+				Player p = GM.players[i];
+				p.networkView.RPC ("ColorPlayer", RPCMode.AllBuffered, p.gameObject.networkView.viewID, i+1);
+			}
 		}
 		List<Player> players = GM.getPlayers();
 		GM.createNewGame();
@@ -489,11 +578,7 @@ public class mainMenu : MonoBehaviour {
 		}
 		this.networkView.RPC("startLevel", RPCMode.AllBuffered);
 	}
-
-	public void launchSavedGamePressed()
-	{
-		//i.e load saved game, TODO
-	}
+	
 
 //	void OnPlayerConnected()
 //	{
@@ -511,24 +596,40 @@ public class mainMenu : MonoBehaviour {
 		//updates the lobby
 		if ( LobbyCanvas.enabled == true ) 
 		{
-			bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
-			if (isMap1Chosen) {
-					resCam1.enabled = true;	
-					chosenMapText.text = "Map 1";
-					GM.finalMapChoice = 0;
-			} else {
-					resCam2.enabled = true;	
-					chosenMapText.text = "Map 2";
-					GM.finalMapChoice = 1;
+			if(!isALoadGame)
+			{
+				bool isMap1Chosen = (countMapChoices [0] >= countMapChoices [1]);
+				if (isMap1Chosen) {
+						resCam1.enabled = true;	
+						chosenMapText.text = "Map 1";
+						GM.finalMapChoice = 0;
+				} else {
+						resCam2.enabled = true;	
+						chosenMapText.text = "Map 2";
+						GM.finalMapChoice = 1;
+				}
 			}
-		
-			map1PlayerCount.text = countMapChoices [0].ToString ();
-			map2PlayerCount.text = countMapChoices [1].ToString ();
+			//loaded map
+			else 
+			{
+				resCam1.enabled = true;	
+				chosenMapText.text = "Loaded Map";
+			}
+			if(!isALoadGame)
+			{
+				map1PlayerCount.text = countMapChoices [0].ToString ();
+				map2PlayerCount.text = countMapChoices [1].ToString ();
+			}
+
 			if (GM.isServer) 
 			{
 				Player p = GM.players.Where(player=> (player.ipAddress == Network.player.ipAddress)).FirstOrDefault();
 				this.networkView.RPC ("changePlayerTextNet", RPCMode.AllBuffered, 0, p.getName());
-				this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
+				if(!isALoadGame)
+				{
+					this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, 0, "Map " + mapChoice.ToString());
+				}
+
 				// only counting the joining players.
 				for (int i = 0; i<Network.connections.Length; i++) 
 				{
@@ -554,15 +655,17 @@ public class mainMenu : MonoBehaviour {
 			else
 			{
 				LaunchText.GetComponent<Button> ().enabled = false;
-
-				for(int i = 0; i<GM.players.Count; i++)
+				if(!isALoadGame)
 				{
-					for(int j =0; j<connectedPlayerText.Count; j++)
+					for(int i = 0; i<GM.players.Count; i++)
 					{
-						if(GM.players[i].getName () == connectedPlayerText[j].text)
+						for(int j =0; j<connectedPlayerText.Count; j++)
 						{
-							this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, j, "Map " + mapChoice.ToString());
-							break;
+							if(GM.players[i].getName () == connectedPlayerText[j].text)
+							{
+								this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, j, "Map " + mapChoice.ToString());
+								break;
+							}
 						}
 					}
 				}
