@@ -44,7 +44,7 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType vAction = v.getAction ();
 		if (vType == VillageType.Fort)
 		{
-			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle. ¯\(°_o)/¯\n Press Build Castle to go to the next level!");
+			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle. ¯\(°_o)/¯ Press Build Castle to go to the next level!");
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
@@ -122,6 +122,7 @@ public class VillageManager : MonoBehaviour {
 		GameObject vilObject = NetworkView.Find (villageObjectID).gameObject;
 		Destroy (vilObject);
 	}
+
 	[RPC]
 	void DontDestroyVillageManager(NetworkViewID mID)
 	{
@@ -213,9 +214,8 @@ public class VillageManager : MonoBehaviour {
 			oldLocation.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
 			GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
 			villageToSplit.retireAllUnits();
-			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID);
+			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID,p.getColor());
 			oldLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
-
 			return; //stop here if no region is big enough
 		}
 
