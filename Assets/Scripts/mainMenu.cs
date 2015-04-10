@@ -258,7 +258,8 @@ public class mainMenu : MonoBehaviour {
 		resetSavedGameTexts ();
 		isALoadGame = true;
 		LoadGameCanvas.enabled = false;
-//		loadThisGame (gameLoadChoice);
+		SaveLoad sl = GameObject.Find("SaveLoad").GetComponent<SaveLoad>();
+		sl.loadThisGame (gameLoadChoice);
 		showLobby();
 	}
 	public void actualRegistrationPressed()
@@ -320,7 +321,8 @@ public class mainMenu : MonoBehaviour {
 	{
 		for (int i =0; i<gameNameTexts.Count; i++) 
 		{
-//			gameNameTexts[i].text += getSaveName(i+1);	
+			SaveLoad sl = GameObject.Find("SaveLoad").GetComponent<SaveLoad>();
+			gameNameTexts[i].text += sl.getSaveName(i+1);	
 		}
 		LoadGameCanvas.enabled = true;
 	}
@@ -565,14 +567,14 @@ public class mainMenu : MonoBehaviour {
 				GameObject[] allTiles = GameObject.FindGameObjectsWithTag("LoadedMap");
 				foreach(GameObject o in allTiles)
 				{
-					o.networkView.RPC("DontDestroy", RPCMode.AllBuffered, o.gameObject.networkView.viewID);
+					networkView.RPC("DontDestroy", RPCMode.AllBuffered, o.gameObject.networkView.viewID);
 				}
 
 			}
-			GM.villageManager.networkView.RPC("DontDestroy", RPCMode.AllBuffered, GM.villageManager.gameObject.networkView.viewID);
+			networkView.RPC("DontDestroy", RPCMode.AllBuffered, GM.villageManager.gameObject.networkView.viewID);
 
 			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
-			tileManager.networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
+			networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
 
 			//setting up the colors properly
 			for(int i=0; i<GM.players.Count; i++)
