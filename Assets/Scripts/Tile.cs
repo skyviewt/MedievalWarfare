@@ -234,6 +234,18 @@ public class Tile : MonoBehaviour
 		Destroy (t.prefab);
 		t.prefab = null;
 	}
+
+	[RPC]
+	void DontDestroyTile(NetworkViewID tileID){
+		DontDestroyOnLoad(NetworkView.Find (tileID).gameObject);
+	}
+
+	[RPC]
+	void DontDestroyPrefab(NetworkViewID tileID){
+		Tile t = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
+		DontDestroyOnLoad(t.prefab);
+	}
+
 	[RPC]
 	void setAndColor(int newColor){
 		color = newColor;
