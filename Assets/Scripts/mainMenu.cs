@@ -690,13 +690,13 @@ public class mainMenu : MonoBehaviour {
 	}
 
 	[RPC]
-	public void changePlayerTextNet(int i, string s)
+	void changePlayerTextNet(int i, string s)
 	{
 		this.connectedPlayerText [i].text = s;
 	}
 
 	[RPC]
-	public void changePlayerMapTextNet(int i, string s)
+	void changePlayerMapTextNet(int i, string s)
 	{
 		this.connectedPlayerMapText [i].text = s;
 	}
