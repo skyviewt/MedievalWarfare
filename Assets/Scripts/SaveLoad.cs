@@ -306,6 +306,7 @@ public class SaveLoad : MonoBehaviour {
 					Tile utile = u.getLocation();
 					PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+unitID+unitNB+uLocationx, utile.point.x);
 					PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+unitID+unitNB+uLocationy, utile.point.y);
+					unitNB++;
 				}
 
 
@@ -525,28 +526,28 @@ public class SaveLoad : MonoBehaviour {
 	}
 	
 	
-	public void loadVillage(){
-		string id = "1";
-		string name = "savedName";
-		string pID = "PlayerID";
-		string pNum = "NumberOfPlayers";
-		string clr = "Color";
-		
-		//village data names
-		string vID = "VillageID";
-		string vNum = "NumberOfVillage";
-		string gold = "Gold";
-		string wood = "Wood";
-		string health = "Health";
-		
-		string locationx= "Locationx";
-		string locationy= "Locationy";
-		
-		//get number of villages per player:
-		
-		
-		
-	}
+//	public void loadVillage(){
+//		string id = "1";
+//		string name = "savedName";
+//		string pID = "PlayerID";
+//		string pNum = "NumberOfPlayers";
+//		string clr = "Color";
+//		
+//		//village data names
+//		string vID = "VillageID";
+//		string vNum = "NumberOfVillage";
+//		string gold = "Gold";
+//		string wood = "Wood";
+//		string health = "Health";
+//		
+//		string locationx= "Locationx";
+//		string locationy= "Locationy";
+//		
+//		//get number of villages per player:
+//		
+//		
+//		
+//	}
 
 	//Searching for tiles that belong to this village: copied from MapGenerator
 	public void searchVillagesLoad(Tile toSearch, List<Tile> TilesToReturn, int color )
