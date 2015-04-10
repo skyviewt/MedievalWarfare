@@ -264,7 +264,7 @@ public class VillageManager : MonoBehaviour {
 //			v.setLocation (tileLocation);
 			v.gameObject.networkView.RPC ("setLocationNet",RPCMode.AllBuffered,tileLocation.networkView.viewID);
 //			p.addVillage(v);
-			p.gameObject.networkView.RPC ("setLocationNet",RPCMode.AllBuffered,v.networkView.viewID);
+			p.gameObject.networkView.RPC ("addVillageNet",RPCMode.AllBuffered,v.networkView.viewID,p.getColor ());
 //			v.setControlledBy(p);
 			GameManager GM = GameObject.Find ("preserveGM").GetComponent<GameManager>();
 			int playerIndex = GM.findPlayerIndex(p);
