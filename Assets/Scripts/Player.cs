@@ -53,18 +53,32 @@ public class Player : MonoBehaviour{
 		password = pPass;
 		color = pColor;
 	}
+
 	[RPC]
-	void addVillageNet(NetworkViewID villageID){
+	void addVillageNet(NetworkViewID villageID, int color){
 		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
-		myVillages.Add (vil);
-	}
 
+		Player[] ply = GameObject.Find ("preserveGM").GetComponents<Player>();
+		foreach(Player p in ply){
+			if( p.getColor()==color){
+				p.myVillages.Add(vil);
+				break;
+			}
+		}
+		//myVillages.Add (vil);
+	}
 	[RPC]
-	void ColorPlayer(NetworkViewID pID, int c)
+	void removeVillageNet(NetworkViewID villageID)
 	{
-		NetworkView.Find (pID).gameObject.GetComponent<Player> ().color = c;
+		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
+		myVillages.Remove (vil);
 	}
-
+	
+	[RPC]
+	void colorPlayerNet(int c)
+	{
+		color = c;
+	}
 	public void addWin()
 	{
 		this.wins++;

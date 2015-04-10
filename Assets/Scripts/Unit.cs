@@ -73,20 +73,20 @@ public class Unit : MonoBehaviour {
 	public Unit(){
 	}
 
-	[RPC]
-	void setActiveNet(string unitClass){
-
-		gameObject.transform.FindChild ("Peasant").gameObject.SetActive (false);
-		gameObject.transform.FindChild ("Infantry").gameObject.SetActive (false);
-		gameObject.transform.FindChild ("Soldier").gameObject.SetActive (false);
-		gameObject.transform.FindChild ("Knight").gameObject.SetActive (false);
-
-		gameObject.transform.FindChild (unitClass).gameObject.SetActive (true);
-
-		if (!(unitClass == "Peasant" || unitClass == "Infantry" || unitClass == "Soldier" || unitClass == "Knight")) {
-			Debug.Log("Invalid Unit.SetActive() parameter: " + unitClass);
-		}
-	}
+//	[RPC]
+//	void setActiveNet(string unitClass){
+//
+//		gameObject.transform.FindChild ("Peasant").gameObject.SetActive (false);
+//		gameObject.transform.FindChild ("Infantry").gameObject.SetActive (false);
+//		gameObject.transform.FindChild ("Soldier").gameObject.SetActive (false);
+//		gameObject.transform.FindChild ("Knight").gameObject.SetActive (false);
+//
+//		gameObject.transform.FindChild (unitClass).gameObject.SetActive (true);
+//
+//		if (!(unitClass == "Peasant" || unitClass == "Infantry" || unitClass == "Soldier" || unitClass == "Knight")) {
+//			Debug.Log("Invalid Unit.SetActive() parameter: " + unitClass);
+//		}
+//	}
 
 
 	[RPC]
@@ -140,7 +140,12 @@ public class Unit : MonoBehaviour {
 	{
 		
 	}
-	
+	[RPC]
+	void setVillageNet(NetworkViewID villageID)
+	{
+		this.myVillage = NetworkView.Find (villageID).gameObject.GetComponent<Village> ();
+	}
+
 	public void setVillage(Village v)
 	{
 		this.myVillage = v;
@@ -160,20 +165,60 @@ public class Unit : MonoBehaviour {
 	{
 		return this.myType;
 	}
-	
-	public void setLocation(Tile t)
-	{
-		this.locatedAt = t;
-	}
-	public void setAction(UnitActionType action)
-	{
-		this.myAction = action;
-	}
 
 	[RPC]
-	public void setActionNet(int action)
+	void setLocationNet(NetworkViewID tileID)
+	{
+		Tile t = NetworkView.Find (tileID).gameObject.GetComponent<Tile> ();
+		this.locatedAt = t;
+	}
+	[RPC]
+	void setActionNet(int action)
 	{
 		this.myAction = (UnitActionType)action;
+	}
+
+//	public void setAction(UnitActionType action)
+//	{
+//		this.myAction = action;
+//	}
+	[RPC]
+	void setUnitTypeNet(int type)
+	{
+		myType = (UnitType)type;
+	}
+	[RPC]
+	void switchUnitPrefabNet(int pType)
+	{
+		UnitType newType = (UnitType)pType;
+		if (newType == UnitType.PEASANT) 
+		{
+			this.transform.FindChild("Peasant").gameObject.SetActive (true);
+			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+			this.transform.FindChild("Knight").gameObject.SetActive (false);
+		}
+		else if (newType == UnitType.INFANTRY) 
+		{
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (true);
+			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+			this.transform.FindChild("Knight").gameObject.SetActive (false);
+		}
+		else if (newType == UnitType.SOLDIER) 
+		{
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+			this.transform.FindChild("Soldier").gameObject.SetActive (true);
+			this.transform.FindChild("Knight").gameObject.SetActive (false);
+		}
+		else if (newType == UnitType.KNIGHT) 
+		{
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+			this.transform.FindChild("Knight").gameObject.SetActive (true);
+		}
 	}
 	
 	public UnitActionType getAction()
@@ -199,31 +244,31 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public void upgrade(UnitType newLevel)
-	{
-		this.myType = newLevel;
-		//this.myAction = UnitActionType.UpgradingCombining;
-
-		switch (myType) {
-		case UnitType.INFANTRY:
-			this.transform.FindChild("Peasant").gameObject.SetActive (false);
-			this.transform.FindChild("Infantry").gameObject.SetActive (true);
-			this.transform.FindChild("Soldier").gameObject.SetActive (false);
-			this.transform.FindChild("Knight").gameObject.SetActive (false);
-			break;
-		case UnitType.SOLDIER:
-			this.transform.FindChild("Peasant").gameObject.SetActive (false);
-			this.transform.FindChild("Infantry").gameObject.SetActive (false);
-			this.transform.FindChild("Soldier").gameObject.SetActive (true);
-			this.transform.FindChild("Knight").gameObject.SetActive (false);
-			break;
-		case UnitType.KNIGHT:
-			this.transform.FindChild("Peasant").gameObject.SetActive (false);
-			this.transform.FindChild("Infantry").gameObject.SetActive (false);
-			this.transform.FindChild("Soldier").gameObject.SetActive (false);
-			this.transform.FindChild("Knight").gameObject.SetActive (true);
-			break;
-		}
-	}
+//	public void upgrade(UnitType newLevel)
+//	{
+//		this.myType = newLevel;
+//		//this.myAction = UnitActionType.UpgradingCombining;
+//
+//		switch (myType) {
+//		case UnitType.INFANTRY:
+//			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+//			this.transform.FindChild("Infantry").gameObject.SetActive (true);
+//			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+//			this.transform.FindChild("Knight").gameObject.SetActive (false);
+//			break;
+//		case UnitType.SOLDIER:
+//			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+//			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+//			this.transform.FindChild("Soldier").gameObject.SetActive (true);
+//			this.transform.FindChild("Knight").gameObject.SetActive (false);
+//			break;
+//		case UnitType.KNIGHT:
+//			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+//			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+//			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+//			this.transform.FindChild("Knight").gameObject.SetActive (true);
+//			break;
+//		}
+//	}
 
 }

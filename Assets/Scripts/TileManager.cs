@@ -11,7 +11,7 @@ public class TileManager : MonoBehaviour {
 	void Start () {
 			
 	}
-	// TODO add check for tower
+
 	public bool checkNeighboursForGuards(Tile center, Unit unit)
 	{
 		List<Tile> neighbours = center.getNeighbours ();
@@ -32,8 +32,8 @@ public class TileManager : MonoBehaviour {
 					return true;
 				}
 			}
-			Structure tower = n.getStructure();
-			if (tower != null && unitType > UnitType.INFANTRY){
+			bool hasTower = n.checkTower ();
+			if (hasTower && unitType > UnitType.INFANTRY){
 				return true;
 			}
 		}

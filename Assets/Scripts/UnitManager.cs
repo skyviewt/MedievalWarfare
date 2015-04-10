@@ -7,6 +7,7 @@ using System.Linq;
 public class UnitManager : MonoBehaviour {
 	
 	public GameObject meadowPrefab;
+	public GameObject tombPrefab;
 	public GameObject curEffect;
 	public GameObject attackEffect1;
 	public GameObject attackEffect2;
@@ -14,7 +15,7 @@ public class UnitManager : MonoBehaviour {
 	public TileManager tileManager;
 	public InGameGUI gameGUI;
 	public readonly int TEN = 10;
-	
+
 	// Use this for initialization
 	
 	void Start () {
@@ -22,14 +23,6 @@ public class UnitManager : MonoBehaviour {
 		tileManager = GameObject.Find ("TileManager").GetComponent<TileManager> ();
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
-	
-	[RPC]
-	void moveUnitNet(NetworkViewID unitID, NetworkViewID tileID){
-		Unit unitToMove = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
-		Tile dest = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
-		moveUnit (unitToMove, dest);
-	}
-	
 	
 	public void moveUnit(Unit unit, Tile dest)
 	{
@@ -50,6 +43,7 @@ public class UnitManager : MonoBehaviour {
 			{
 				performMove(unit,dest);
 				originalLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
+				//TODO STOPPED HERE
 			}
 			else if (srcVillage != destVillage)
 			{
@@ -58,13 +52,17 @@ public class UnitManager : MonoBehaviour {
 				{
 					//srcVillage.addTile(dest);
 					srcVillage.gameObject.networkView.RPC ("addTileNet",RPCMode.AllBuffered,dest.gameObject.networkView.viewID);
+					dest.gameObject.networkView.RPC ("setVillageNet",RPCMode.AllBuffered,srcVillage.gameObject.networkView.viewID);
+					int color = srcVillage.getPlayer().getColor();
+					dest.gameObject.networkView.RPC ("setAndColor",RPCMode.AllBuffered,color);
+
 					performMove(unit,dest);
 					villageManager.MergeAlliedRegions(dest);
 					unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.CapturingNeutral);
 					originalLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
 				}
 				
-				// TODO taking over enemy tiles and networking it
+
 				else if (srcUnitType == UnitType.PEASANT)
 				{ 
 					gameGUI.displayError (@"A peasant is too weak to invade!");
@@ -78,22 +76,13 @@ public class UnitManager : MonoBehaviour {
 						gameGUI.displayError (@"That area is being protected");
 						return;
 					}
-					
 					// unit on unit combat!!
-					// if there is any enemy unit
 					if (destUnit!=null){
 						if(srcUnitType>destUnit.getUnitType()){
-							//unit.animation.CrossFade("attack");
-							// kill enemy unit, remove it from tile, remove it from village
-							//perform move gets called after.
-							destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
+							// kill enemy unit, remove it from tile, remove it from village, perform move gets called after.
 							destVillage.gameObject.networkView.RPC ("removeUnitNet",RPCMode.AllBuffered,destUnit.gameObject.networkView.viewID);
-							dest.setOccupyingUnit(unit);
-							Destroy (destUnit.gameObject);
-							//adding an attack effect
-							curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y), attackEffect1.transform.rotation) as GameObject;
-							//unit.animation.CrossFadeQueued("idle");
-							
+							dest.gameObject.networkView.RPC ("setOccupyingUnitNet",RPCMode.AllBuffered,unit.gameObject.networkView.viewID);
+							gameObject.networkView.RPC ("destroyUnitNet",RPCMode.AllBuffered,unit.gameObject.networkView.viewID);
 						} else {
 							gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
 							return;
@@ -112,9 +101,11 @@ public class UnitManager : MonoBehaviour {
 						}
 					}
 					// destroy towers
-					if (dest.getStructure()!=null && srcUnitType>UnitType.INFANTRY){
-						dest.setStructure(null);
-						dest.replace (null);
+					if (dest.checkTower() == true && srcUnitType>UnitType.INFANTRY){
+						//dest.setStructure(null);
+						dest.gameObject.networkView.RPC ("setStructureNet",RPCMode.AllBuffered,false);
+						//dest.replace (null);
+						dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 					}
 					
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
@@ -128,9 +119,10 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 	
-	private void performMove(Unit unit, Tile dest){
-		dest.setOccupyingUnit(unit);
-		unit.setLocation(dest);
+	private void performMove(Unit unit, Tile dest)
+	{
+		dest.gameObject.networkView.RPC ("setOccupyingUnitNet", RPCMode.AllBuffered, unit.gameObject.networkView.viewID);
+		unit.gameObject.networkView.RPC ("setLocationNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
 		Village srcVillage = unit.getVillage ();
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
@@ -147,13 +139,11 @@ public class UnitManager : MonoBehaviour {
 				{
 					gameGUI.displayError (@"You have trampled the crops!");
 					dest.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Grass);
-					dest.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Grass);
 					dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 				}
 				if (srcUnitType == UnitType.CANNON)
 				{
 					unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.CannonMoved);
-
 				}
 			}
 		} 
@@ -170,12 +160,15 @@ public class UnitManager : MonoBehaviour {
 			unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ClearingTombstone);
 			dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 		}
-		movePrefab (unit,new Vector3 (dest.point.x, 0.15f,dest.point.y));
+		//movePrefab (unit,new Vector3 (dest.point.x, 0.15f,dest.point.y));
+		gameObject.networkView.RPC ("moveUnitPrefabNet", RPCMode.AllBuffered, unit.networkView.viewID, new Vector3 (dest.point.x, 0.15f, dest.point.y));
 	}
 
 	[RPC]
-	void movePrefabNet(NetworkViewID unitID, Vector3 vector)
+	void moveUnitPrefabNet(NetworkViewID unitID, Vector3 vector)
 	{
+		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit> ();
+		u.transform.localPosition = vector;
 	}
 
 	private void movePrefab(Unit u, Vector3 vector)
@@ -205,7 +198,7 @@ public class UnitManager : MonoBehaviour {
 			if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && (u.getUnitType() == UnitType.KNIGHT || u.getUnitType() == UnitType.CANNON)){
 				gameGUI.displayError (@"Knights are too fancy to do manual labour. ¯\(°_o)/¯");
 				return false;
-			} else if (t.getStructure ()!=null){
+			} else if (t.checkTower ()){
 				gameGUI.displayError (@"The tower doesn't want you to stand ontop of it. ¯\(°_o)/¯");
 				return false;
 			} else if (t.getOccupyingUnit () != null) {
@@ -225,8 +218,8 @@ public class UnitManager : MonoBehaviour {
 			} else if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && u.getUnitType() == UnitType.KNIGHT){
 				gameGUI.displayError (@"Knights are too fancy to do manual labour. ¯\(°_o)/¯");
 				return false;
-			} else if (t.getStructure ()!=null && u.getUnitType()!= UnitType.KNIGHT){
-				gameGUI.displayError (@"Only a knight can take a tower. ¯\(°_o)/¯");
+			} else if (t.checkTower () == true && (u.getUnitType()!= UnitType.KNIGHT || u.getUnitType () != UnitType.SOLDIER)){
+				gameGUI.displayError (@"Only a soldiers and knights can destroy an enemy tower. ¯\(°_o)/¯");
 				return false;
 			} else if (t.getOccupyingUnit()!=null && u.getUnitType()<=t.getOccupyingUnit().getUnitType()){
 				if (t.getOccupyingUnit().getUnitType()==UnitType.CANNON && u.getUnitType()<=UnitType.SOLDIER){
@@ -266,12 +259,79 @@ public class UnitManager : MonoBehaviour {
 			}
 			else
 			{
-				unitVillage.setGold (goldAvailable - goldRequired);
-				u.upgrade(newLevel);
+				u.networkView.RPC("switchUnitPrefabNet",RPCMode.AllBuffered,(int)newLevel);
+				u.networkView.RPC("setUnitTypeNet",RPCMode.AllBuffered,(int)newLevel);
+				u.networkView.RPC ("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.UpgradingCombining);
+				unitVillage.networkView.RPC ("setGoldNet",RPCMode.AllBuffered,(goldAvailable - goldRequired));
+//				u.upgrade(newLevel);
+
 			}
 		}
 	}
-	
+	public void initializeUnit(Village v,GameObject unitPrefab, UnitType type)
+	{
+		Tile tileAt = v.getLocatedAt ();
+		GameObject newUnit = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+		Unit u = newUnit.GetComponent<Unit>();
+
+		Tile toplace = null;
+		foreach (Tile a in tileAt.getNeighbours()) 
+		{
+			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == tileAt.getColor())
+			{
+				toplace = a;
+			}
+		}
+		if(toplace == null)
+		{
+			toplace = tileAt;
+		}
+		gameObject.networkView.RPC ("moveUnitPrefabNet",RPCMode.AllBuffered,u.networkView.viewID,new Vector3(toplace.point.x, 0.15f, toplace.point.y));
+//		locatedAt = toplace;
+		u.networkView.RPC ("setLocationNet", RPCMode.AllBuffered, toplace.networkView.viewID);
+//		myType = unitType;
+		u.networkView.RPC ("setUnitTypeNet", RPCMode.AllBuffered, (int)type);
+		u.networkView.RPC ("switchUnitPrefabNet", RPCMode.AllBuffered, (int)type);
+//		myVillage = v;
+		u.networkView.RPC ("setVillageNet", RPCMode.AllBuffered, v.networkView.viewID);
+//		myAction = UnitActionType.ReadyForOrders;
+		u.networkView.RPC ("setActionNet", RPCMode.AllBuffered, (int)UnitActionType.ReadyForOrders);
+		u.getLocation ().networkView.RPC ("setOccupyingUnitNet", RPCMode.AllBuffered, u.networkView.viewID);
+		print ((int)type);
+		print ((int)type+1);
+		int unitCost = 10 *((int)type+1);
+		v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -unitCost);
+		v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newUnit.networkView.viewID);
+	}
+
+	public void initializeCannon(Village v, GameObject cannonPrefab)
+	{
+		Tile tileAt = v.getLocatedAt ();
+		GameObject newCannon = Network.Instantiate(cannonPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+		Unit u = newCannon.GetComponent<Unit>();
+
+		Tile toplace = null;
+		foreach (Tile a in tileAt.getNeighbours()) 
+		{
+			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == tileAt.getColor())
+			{
+				toplace = a;
+			}
+		}
+		if(toplace == null)
+		{
+			toplace = tileAt;
+		}
+		gameObject.networkView.RPC ("moveUnitPrefabNet",RPCMode.AllBuffered,u.networkView.viewID,new Vector3(toplace.point.x, 0.15f, toplace.point.y));
+		u.networkView.RPC ("setLocationNet", RPCMode.AllBuffered, toplace.networkView.viewID);
+		u.networkView.RPC ("setUnitTypeNet", RPCMode.AllBuffered, (int)UnitType.CANNON);
+		u.networkView.RPC ("setVillageNet", RPCMode.AllBuffered, v.networkView.viewID);
+		u.networkView.RPC ("setActionNet", RPCMode.AllBuffered, (int)UnitActionType.ReadyForOrders);
+		u.getLocation ().networkView.RPC ("setOccupyingUnitNet", RPCMode.AllBuffered, u.networkView.viewID);
+		v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -35);
+		v.gameObject.networkView.RPC("addWoodNet", RPCMode.AllBuffered, -12);
+		v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newCannon.networkView.viewID);
+	}
 	[RPC]
 	void upgradeUnitNet(NetworkViewID unitID, int newlvl){
 		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
@@ -280,19 +340,17 @@ public class UnitManager : MonoBehaviour {
 	[RPC]
 	void destroyUnitNet(NetworkViewID unitID)
 	{
-		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
+		GameObject u = NetworkView.Find (unitID).gameObject;
 		Destroy(u);
 	}
-	[RPC]
-	public void cultivateMeadowNet (NetworkViewID unitID)
-	{
-		Unit unitToCultivate = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
-		cultivateMeadow (unitToCultivate);
-	}
+
 	public void cultivateMeadow(Unit u)
 	{
-		u.setAction (UnitActionType.StartedCultivating);
-				u.gameObject.networkView.RPC ("setActionNet", RPCMode.AllBuffered, (int)UnitActionType.StartedCultivating);
+		u.gameObject.networkView.RPC ("setActionNet", RPCMode.AllBuffered, (int)UnitActionType.StartedCultivating);
+	}
+	public void buildRoad(Unit u)
+	{
+		u.gameObject.networkView.RPC ("setActionNet", RPCMode.AllBuffered, (int)UnitActionType.BuildingRoad);
 	}
 
 	public void fireCannon(Unit cannon, Tile t){
@@ -308,25 +366,31 @@ public class UnitManager : MonoBehaviour {
 			gameGUI.displayError (@"Dont shoot yourself!!");
 			return;
 		} else { // finally, give em hell!
-			Structure s = t.getStructure();
+			bool hasTower = t.checkTower ();
 			Unit u = t.getOccupyingUnit();
 			Village v = t.getVillage ();
 			Tile l = v.getLocatedAt();
-			if (s!=null){
-				t.replace (null);
-				t.setStructure(null);
+			if (hasTower == true){
+//				t.replace (null);
+				t.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+				t.networkView.RPC ("setStructureNet",RPCMode.AllBuffered,false);
 			}
 			if (u!=null){
-				v.removeUnit(u);
-				t.setOccupyingUnit(null);
-				t.replace (null);
-				t.setLandType(LandType.Tombstone);
-				GameObject tombPrefab = villageManager.tombPrefab;
-				t.prefab = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
-				Destroy (u.gameObject);
+//				v.removeUnit(u);
+				v.networkView.RPC ("removeUnitNet",RPCMode.AllBuffered,u.networkView.viewID);
+//				t.setOccupyingUnit(null);
+				t.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
+//				t.replace (null);
+//				t.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+//				t.setLandType(LandType.Tombstone);
+				t.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Tombstone);
+				GameObject tomb = Network.Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation,0) as GameObject;
+				t.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,tomb.networkView.viewID);
+//				Destroy (u.gameObject);
+				gameObject.networkView.RPC ("destroyUnitNet",RPCMode.AllBuffered,u.networkView.viewID);
 			}
 			if (t==l){
-				v.takeDamage ();
+				villageManager.takeCannonDamage(v);
 			}
 		
 		}

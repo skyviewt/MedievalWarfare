@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
 	public bool isServer = true;
 	
 	public List<Player> players = new List<Player>();
+	private List<Player> tempList = new List<Player> ();
 	public Graph finalMap = null;
 
 	public int finalMapChoice = -1;
@@ -26,6 +27,8 @@ public class GameManager : MonoBehaviour {
 	private int localTurn; //has getter and setter
 	private int turnsSoFar;
 	public VillageManager villageManager;
+
+	public bool printList;
 
 	// Use this for initialization
 	void Start () 
@@ -123,7 +126,6 @@ public class GameManager : MonoBehaviour {
 	
 	public void createNewGame ()
 	{
-
 		game.gameObject.networkView.RPC ("setMap",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("setPlayers",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("initializeStatuses",RPCMode.AllBuffered);
@@ -132,14 +134,14 @@ public class GameManager : MonoBehaviour {
 		gameObject.networkView.RPC ("setTurnsSoFar",RPCMode.AllBuffered,0);
 	}
 	[RPC]
-	public void setTurnsSoFar(int turnNumber)
+	void setTurnsSoFar(int turnNumber)
 	{
 		this.turnsSoFar = turnNumber;
 	}
 
 		                       
 	[RPC]
-	public void createSavedGame()
+	void createSavedGame()
 	{
 
 	}
@@ -149,13 +151,27 @@ public class GameManager : MonoBehaviour {
 		game.gameObject.networkView.RPC ("setNextPlayerNet", RPCMode.AllBuffered, nextTurn);
 	}
 
+
+
+	public void updateTurnsPlayed()
+	{
+		game.gameObject.networkView.RPC ("incrementTurnsPlayedInGameNet", RPCMode.AllBuffered);
+		gameObject.networkView.RPC ("updateTurnsPlayedInManagerNet", RPCMode.AllBuffered);
+	}
+
+	[RPC]
+	void updateTurnsPlayedInManagerNet()
+	{
+		this.turnsSoFar = game.getTurnsPlayed ();
+	}
+
 	public int findNextPlayer()
 	{
 		int currentTurn = game.getCurrentTurn();
 		int numberOfPlayers = game.getPlayers().Count;
 		List<PlayerStatus> playerStatuses = game.getPlayerStatuses();
 		
-		for(int i = 0; i < numberOfPlayers; i++)
+		for(int i = 1; i <= numberOfPlayers; i++)
 		{
 			int nextPlayerTurn = (currentTurn + i) % numberOfPlayers;
 			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
@@ -163,10 +179,6 @@ public class GameManager : MonoBehaviour {
 				Debug.Log ("Next Player Turn is: " + nextPlayerTurn);
 				Debug.Log ("My player turn is: " + localTurn);
 				return nextPlayerTurn;
-			}
-			else
-			{
-				continue;
 			}
 		}
 		Debug.Log ("this shouldnt get printed");
@@ -198,16 +210,23 @@ public class GameManager : MonoBehaviour {
 	}
 
 	[RPC]
+	void setLocalTurnAndPlayerNet(int turnNumber)
+	{
+		Debug.Log ("in set local turn and player");
+		this.localTurn = turnNumber;
+		//List<Player> temp = game.getPlayers ();
+		this.localPlayer = players[turnNumber];
+		Debug.Log ("local turn: " + localTurn);
+		Debug.Log ("player name: " + localPlayer);
+	}
 	public void setLocalTurnAndPlayer(int turnNumber)
 	{
-		this.localTurn = turnNumber;
-		List<Player> temp = game.getPlayers ();
-		this.localPlayer = temp[turnNumber];
+		this.localTurn = 0;
+		this.localPlayer = players [0];
 	}
 
-
 	[RPC]
-	public void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)
+	void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)
 	{
 		bool isExist = (this.players.Where(player => ((player.getName() == name) && (player.getPassword() == pass) )).Count() > 0);
 		Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
@@ -221,7 +240,12 @@ public class GameManager : MonoBehaviour {
 			Debug.Log (p.getName ());
 		}
 	}
-	
+	public int findPlayerIndex(Player p)
+	{
+		int index = players.FindIndex (i => i.getName () == p.getName ());
+		return index;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if( isInGame && (gameGUI == null) )
@@ -230,5 +254,21 @@ public class GameManager : MonoBehaviour {
 			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 			Debug.Log (gameGUI);
 		}
+		if (printList) {
+			print (localPlayer.getName ());
+			printList = false;
+		}
+	}
+
+	[RPC]
+	void setPlayerColorsNet(string name, int color){
+		Player p = players.Find(i => i.getName() == name); 
+		p.setColor (color);
+		tempList.Add (p);
+	}
+
+	[RPC]
+	void overWritePlayerList(){
+		players = tempList;
 	}
 }

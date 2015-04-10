@@ -395,7 +395,6 @@ public class mainMenu : MonoBehaviour {
 		print(_ipInput.text);
 		if (_ipInput.text != "")
 		{
-	
 			GM.setIpAddress(_ipInput.text);
 			GM.setPort(System.Int32.Parse (_portInput.text));
 			NetworkConnectionError res = GM.initGame (_ipInput.text, System.Int32.Parse (_portInput.text));
@@ -487,7 +486,7 @@ public class mainMenu : MonoBehaviour {
 
 	}
 	[RPC]
-	public void increaseMapChoiceNet(int i)
+	void increaseMapChoiceNet(int i)
 	{
 		this.countMapChoices [i] += 1;
 	}
@@ -508,7 +507,7 @@ public class mainMenu : MonoBehaviour {
 	}
 
 	[RPC]
-	public void startLevel()
+	void startLevel()
 	{
 		Application.LoadLevel("scene1");
 	}
@@ -549,9 +548,19 @@ public class mainMenu : MonoBehaviour {
 	{
 		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
 	}
+
 	public void launchGamePressed()
 	{	if (GM.isServer) 
 		{
+			// actually setting colors properlly
+			for(int i=0; i<GM.players.Count; i++)
+			{
+				Player p = GM.players[i];
+				string name = p.getName ();
+				GM.networkView.RPC ("setPlayerColorsNet", RPCMode.AllBuffered, name, i+1);
+			}
+			GM.networkView.RPC ("overWritePlayerList", RPCMode.AllBuffered);
+
 			if(!isALoadGame)
 			{
 				Graph finalMap = GM.mapGen.getMap (GM.finalMapChoice);
@@ -576,19 +585,16 @@ public class mainMenu : MonoBehaviour {
 			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
 			networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
 
-			//setting up the colors properly
-			for(int i=0; i<GM.players.Count; i++)
-			{
-				Player p = GM.players[i];
-				p.networkView.RPC ("ColorPlayer", RPCMode.AllBuffered, p.gameObject.networkView.viewID, i+1);
-			}
 		}
 
-		List<Player> players = GM.getPlayers();
 		GM.createNewGame();
 		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.
-		for (int i = 0; i < Network.connections.Length; i++) {
-			GM.gameObject.networkView.RPC ("setLocalTurnAndPlayer",Network.connections[i],i);
+		GM.setLocalTurnAndPlayer (0);
+		for (int i = 0; i < Network.connections.Length; i++) 
+		{
+			Debug.LogError("START SET LOCAL TURN AND PLAYER RPC LOOP");
+			GM.gameObject.networkView.RPC("setLocalTurnAndPlayerNet",Network.connections[i],i+1);
+			Debug.LogError("END SET LOCAL TURN AND PLAYER RPC LOOP");
 		}
 		this.networkView.RPC("startLevel", RPCMode.AllBuffered);
 	}
@@ -646,14 +652,8 @@ public class mainMenu : MonoBehaviour {
 				// only counting the joining players.
 				for (int i = 0; i<Network.connections.Length; i++) 
 				{
-					
-					print ("-----joining players ip-----");
-					Debug.Log (Network.connections[i].ipAddress);
-					//get the player with the same ipAddress
-					Debug.Log (GM.players.Count);
 					for(int j = 0; j<GM.players.Count; j++)
 					{
-						print ("what is j:"+j);
 						Player playa = GM.players[j];
 						if( playa.ipAddress == Network.connections[i].ipAddress )
 						{
@@ -675,7 +675,7 @@ public class mainMenu : MonoBehaviour {
 						for(int j =0; j<connectedPlayerText.Count; j++)
 						{
 							if(GM.players[i].getName () == connectedPlayerText[j].text)
-							{
+							{ //TODO figure out why this errors
 								this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, j, "Map " + mapChoice.ToString());
 								break;
 							}
@@ -688,13 +688,13 @@ public class mainMenu : MonoBehaviour {
 	}
 
 	[RPC]
-	public void changePlayerTextNet(int i, string s)
+	void changePlayerTextNet(int i, string s)
 	{
 		this.connectedPlayerText [i].text = s;
 	}
 
 	[RPC]
-	public void changePlayerMapTextNet(int i, string s)
+	void changePlayerMapTextNet(int i, string s)
 	{
 		this.connectedPlayerMapText [i].text = s;
 	}

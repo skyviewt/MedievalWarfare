@@ -63,6 +63,10 @@ public class InGameGUI : MonoBehaviour {
 		ErrorCanvas.enabled = false;
 		disableAllCanvases ();
 		myTurn = gameManager.getLocalTurn ();
+		if (myTurn == 0) 
+		{
+			gameObject.networkView.RPC ("updateEndTurnButtonsNet",RPCMode.AllBuffered);
+		}
 	}
 	
 	//PLEASE READ TO UNDERSTAND HOW ENDING A TURN WORKS:
@@ -77,8 +81,10 @@ public class InGameGUI : MonoBehaviour {
 		Debug.Log ("End Turn Pressed");
 		gameObject.networkView.RPC ("disableInteractionsNet", RPCMode.AllBuffered);
 		int nextPlayer = gameManager.findNextPlayer ();
+		Debug.Log ("nextplayer number: "+ nextPlayer);
 		gameManager.setNextPlayer(nextPlayer);
 		gameManager.initializeNextPlayersVillages();
+		gameManager.updateTurnsPlayed();
 		this.networkView.RPC ("updateEndTurnButtonsNet", RPCMode.AllBuffered);
 		gameObject.networkView.RPC ("enableInteractionsNet", RPCMode.AllBuffered);
 	}
@@ -98,18 +104,18 @@ public class InGameGUI : MonoBehaviour {
 
 	}
 	[RPC]
-	public void disableInteractionsNet()
+	void disableInteractionsNet()
 	{
 		currentlyUpdatingGame = true;
 	}
 	[RPC]
-	public void enableInteractionsNet()
+	void enableInteractionsNet()
 	{
 		currentlyUpdatingGame = false;
 	}
 
 	[RPC]
-	public void updateEndTurnButtonsNet()
+	void updateEndTurnButtonsNet()
 	{
 		disableAllCanvases ();
 		turnOrder = gameManager.game.getCurrentTurn ();
@@ -203,12 +209,24 @@ public class InGameGUI : MonoBehaviour {
 		menuUp = false;
 	}
 
+	public void buildCannonPressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.hireCannon (v,cannonPrefab);
+		int redrawUnits = v.getUnitSize ();
+		int redrawGold = v.getGold();
+		_UnitsText.text = redrawUnits.ToString();
+		_GoldText.text = redrawGold.ToString();
+		VillageCanvas.enabled = false;
+		menuUp = false;
+	}
+
 
 	public void villageUpgradePressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
-		//villageManager.upgradeVillage (v);
-		villageManager.gameObject.networkView.RPC ("upgradeVillageNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID);
+		//villageManager.gameObject.networkView.RPC ("upgradeVillageNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID);
+		villageManager.upgradeVillage (v);
 		int redrawWood = v.getWood();
 		_WoodText.text = redrawWood.ToString();
 		VillageCanvas.enabled = false;
@@ -234,7 +252,7 @@ public class InGameGUI : MonoBehaviour {
 			}
 			else if(landType == LandType.Grass)
 			{
-				unitManager.gameObject.networkView.RPC("cultivateMeadowNet",RPCMode.AllBuffered,u.gameObject.networkView.viewID);
+				unitManager.cultivateMeadow (u);
 			}
 			else if (landType == LandType.Meadow)
 			{
@@ -348,7 +366,6 @@ public class InGameGUI : MonoBehaviour {
 					//print ("doing the move now");
 
 					unitManager.moveUnit (u, _move);
-					//gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
 					
 					if (selection.getVillage () == null) {
 							v.addTile (selection);
@@ -389,6 +406,7 @@ public class InGameGUI : MonoBehaviour {
 		_move = null;
 		_Tile = null;
 		_isAUnitSelected = false;
+		_isACannonSelected = false;
 		_Village = null;
 		_isVillageSelected = false;
 	}
@@ -413,7 +431,7 @@ public class InGameGUI : MonoBehaviour {
 						VillageActionType action = v.getAction ();
 						Player owningPlayer = v.getPlayer ();
 						Player localPlayer = gameManager.getLocalPlayer ();
-						Debug.Log ("Village Owner: "+owningPlayer);
+						Debug.Log ("Village Owner: "+owningPlayer.getName ());
 						Debug.Log ("trying to access: " +localPlayer);
 						int redrawWood = v.getWood();
 						int redrawGold = v.getGold();
@@ -424,7 +442,7 @@ public class InGameGUI : MonoBehaviour {
 						_RegionText.text = redrawRegion.ToString();
 						_UnitsText.text = redrawUnits.ToString();
 						
-						if(myTurn == turnOrder) //&& owningPlayer == localPlayer)
+						if(myTurn == turnOrder && owningPlayer == localPlayer)
 						{
 							if(action == VillageActionType.ReadyForOrders)
 							{
@@ -457,7 +475,7 @@ public class InGameGUI : MonoBehaviour {
 						_RegionText.text = redrawRegion.ToString();
 						_UnitsText.text = redrawUnits.ToString();
 						
-						if(myTurn == turnOrder) //&& owningPlayer == localPlayer)
+						if(myTurn == turnOrder && owningPlayer == localPlayer)
 						{
 							if(action == UnitActionType.ReadyForOrders || action == UnitActionType.Moved)
 							{
@@ -476,7 +494,7 @@ public class InGameGUI : MonoBehaviour {
 						if (_isAUnitSelected == true){
 							ErrorCanvas.enabled = true;
 							validateMove(hit);
-						} else if (_isAUnitSelected == true){
+						} else if (_isACannonSelected == true){
 							ErrorCanvas.enabled = true;
 							validateAttack(hit);
 						} else if (_isVillageSelected==true){
@@ -575,13 +593,14 @@ public class InGameGUI : MonoBehaviour {
 			Tile selection = _Tile.GetComponent<Tile> ();
 			if (!v.getControlledRegion().Contains (selection)){
 				this.displayError ("You must build inside your controlled region");
-			} else if (selection.getStructure ()!=null){
+			} else if (selection.checkTower ()!=false){
 				this.displayError ("There is already a tower there");
 			} else if (selection.getOccupyingUnit()!=null){
 				this.displayError ("We arent building homes! A unit is standing there");
 			} else if (selection == v.getLocatedAt()){
 				this.displayError ("Towers go AROUND your village");
 			} else {
+				villageManager.buildTower(v,selection);
 				//villageManager.networkView.RPC ("buildTowerNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID, _Tile.gameObject.networkView.viewID);
 				//villageManager.buildTower(v, selection);
 			}
@@ -600,8 +619,7 @@ public class InGameGUI : MonoBehaviour {
 		} else if (t.hasRoad) {
 			this.displayError ("This tile already has a road");
 		} else {
-			//t.buildRoad ();
-			u.setAction(UnitActionType.BuildingRoad);
+			unitManager.buildRoad (u);
 		}
 
 		UnitCanvas.enabled = false;
@@ -615,18 +633,6 @@ public class InGameGUI : MonoBehaviour {
 		villageManager.buildCastle (v);
 		int redrawWood = v.getWood();
 		_WoodText.text = redrawWood.ToString();
-		VillageCanvas.enabled = false;
-		menuUp = false;
-	}
-
-	public void buildCannonPressed()
-	{
-		Village v = _Village.GetComponent<Village> ();
-		villageManager.buildCannon (v,cannonPrefab);
-		int redrawUnits = v.getUnitSize ();
-		int redrawGold = v.getGold();
-		_UnitsText.text = redrawUnits.ToString();
-		_GoldText.text = redrawGold.ToString();
 		VillageCanvas.enabled = false;
 		menuUp = false;
 	}

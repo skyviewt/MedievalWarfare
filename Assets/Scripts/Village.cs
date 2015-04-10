@@ -25,6 +25,7 @@ public class Village : MonoBehaviour {
 
 	public List<Tile> controlledRegion;
 	public Player controlledBy;
+	public string playerName;
 	private Tile locatedAt;
 	private List<Unit> supportedUnits;
 	private VillageType myType;
@@ -45,6 +46,7 @@ public class Village : MonoBehaviour {
 		//Debug.Log (vm);
 		wage = 0;
 		health = 1;
+		playerName = this.controlledBy.getName ();
 	}
 	
 	// Update is called once per frame
@@ -118,7 +120,12 @@ public class Village : MonoBehaviour {
 		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
 		controlledRegion.Add (t);
 	}
-
+	[RPC]
+	void removeTileNet(NetworkViewID tileID)
+	{
+		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
+		controlledRegion.Remove (t);
+	}
 	[RPC]
 	//set the location of the village by getting the Tile component of the GrassTile Prefab with that tileID 
 	void setLocatedAtNet(NetworkViewID tileID){
@@ -159,11 +166,7 @@ public class Village : MonoBehaviour {
 	{
 		myType = (VillageType) type;
 	}
-	[RPC]
-	void setVillageActionNet(int action)
-	{
-		myAction = (VillageActionType) action;
-	}
+
 	[RPC]
 	void setHealthNet(int health)
 	{
@@ -174,6 +177,11 @@ public class Village : MonoBehaviour {
 	void setWageNet(int wage)
 	{
 		this.wage = wage;
+	}
+	[RPC]
+	void transformVillageNet()
+	{
+		this.gameObject.transform.Translate (0, 1, 0);
 	}
 	//setters and getters
 	public void setGold(int goldValue)
@@ -234,7 +242,11 @@ public class Village : MonoBehaviour {
 	{
 		return this.getControlledUnits().Count;
 	}
-
+	[RPC]
+	void setLocationNet(NetworkViewID tileID)
+	{
+		this.locatedAt = NetworkView.Find (tileID).gameObject.GetComponent<Tile> ();
+	}
 	public void setLocation(Tile t)
 	{
 		locatedAt = t;
@@ -243,6 +255,11 @@ public class Village : MonoBehaviour {
 	public Tile getLocatedAt()
 	{
 		return locatedAt;
+	}
+	[RPC]
+	void setVillageActionNet(int action)
+	{
+		this.myAction = (VillageActionType)action;
 	}
 
 	public void setAction(VillageActionType action)
@@ -295,18 +312,29 @@ public class Village : MonoBehaviour {
 	{	
 		//doing exactly what the gameManager.addregion(List<Tile>, Village village) is doing
 		foreach (Tile t in regions) {
-			t.setVillage(this);
-			controlledRegion.Add(t);
+			//t.setVillage(this);
+			t.gameObject.networkView.RPC ("setVillageNet",RPCMode.AllBuffered,gameObject.networkView.viewID);
+			//controlledRegion.Add(t);
+			this.gameObject.networkView.RPC("addTileNet",RPCMode.AllBuffered,t.gameObject.networkView.viewID);
 
 			//if there is a unit on the tile
 			Unit u = t.getOccupyingUnit();
 			if(u != null && u.getVillage()!=this){
-				u.setVillage(this);
-				supportedUnits.Add(u);
+//				u.setVillage(this);
+				u.gameObject.networkView.RPC ("setVillageNet",RPCMode.AllBuffered,gameObject.networkView.viewID);
+				//supportedUnits.Add(u);
+				gameObject.networkView.RPC ("addUnitNet",RPCMode.AllBuffered,u.gameObject.networkView.viewID);
 			}
 		}
 	}
-
+	public int getHealth()
+	{
+		return this.health;
+	}
+	public int getWage()
+	{
+		return this.wage;
+	}
 	public int getTotalWages()
 	{
 		int totalWage = 0;
@@ -348,10 +376,10 @@ public class Village : MonoBehaviour {
 		wood = 0;
 		return previousWoodValue;
 	}
-
+	/*
 	public void setControlledBy(Player p){
 		controlledBy = p;
-	}
+	}*/
 	
 	[RPC]
 	void removeUnitNet(NetworkViewID unitID)
@@ -368,9 +396,9 @@ public class Village : MonoBehaviour {
 	}
 
 	[RPC] // i think this is where the bug was.
-	void setControlledByNet(NetworkViewID gm, int playerIndex){
-		GameManager gameM = NetworkView.Find(gm).gameObject.GetComponent<GameManager>();
-		controlledBy = gameM.players[playerIndex];
+	void setControlledByNet(int playerIndex){
+		GameManager GM = GameObject.Find ("preserveGM").GetComponent<GameManager> ();
+		this.controlledBy = GM.players[playerIndex];
 	}
 	[RPC]
 	void switchPrefabNet(int type)
@@ -405,22 +433,4 @@ public class Village : MonoBehaviour {
 			this.transform.FindChild("Castle").gameObject.SetActive (true);
 		}
 	}
-
-	public void takeDamage(){
-		--health;
-		if (health <= 0) {
-			gold = 0;
-			wood = 0;
-			this.transform.FindChild("Hovel").gameObject.SetActive (true);
-			this.transform.FindChild("Town").gameObject.SetActive (false);
-			this.transform.FindChild("Fort").gameObject.SetActive (false);
-			this.transform.FindChild("Castle").gameObject.SetActive (false);
-
-			Tile respawnLocation = vm.getTileForRespawn(controlledRegion);
-			respawnLocation.replace (null);
-			this.transform.position = new Vector3(respawnLocation.point.x, 0.1f, respawnLocation.point.y);
-			locatedAt = respawnLocation;
-		}
-	}
-	
 }

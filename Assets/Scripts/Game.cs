@@ -20,7 +20,18 @@ public class Game : MonoBehaviour
 	private int currentTurn;
 	private int turnsPlayed;
 	private GameManager GM;
-	
+	public bool printList;
+
+
+	void Update(){
+		if (printList) {
+			foreach (Player p in players){
+				print (p.getName ());
+			}
+			printList = false;
+		}
+	}
+
 	//constructor
 //	public static Game CreateComponent ( List<Player> participants, Graph map,  GameObject g) 
 //	{
@@ -42,19 +53,19 @@ public class Game : MonoBehaviour
 	}
 
 	[RPC]
-	public void setMap()
+	void setMap()
 	{
 		this.gameMap = GM.getMap();
 	}
 
 	[RPC]
-	public void setPlayers()
+	void setPlayers()
 	{
 		this.players = GM.getPlayers();
 	}
 
 	[RPC]
-	public void initializeStatuses()
+	void initializeStatuses()
 	{
 		for(int i = 0; i < players.Count; i++) 
 		{
@@ -63,18 +74,23 @@ public class Game : MonoBehaviour
 	}	
 
 	[RPC]
-	public void setStartingPlayer(int playerTurn)
+	void setStartingPlayer(int playerTurn)
 	{
 		this.currentTurn = playerTurn;
 	}
 	[RPC]
-	public void setTurnsPlayed(int turnsPlayed)
+	void setTurnsPlayed(int turnsPlayed)
 	{
 		this.turnsPlayed = turnsPlayed;
 	}
+	[RPC]
+	void incrementTurnsPlayedInGameNet()
+	{
+		this.turnsPlayed++;
+	}
 
 	[RPC]
-	public void setNextPlayerNet(int nextPlayer)
+	void setNextPlayerNet(int nextPlayer)
 	{
 		this.currentTurn = nextPlayer;
 	}
