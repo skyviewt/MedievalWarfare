@@ -25,7 +25,7 @@ public class Village : MonoBehaviour {
 
 	public List<Tile> controlledRegion;
 	public Player controlledBy;
-	public string playerName;
+//	public string playerName;
 	private Tile locatedAt;
 	private List<Unit> supportedUnits;
 	private VillageType myType;
@@ -46,7 +46,7 @@ public class Village : MonoBehaviour {
 		//Debug.Log (vm);
 		wage = 0;
 		health = 1;
-		playerName = this.controlledBy.getName ();
+//		playerName = this.controlledBy.getName ();
 	}
 	
 	// Update is called once per frame
