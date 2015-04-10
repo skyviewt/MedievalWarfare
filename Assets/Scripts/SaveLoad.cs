@@ -28,7 +28,10 @@ public class SaveLoad : MonoBehaviour {
 		villageList = new List<Village>();
 		playerList = new List<Player>();
 	}
-	
+
+	void Awake() {
+		Network.minimumAllocatableViewIDs = 1000;
+	}
 	// Update is called once per frame
 	void Update () {
 		if (saveGame) {
