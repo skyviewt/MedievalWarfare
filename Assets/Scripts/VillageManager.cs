@@ -155,11 +155,12 @@ public class VillageManager : MonoBehaviour {
 	public void takeoverTile(Village invader, Tile dest)
 	{
 		Village invadedVillage = dest.getVillage ();
-//		dest.setVillage (invader);
-		dest.gameObject.networkView.RPC ("setVillageNet", RPCMode.AllBuffered, invader.gameObject.networkView.viewID);
-//		invader.addTile(dest);
-		invader.gameObject.networkView.RPC ("addTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
-//		invadedVillage.removeTile(dest);
+
+		invader.gameObject.networkView.RPC ("addTileNet",RPCMode.AllBuffered,dest.gameObject.networkView.viewID);
+		dest.gameObject.networkView.RPC ("setVillageNet",RPCMode.AllBuffered,invader.gameObject.networkView.viewID);
+		int color = invader.getPlayer().getColor();
+		dest.gameObject.networkView.RPC ("setAndColor",RPCMode.AllBuffered,color);
+
 		invadedVillage.gameObject.networkView.RPC ("removeTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
 		splitRegion(dest, invadedVillage);
 	}

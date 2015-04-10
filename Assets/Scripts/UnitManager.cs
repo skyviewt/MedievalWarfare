@@ -105,7 +105,7 @@ public class UnitManager : MonoBehaviour {
 						//dest.setStructure(null);
 						dest.gameObject.networkView.RPC ("setStructureNet",RPCMode.AllBuffered,false);
 						//dest.replace (null);
-						dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+						//dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 					}
 					
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
