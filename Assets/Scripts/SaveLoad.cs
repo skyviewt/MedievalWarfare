@@ -8,8 +8,11 @@ public class SaveLoad : MonoBehaviour {
 	public bool saveGame = false;
 	public bool loadGame = false;
 	public bool firstName = false;
-	public int numberOfSaves=0;
+	public string saveIndexStr = "1";
+	public string saveName;
 	public int saveGameID = 1;
+	public bool clear1 = false;
+	public bool clear2 = false;
 	
 	//Prefabs:
 	public GameObject GrassPrefab;
@@ -22,7 +25,7 @@ public class SaveLoad : MonoBehaviour {
 	
 	//names of the saved files:
 
-	public string saveName;
+
 	public int saveID = 1;
 	public string firstSavedGameName;
 
@@ -58,17 +61,32 @@ public class SaveLoad : MonoBehaviour {
 			saveGame = false;
 		}
 		if (loadGame) {
-			loadThisGame(saveGameID);
+			//destroy stuff:
+			GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>() ;
+			foreach(GameObject go in allObjects){
+				if (go.tag=="Grass"||go.tag=="Meadow"||go.tag=="Town"||go.tag=="Trees"){
+					Network.Destroy(go);
+				}
+			}
 
 			loadGame = false;
+			loadThisGame(saveIndexStr);
+
+
 		}
 		if (firstName) {
 //			string result = "Name of saved game: "+getSaveName(saveGameID);
 //			Debug.Log (result);
 //			firstName = false;
 
-			PlayerPrefs.SetString("TEST11", "Hello");
-			print ("MSG: "+  PlayerPrefs.GetString("TEST11"));
+//			PlayerPrefs.SetString("TEST11", "Hello");
+//			print ("MSG: "+  PlayerPrefs.GetString("TEST11"));
+			print(getSaveName(2));
+		}
+		if (clear1 == true && clear2 == true) {
+			clear1=false;
+			clear2=false;
+			PlayerPrefs.DeleteAll();
 		}
 	}
 
@@ -80,8 +98,8 @@ public class SaveLoad : MonoBehaviour {
 	//Get the name of the saved game with an integer
 	public string getSaveName(int saveID){
 //		print(PlayerPrefs.GetString ("NameByID"+saveID));
-//		return PlayerPrefs.GetString ("NameByID" + saveID);
-		return "Hiiiii";
+		return PlayerPrefs.GetString ("NameByID" + saveIndexStr);
+		//return "Hiiiii";
 	}
 
 	public void saveThisGame(string name){
@@ -96,20 +114,20 @@ public class SaveLoad : MonoBehaviour {
 		int saveID = numberOfSaves + 1;
 		PlayerPrefs.SetInt ("NumberOfSaves", saveID);
 		//set the name to ID
-		PlayerPrefs.SetString ("NameByID"+saveID, name);
+		PlayerPrefs.SetString ("NameByID"+saveIndexStr, name);
 
-		saveTiles(saveID.ToString());
-		savePlayerAndVillages (saveID.ToString());
+		saveTiles(saveIndexStr);
+		savePlayerAndVillages (saveIndexStr);
 	}
 	
-	public void loadThisGame(int gameID){
-		loadTiles(gameID.ToString());
-		loadPlayerAndVillages (gameID.ToString());
+	public void loadThisGame(string id){
+		loadTiles(id);
+		loadPlayerAndVillages (id);
 
-		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
-		foreach (GameObject o in allObjects) {
-			o.tag = "LoadedMap";
-		}
+//		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+//		foreach (GameObject o in allObjects) {
+//			o.tag = "LoadedMap";
+//		}
 
 		tileList = new List<Tile>();
 		villageList = new List<Village>();
@@ -119,7 +137,7 @@ public class SaveLoad : MonoBehaviour {
 	
 	public void saveTiles(string gameID){
 		//BE CAREFUL!!!!!! DELETES EVERYTHING
-		PlayerPrefs.DeleteAll();
+		//PlayerPrefs.DeleteAll();
 		
 		Debug.Log ("Saving Tiles!!");
 		GameObject[] tileGO = GameObject.FindGameObjectsWithTag("Grass");
