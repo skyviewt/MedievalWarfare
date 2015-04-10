@@ -60,6 +60,7 @@ public class InGameGUI : MonoBehaviour {
 		gameManager = GameObject.Find("preserveGM").GetComponent<GameManager> ();
 		gameManager.isInGame = true;
 		HUDCanvas.enabled = true;
+		ErrorCanvas.enabled = false;
 		disableAllCanvases ();
 		myTurn = gameManager.getLocalTurn ();
 	}
@@ -267,6 +268,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		UnitCanvas.enabled = false;
 		_isAUnitSelected = true;
+		ErrorCanvas.enabled = true;
 		this.displayError("Please select a friendly or neutral tile 1 distance away to move to. (*￣ー￣*)");
 		menuUp = false;
 
@@ -345,8 +347,8 @@ public class InGameGUI : MonoBehaviour {
 		
 					//print ("doing the move now");
 
-					//unitManager.moveUnit (u, _move);
-					gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
+					unitManager.moveUnit (u, _move);
+					//gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
 					
 					if (selection.getVillage () == null) {
 							v.addTile (selection);
@@ -363,6 +365,7 @@ public class InGameGUI : MonoBehaviour {
 
 					int redrawWood = v.getWood ();
 					_WoodText.text = redrawWood.ToString ();
+					ErrorCanvas.enabled = false;
 					ClearSelections ();
 			}
 			else
@@ -529,6 +532,10 @@ public class InGameGUI : MonoBehaviour {
 				YourTurnCanvas.enabled = false;
 				menuUp = false;
 			}
+			else if(ErrorCanvas.enabled == true)
+			{
+				ErrorCanvas.enabled = false;
+			}
 			else if (EscapeMenu.enabled == true && menuUp == true)
 			{
 				EscapeMenu.enabled = false;
@@ -538,10 +545,6 @@ public class InGameGUI : MonoBehaviour {
 			{
 				EscapeMenu.enabled = true;
 				menuUp = true;
-			}
-			else if(ErrorCanvas.enabled == true)
-			{
-				ErrorCanvas.enabled = false;
 			}
 		}
 

@@ -570,6 +570,7 @@ public class mainMenu : MonoBehaviour {
 				p.networkView.RPC ("ColorPlayer", RPCMode.AllBuffered, p.gameObject.networkView.viewID, i+1);
 			}
 		}
+
 		List<Player> players = GM.getPlayers();
 		GM.createNewGame();
 		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.
@@ -578,7 +579,6 @@ public class mainMenu : MonoBehaviour {
 		}
 		this.networkView.RPC("startLevel", RPCMode.AllBuffered);
 	}
-	
 
 //	void OnPlayerConnected()
 //	{

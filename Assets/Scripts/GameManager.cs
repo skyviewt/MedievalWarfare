@@ -123,6 +123,7 @@ public class GameManager : MonoBehaviour {
 	
 	public void createNewGame ()
 	{
+
 		game.gameObject.networkView.RPC ("setMap",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("setPlayers",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("initializeStatuses",RPCMode.AllBuffered);
@@ -210,12 +211,14 @@ public class GameManager : MonoBehaviour {
 	{
 		bool isExist = (this.players.Where(player => ((player.getName() == name) && (player.getPassword() == pass) )).Count() > 0);
 		Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
-
 		if (!isExist && !players.Contains( p )) 
 		{
 			p.ipAddress = ip;
-			
 			this.players.Add (p);	
+		}
+		for(int i = 0; i < players.Count; i++)
+		{
+			Debug.Log (p.getName ());
 		}
 	}
 	

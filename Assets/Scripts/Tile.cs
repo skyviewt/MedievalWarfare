@@ -43,6 +43,10 @@ public class Tile : MonoBehaviour
 		return myTile;
 	}
 
+	void Awake() {
+		Network.minimumAllocatableViewIDs = 10000;
+	}
+
 	//newly created constructor. This will be called whenever a gameobject containing Tile.cs gets instantiated
 	public Tile (){
 		visited = false;
@@ -228,9 +232,14 @@ public class Tile : MonoBehaviour
 		this.myType = (LandType)type;
 	}
 
+	[RPC]
+	void destroyTile(NetworkViewID tileid){
+		Destroy (NetworkView.Find (tileid).gameObject);
+	}
+
 //	[RPC]
-//	void destroyTile(NetworkViewID tileid){
-//		Destroy (NetworkView.Find (tileid).gameObject);
+//	void DontDestroyTile(NetworkViewID tileID){
+//		DontDestroyOnLoad(NetworkView.Find (tileID).gameObject);
 //	}
 
 	[RPC]
@@ -239,16 +248,10 @@ public class Tile : MonoBehaviour
 	}
 
 	[RPC]
-	void destroyPrefab (NetworkViewID tileID )
+	void destroyPrefab ()
 	{
-		Tile t = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
-		Destroy (t.prefab);
-		t.prefab = null;
-	}
-
-	[RPC]
-	void DontDestroyTile(NetworkViewID tileID){
-		DontDestroyOnLoad(NetworkView.Find (tileID).gameObject);
+		Destroy (prefab);
+		prefab = null;
 	}
 
 	[RPC]

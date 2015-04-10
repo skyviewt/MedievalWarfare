@@ -233,12 +233,11 @@ public class MapGenerator : MonoBehaviour {
 
 	public void initializeColorAndVillagesOnMap(List<Player> players, int i, Graph map)
 	{
-	
+		GameObject gm = GameObject.Find ("preserveGM");
+
 		foreach ( Tile t in map.getVertices() )
 		{
-			print ("player count in GM: "+ players.Count);
 			int color = rand.Next(0,players.Count+1);
-			print ("rand color: "+color);
 			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
 		}
 
@@ -257,7 +256,7 @@ public class MapGenerator : MonoBehaviour {
 				if( TilesToReturn.Count >= 3 )
 				{
 					Player p = players[color-1];
-			
+					Debug.Log (p.getName());
 					Tile location = TilesToReturn[0];
 					//location.setLandType (LandType.Grass);
 					location.networkView.RPC("setLandTypeNet", RPCMode.AllBuffered, (int) LandType.Grass);
@@ -285,13 +284,14 @@ public class MapGenerator : MonoBehaviour {
 					hovel.networkView.RPC ("updateControlledRegionNet", RPCMode.AllBuffered);
 
 					//set controlling player of the tile over the network
-					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gameObject.networkView.viewID, color);
+					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gm.networkView.viewID, color-1);
 
 					hovel.networkView.RPC("addGoldNet", RPCMode.AllBuffered, 200);
 
 					hovel.networkView.RPC("addWoodNet", RPCMode.AllBuffered, 200);
 
 					//add village to the player
+					Debug.Log (p);
 					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
 				}
 			}
@@ -360,7 +360,8 @@ public class MapGenerator : MonoBehaviour {
 			{
 				t.gameObject.networkView.RPC("destroyPrefab", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 			}
-			t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			tileManager.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			//t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
 
 		unwantedMap = null;
@@ -372,13 +373,14 @@ public class MapGenerator : MonoBehaviour {
 
 				t.gameObject.networkView.RPC("DontDestroyPrefab", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 			}
-			t.gameObject.networkView.RPC("DontDestroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			tileManager.gameObject.networkView.RPC("DontDestroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			//t.gameObject.networkView.RPC("DontDestroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
-		gameObject.networkView.RPC("DontDestroyManagers", RPCMode.AllBuffered, gameObject.networkView.viewID);
+		gameObject.networkView.RPC("DontDestroyPreserveGM", RPCMode.AllBuffered, gameObject.networkView.viewID);
 	}
 
 	[RPC]
-	void DontDestroyManagers(NetworkViewID mID){
+	void DontDestroyPreserveGM(NetworkViewID mID){
 		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
 	}
 

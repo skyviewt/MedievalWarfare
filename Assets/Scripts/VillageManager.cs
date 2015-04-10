@@ -53,12 +53,6 @@ public class VillageManager : MonoBehaviour {
 		} 
 	}	
 
-	[RPC]
-	void upgradeVillageNet(NetworkViewID villageID){
-		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
-		upgradeVillage (v);
-	}
-	
 	public void MergeAlliedRegions(Tile newTile)
 	{
 		Village myVillage = newTile.getVillage ();
@@ -113,7 +107,11 @@ public class VillageManager : MonoBehaviour {
 			}
 		}
 	}
-
+	[RPC]
+	void DontDestroyVillageManager(NetworkViewID mID)
+	{
+		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
+	}
 	public void plunderVillage (Village pluderingVillage, Village plunderedVillage, Tile dest)
 	{
 		//determine amount to steal

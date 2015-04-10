@@ -68,21 +68,47 @@ public class Player : MonoBehaviour{
 	public void addWin()
 	{
 		this.wins++;
+		WWWForm form = new WWWForm();
+		form.AddField("user", username);
+		WWW w = new WWW("http://iconstanto.com/updateWinner.php", form);
+		StartCoroutine(addWinI(w));
+	}
+	
+	IEnumerator addWinI(WWW w)
+	{
+		yield return w;
+		if (w.error == null) 
+		{			
+			print ("Error encountered.");
+		} 
+		else 
+		{
+			print ("player wins added");
+		}
 	}
 	
 	public void addLoss()
 	{
 		this.losses++;
+		WWWForm form = new WWWForm();
+		form.AddField("user", username);
+		WWW w = new WWW("http://iconstanto.com/updateLoser.php", form);
+		StartCoroutine(addLossI(w));
 	}
 	
-	public int getWins()
+	IEnumerator addLossI(WWW w)
 	{
-		return wins;
+		yield return w;
+		if (w.error == null) 
+		{			
+			print ("Error encountered.");
+		} 
+		else 
+		{
+			print ("player losses added");
+		}
 	}
-	public int getLosses()
-	{
-		return losses;
-	}
+	
 	public void setGame(Game pGame)
 	{
 		this.aGame = pGame;

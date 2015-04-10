@@ -40,7 +40,7 @@ public class UnitManager : MonoBehaviour {
 		UnitType srcUnitType = unit.getUnitType();
 		
 		bool unitPermitted = canUnitMove (unit, dest);
-		
+
 		//if the move is allowed to move onto the tile
 		if (unitPermitted == true) 	
 		{
@@ -49,18 +49,19 @@ public class UnitManager : MonoBehaviour {
 			if (srcVillage == destVillage)
 			{
 				performMove(unit,dest);
-				originalLocation.setOccupyingUnit(null);
+				originalLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
 			}
 			else if (srcVillage != destVillage)
 			{
 				// taking over neutral tiles
 				if (destVillage == null)
 				{
-					srcVillage.addTile(dest);
+					//srcVillage.addTile(dest);
+					srcVillage.gameObject.networkView.RPC ("addTileNet",RPCMode.AllBuffered,dest.gameObject.networkView.viewID);
 					performMove(unit,dest);
 					villageManager.MergeAlliedRegions(dest);
-					unit.setAction(UnitActionType.CapturingNeutral);
-					originalLocation.setOccupyingUnit(null);
+					unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.CapturingNeutral);
+					originalLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
 				}
 				
 				// TODO taking over enemy tiles and networking it
@@ -86,6 +87,7 @@ public class UnitManager : MonoBehaviour {
 							// kill enemy unit, remove it from tile, remove it from village
 							//perform move gets called after.
 							destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
+							destVillage.gameObject.networkView.RPC ("removeUnitNet",RPCMode.AllBuffered,destUnit.gameObject.networkView.viewID);
 							dest.setOccupyingUnit(unit);
 							Destroy (destUnit.gameObject);
 							//adding an attack effect
@@ -118,9 +120,9 @@ public class UnitManager : MonoBehaviour {
 					villageManager.takeoverTile(srcVillage,dest); //also splits region
 					villageManager.MergeAlliedRegions(dest);
 					performMove(unit,dest);
-					unit.setAction(UnitActionType.CapturingEnemy);
-					originalLocation.setOccupyingUnit(null);
-					
+					unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.CapturingEnemy);
+					originalLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
+
 				} 
 			}
 		}
@@ -133,32 +135,49 @@ public class UnitManager : MonoBehaviour {
 		UnitType srcUnitType = unit.getUnitType();
 		LandType destLandType = dest.getLandType ();
 
-		if (destLandType == LandType.Meadow) {
-			if (srcUnitType==UnitType.CANNON||srcUnitType==UnitType.SOLDIER||srcUnitType==UnitType.KNIGHT){
-				if (dest.hasRoad){
-					unit.setAction (UnitActionType.Moved);
-				} else {
+		if (destLandType == LandType.Meadow) 
+		{
+			if (srcUnitType==UnitType.CANNON||srcUnitType==UnitType.SOLDIER||srcUnitType==UnitType.KNIGHT)
+			{
+				if (dest.hasRoad)
+				{
+					unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.Moved);
+				} 
+				else 
+				{
 					gameGUI.displayError (@"You have trampled the crops!");
-					dest.setLandType (LandType.Grass);
-					Destroy (dest.prefab);
+					dest.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Grass);
+					dest.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Grass);
+					dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 				}
-				if (srcUnitType == UnitType.CANNON){
-					unit.setAction (UnitActionType.CannonMoved);
+				if (srcUnitType == UnitType.CANNON)
+				{
+					unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.CannonMoved);
+
 				}
 			}
-		} else if (destLandType == LandType.Trees) {
-			unit.setAction(UnitActionType.ChoppingTree);
-			dest.replace (null);
-			srcVillage.addWood(1);
-			dest.setLandType(LandType.Grass);
-		} else if (destLandType == LandType.Tombstone) {
-			unit.setAction(UnitActionType.ClearingTombstone);
-			dest.replace (null);
-			dest.setLandType(LandType.Grass);
+		} 
+		else if (destLandType == LandType.Trees) 
+		{
+			dest.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Grass);
+			unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ChoppingTree);
+			srcVillage.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,1);
+			dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+		} 
+		else if (destLandType == LandType.Tombstone) 
+		{
+			dest.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Grass);
+			unit.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ClearingTombstone);
+			dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 		}
 		movePrefab (unit,new Vector3 (dest.point.x, 0.15f,dest.point.y));
 	}
-	
+
+	[RPC]
+	void movePrefabNet(NetworkViewID unitID, Vector3 vector)
+	{
+	}
+
 	private void movePrefab(Unit u, Vector3 vector)
 	{
 		u.transform.localPosition = vector;
@@ -171,8 +190,8 @@ public class UnitManager : MonoBehaviour {
 			try{
 				Village v = n.getVillage ();
 				VillageType vt = v.getMyType();
-				Player them = v.controlledBy;
-				Player you = u.getVillage().controlledBy;
+				Player them = v.getPlayer ();
+				Player you = u.getVillage().getPlayer ();
 				if (them!=you && vt==VillageType.Castle){
 					gameGUI.displayError (@"I cant even get near to their castle!");
 					return false;
@@ -273,6 +292,7 @@ public class UnitManager : MonoBehaviour {
 	public void cultivateMeadow(Unit u)
 	{
 		u.setAction (UnitActionType.StartedCultivating);
+				u.gameObject.networkView.RPC ("setActionNet", RPCMode.AllBuffered, (int)UnitActionType.StartedCultivating);
 	}
 
 	public void fireCannon(Unit cannon, Tile t){
