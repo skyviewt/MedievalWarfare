@@ -585,16 +585,9 @@ public class mainMenu : MonoBehaviour {
 
 			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
 			networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
-			/*
-			//setting up the colors properly
-			for(int i=0; i<GM.players.Count; i++)
-			{
-				Player p = GM.players[i];
-				p.networkView.RPC ("ColorPlayer", RPCMode.AllBuffered, p.gameObject.networkView.viewID, i+1);
-			}*/
+
 		}
 
-		//List<Player> players = GM.getPlayers();
 		GM.createNewGame();
 		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.
 		for (int i = 0; i < Network.connections.Length; i++) {
@@ -685,7 +678,7 @@ public class mainMenu : MonoBehaviour {
 						for(int j =0; j<connectedPlayerText.Count; j++)
 						{
 							if(GM.players[i].getName () == connectedPlayerText[j].text)
-							{
+							{ //TODO figure out why this errors
 								this.networkView.RPC ("changePlayerMapTextNet",RPCMode.AllBuffered, j, "Map " + mapChoice.ToString());
 								break;
 							}

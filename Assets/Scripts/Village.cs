@@ -352,10 +352,10 @@ public class Village : MonoBehaviour {
 		wood = 0;
 		return previousWoodValue;
 	}
-
+	/*
 	public void setControlledBy(Player p){
 		controlledBy = p;
-	}
+	}*/
 	
 	[RPC]
 	void removeUnitNet(NetworkViewID unitID)

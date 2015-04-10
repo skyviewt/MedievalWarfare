@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour {
 	private int turnsSoFar;
 	public VillageManager villageManager;
 
+	public bool printList;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -230,6 +232,12 @@ public class GameManager : MonoBehaviour {
 			Debug.Log ("finding attaching GUI");
 			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 			Debug.Log (gameGUI);
+		}
+		if (printList) {
+			foreach (Player p in players){
+				print (p.getName ());
+			}
+			printList = false;
 		}
 	}
 
