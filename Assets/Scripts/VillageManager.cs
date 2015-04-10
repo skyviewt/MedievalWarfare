@@ -25,6 +25,12 @@ public class VillageManager : MonoBehaviour {
 	public GameObject tombPrefab;
 	public GameObject towerPrefab;
 
+	private UnitManager unitManager;
+
+	void Start()
+	{
+		unitManager = GameObject.Find ("UnitManager").GetComponent<UnitManager> ();
+	}
 	void Update () {
 		if( isInGame && gameGUI == null )
 		{
@@ -446,6 +452,7 @@ public class VillageManager : MonoBehaviour {
 	public void buildTower(Village v, Tile t)
 	{
 		GameObject tower = Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity) as GameObject;
+//		tower.gameObject.networkView.RPC ("setScaleAndAnglesNet", RPCMode.AllBuffered);
 		tower.transform.localScale = new Vector3 (0.03f,0.03f,0.03f);
 		tower.transform.eulerAngles = new Vector3(-90,0,0);
 
@@ -478,7 +485,7 @@ public class VillageManager : MonoBehaviour {
 			UnitActionType currentUnitAction = u.getAction();
 			if(currentUnitAction == UnitActionType.StartedCultivating)
 			{
-				u.setAction (UnitActionType.FinishedCultivating);
+				u.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.FinishedCultivating);
 			}
 			else if (currentUnitAction == UnitActionType.FinishedCultivating)
 			{
@@ -488,7 +495,7 @@ public class VillageManager : MonoBehaviour {
 				tile.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, meadow.networkView.viewID);
 				//tile.setLandType(LandType.Meadow);
 				//tile.prefab = Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation) as GameObject;
-				u.setAction (UnitActionType.ReadyForOrders);
+				u.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ReadyForOrders);
 			}
 			else if(currentUnitAction == UnitActionType.BuildingRoad)
 			{
@@ -496,15 +503,15 @@ public class VillageManager : MonoBehaviour {
 				tile.networkView.RPC ("setRoadNet", RPCMode.AllBuffered, true);
 				//tile.isRoad = true;
 				//tile.prefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
-				u.setAction (UnitActionType.ReadyForOrders);
+				u.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ReadyForOrders);
 			}
 			else if(currentUnitAction == UnitActionType.UpgradingCombining)
 			{
-				u.setAction(UnitActionType.ReadyForOrders);
+				u.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ReadyForOrders);
 			}
 			else
 			{
-				u.setAction(UnitActionType.ReadyForOrders);
+				u.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ReadyForOrders);
 			}
 
 		}

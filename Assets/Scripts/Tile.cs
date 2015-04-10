@@ -212,6 +212,11 @@ public class Tile : MonoBehaviour
 	{
 		return this.isRoad;
 	}*/
+	[RPC]
+	void removeOccupyingUnitNet()
+	{
+		this.occupyingUnit = null;
+	}
 
 	[RPC]
 	public void setLandTypeNet(int type)
@@ -219,14 +224,16 @@ public class Tile : MonoBehaviour
 		this.myType = (LandType)type;
 	}
 
-	[RPC]
-	void destroyTile(NetworkViewID tileid){
-		Destroy (NetworkView.Find (tileid).gameObject);
-	}
+//	[RPC]
+//	void destroyTile(NetworkViewID tileid){
+//		Destroy (NetworkView.Find (tileid).gameObject);
+//	}
+
 	[RPC]
 	void setPrefab (NetworkViewID prefID ){
 		prefab = NetworkView.Find (prefID).gameObject;
 	}
+
 	[RPC]
 	void setAndColor(int newColor){
 		color = newColor;

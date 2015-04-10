@@ -17,7 +17,12 @@ public class MapGenerator : MonoBehaviour {
 	public Dictionary<int, Graph> maps = new Dictionary<int, Graph>();
 	private List<Tile> unvisited_vertices;
 	private System.Random rand = new System.Random();
+	private TileManager tileManager;
 
+	void Start()
+	{
+		tileManager = GameObject.Find ("TileManager").GetComponent<TileManager> ();
+	}
 	public Graph getMap( int i )
 	{
 		Graph g = null;
@@ -191,7 +196,7 @@ public class MapGenerator : MonoBehaviour {
 			map.getVertices().Remove(curr);
 
 			//Destroy (curr.gameObject);
-			curr.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, curr.gameObject.networkView.viewID);
+			tileManager.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, curr.gameObject.networkView.viewID);
 			tileRemoved++;
 			
 			count++;
@@ -331,7 +336,7 @@ public class MapGenerator : MonoBehaviour {
 				//curr.addNeighbour(tmpTile);
 				curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmpTile.gameObject.networkView.viewID);
 				//Destroy(t.gameObject);
-				t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+				tileManager.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 
 			}
 		}
