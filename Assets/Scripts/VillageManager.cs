@@ -102,16 +102,17 @@ public class VillageManager : MonoBehaviour {
 				// remove prefab
 				Tile villageLocation = village.getLocatedAt();
 				//Destroy (villageLocation.prefab);
-				villageLocation.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+				//villageLocation.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 				//villageLocation.setLandType (LandType.Meadow);
+				myPlayer.gameObject.networkView.RPC("removeVillageNet",RPCMode.AllBuffered, village.gameObject.networkView.viewID, myPlayer.getColor ());
+
 				villageLocation.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
 				GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
 				villageLocation.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
 				//villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 				//myPlayer.myVillages.Remove (village);
-				myPlayer.gameObject.networkView.RPC("removeVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID,myPlayer.getColor ());
 				//Destroy (village.gameObject.networkView.viewID);
-				gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID);
+				//gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID);
 			}
 		}
 	}
