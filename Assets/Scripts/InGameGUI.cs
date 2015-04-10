@@ -639,6 +639,9 @@ public class InGameGUI : MonoBehaviour {
 
 	public void fireCannonPressed()
 	{
+		if (_Unit.GetComponent<Unit> ().getUnitType () != UnitType.CANNON) {
+			this.displayError("You are not a siege engine!");
+		}
 		UnitCanvas.enabled = false;
 		menuUp = false;
 		if (_Unit.GetComponent<Unit> ().getVillage ().getWood () < 1) {
