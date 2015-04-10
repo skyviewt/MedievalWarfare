@@ -232,7 +232,7 @@ public class Tile : MonoBehaviour
 	}
 
 	[RPC]
-	public void setLandTypeNet(int type)
+	 void setLandTypeNet(int type)
 	{
 		this.myType = (LandType)type;
 	}
@@ -306,7 +306,7 @@ public class Tile : MonoBehaviour
 	}
 	
 	[RPC]
-	public void addNeighbourN(NetworkViewID tileID)
+	void addNeighbourN(NetworkViewID tileID)
 	{
 		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
 		if(this.getNeighbours().Where(
@@ -318,7 +318,7 @@ public class Tile : MonoBehaviour
 
 	//replaces the prefab on this tile ie: replace tree with hovel
 	[RPC]
-	public void replaceTilePrefabNet(NetworkViewID prefID){
+	void replaceTilePrefabNet(NetworkViewID prefID){
 		Destroy (prefab);
 		prefab = NetworkView.Find (prefID).gameObject;
 	}

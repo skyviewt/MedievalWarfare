@@ -42,19 +42,19 @@ public class Game : MonoBehaviour
 	}
 
 	[RPC]
-	public void setMap()
+	void setMap()
 	{
 		this.gameMap = GM.getMap();
 	}
 
 	[RPC]
-	public void setPlayers()
+	void setPlayers()
 	{
 		this.players = GM.getPlayers();
 	}
 
 	[RPC]
-	public void initializeStatuses()
+	void initializeStatuses()
 	{
 		for(int i = 0; i < players.Count; i++) 
 		{
@@ -63,18 +63,18 @@ public class Game : MonoBehaviour
 	}	
 
 	[RPC]
-	public void setStartingPlayer(int playerTurn)
+	void setStartingPlayer(int playerTurn)
 	{
 		this.currentTurn = playerTurn;
 	}
 	[RPC]
-	public void setTurnsPlayed(int turnsPlayed)
+	void setTurnsPlayed(int turnsPlayed)
 	{
 		this.turnsPlayed = turnsPlayed;
 	}
 
 	[RPC]
-	public void setNextPlayerNet(int nextPlayer)
+	void setNextPlayerNet(int nextPlayer)
 	{
 		this.currentTurn = nextPlayer;
 	}

@@ -98,18 +98,18 @@ public class InGameGUI : MonoBehaviour {
 
 	}
 	[RPC]
-	public void disableInteractionsNet()
+	void disableInteractionsNet()
 	{
 		currentlyUpdatingGame = true;
 	}
 	[RPC]
-	public void enableInteractionsNet()
+	void enableInteractionsNet()
 	{
 		currentlyUpdatingGame = false;
 	}
 
 	[RPC]
-	public void updateEndTurnButtonsNet()
+	void updateEndTurnButtonsNet()
 	{
 		disableAllCanvases ();
 		turnOrder = gameManager.game.getCurrentTurn ();

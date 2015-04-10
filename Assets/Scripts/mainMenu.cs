@@ -486,7 +486,7 @@ public class mainMenu : MonoBehaviour {
 
 	}
 	[RPC]
-	public void increaseMapChoiceNet(int i)
+	void increaseMapChoiceNet(int i)
 	{
 		this.countMapChoices [i] += 1;
 	}
@@ -507,7 +507,7 @@ public class mainMenu : MonoBehaviour {
 	}
 
 	[RPC]
-	public void startLevel()
+	void startLevel()
 	{
 		Application.LoadLevel("scene1");
 	}

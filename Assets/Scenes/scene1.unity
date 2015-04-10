@@ -5944,6 +5944,7 @@ MonoBehaviour:
   offset: 3
   saveName: 
   saveID: 0
+  firstSavedGameName: 
   tileList: []
   villageList: []
   playerList: []

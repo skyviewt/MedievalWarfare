@@ -135,14 +135,14 @@ public class GameManager : MonoBehaviour {
 		gameObject.networkView.RPC ("setTurnsSoFar",RPCMode.AllBuffered,0);
 	}
 	[RPC]
-	public void setTurnsSoFar(int turnNumber)
+	void setTurnsSoFar(int turnNumber)
 	{
 		this.turnsSoFar = turnNumber;
 	}
 
 		                       
 	[RPC]
-	public void createSavedGame()
+	void createSavedGame()
 	{
 
 	}
@@ -201,7 +201,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	[RPC]
-	public void setLocalTurnAndPlayer(int turnNumber)
+	void setLocalTurnAndPlayer(int turnNumber)
 	{
 		this.localTurn = turnNumber;
 		//List<Player> temp = game.getPlayers ();
@@ -210,7 +210,7 @@ public class GameManager : MonoBehaviour {
 
 
 	[RPC]
-	public void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)
+	void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)
 	{
 		bool isExist = (this.players.Where(player => ((player.getName() == name) && (player.getPassword() == pass) )).Count() > 0);
 		Player p = Player.CreateComponent (name, pass, win, loss, color, gameObject);
@@ -247,14 +247,14 @@ public class GameManager : MonoBehaviour {
 	}
 
 	[RPC]
-	public void setPlayerColorsNet(string name, int color){
+	void setPlayerColorsNet(string name, int color){
 		Player p = players.Find(i => i.getName() == name); 
 		p.setColor (color);
 		tempList.Add (p);
 	}
 
 	[RPC]
-	public void overWritePlayerList(){
+	void overWritePlayerList(){
 		players = tempList;
 	}
 }
