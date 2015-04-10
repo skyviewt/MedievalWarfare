@@ -30,7 +30,7 @@ public class SaveLoad : MonoBehaviour {
 	}
 
 	void Awake() {
-		Network.minimumAllocatableViewIDs = 1000;
+		Network.minimumAllocatableViewIDs = 10000;
 	}
 	// Update is called once per frame
 	void Update () {

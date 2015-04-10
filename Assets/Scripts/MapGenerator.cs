@@ -236,9 +236,7 @@ public class MapGenerator : MonoBehaviour {
 	
 		foreach ( Tile t in map.getVertices() )
 		{
-			print ("player count in GM: "+ players.Count);
 			int color = rand.Next(0,players.Count+1);
-			print ("rand color: "+color);
 			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
 		}
 
@@ -257,7 +255,7 @@ public class MapGenerator : MonoBehaviour {
 				if( TilesToReturn.Count >= 3 )
 				{
 					Player p = players[color-1];
-			
+					Debug.Log (p);
 					Tile location = TilesToReturn[0];
 					//location.setLandType (LandType.Grass);
 					location.networkView.RPC("setLandTypeNet", RPCMode.AllBuffered, (int) LandType.Grass);
@@ -292,6 +290,7 @@ public class MapGenerator : MonoBehaviour {
 					hovel.networkView.RPC("addWoodNet", RPCMode.AllBuffered, 200);
 
 					//add village to the player
+					Debug.Log (p);
 					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
 				}
 			}

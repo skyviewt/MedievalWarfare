@@ -43,6 +43,10 @@ public class Tile : MonoBehaviour
 		return myTile;
 	}
 
+	void Awake() {
+		Network.minimumAllocatableViewIDs = 10000;
+	}
+
 	//newly created constructor. This will be called whenever a gameobject containing Tile.cs gets instantiated
 	public Tile (){
 		visited = false;
