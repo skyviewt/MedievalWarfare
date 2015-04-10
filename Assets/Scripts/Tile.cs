@@ -22,7 +22,7 @@ public class Tile : MonoBehaviour
 	private Unit occupyingUnit;
 	private Structure occupyingStructure = null;
 	private Village myVillage;
-	private int color;
+	public int color;
 	public Shader outline;
 	public System.Random rand = new System.Random();
 	public GameObject prefab;
