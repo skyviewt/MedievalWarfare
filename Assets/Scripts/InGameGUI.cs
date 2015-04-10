@@ -347,8 +347,8 @@ public class InGameGUI : MonoBehaviour {
 		
 					//print ("doing the move now");
 
-					//unitManager.moveUnit (u, _move);
-					gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
+					unitManager.moveUnit (u, _move);
+					//gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
 					
 					if (selection.getVillage () == null) {
 							v.addTile (selection);
@@ -365,6 +365,7 @@ public class InGameGUI : MonoBehaviour {
 
 					int redrawWood = v.getWood ();
 					_WoodText.text = redrawWood.ToString ();
+					ErrorCanvas.enabled = false;
 					ClearSelections ();
 			}
 			else

@@ -476,6 +476,7 @@ public class mainMenu : MonoBehaviour {
 			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
 			tileManager.gameObject.networkView.RPC("DontDestroyTileManager", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
 		}
+
 		List<Player> players = GM.getPlayers();
 		GM.createNewGame();
 		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.

@@ -123,6 +123,7 @@ public class GameManager : MonoBehaviour {
 	
 	public void createNewGame ()
 	{
+
 		game.gameObject.networkView.RPC ("setMap",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("setPlayers",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("initializeStatuses",RPCMode.AllBuffered);
