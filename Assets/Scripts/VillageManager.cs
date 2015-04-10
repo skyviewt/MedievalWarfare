@@ -303,7 +303,6 @@ public class VillageManager : MonoBehaviour {
 
 		}
 		Debug.Log ("villageToSplit: "+villageToSplit.getPlayer ().getName ());
-
 		p.networkView.RPC ("removeVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID, p.getColor ());
 		gameObject.networkView.RPC ("destroyVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID);
 	}
