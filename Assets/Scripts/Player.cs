@@ -65,10 +65,10 @@ public class Player : MonoBehaviour{
 		WWWForm form = new WWWForm();
 		form.AddField("user", username);
 		WWW w = new WWW("http://iconstanto.com/updateWinner.php", form);
-		StartCoroutine(addWin(w));
+		StartCoroutine(addWinI(w));
 	}
 	
-	IEnumerator addWin(WWW w)
+	IEnumerator addWinI(WWW w)
 	{
 		yield return w;
 		if (w.error == null) 
@@ -87,10 +87,10 @@ public class Player : MonoBehaviour{
 		WWWForm form = new WWWForm();
 		form.AddField("user", username);
 		WWW w = new WWW("http://iconstanto.com/updateLoser.php", form);
-		StartCoroutine(stats(w));
+		StartCoroutine(addLossI(w));
 	}
 	
-	IEnumerator addWin(WWW w)
+	IEnumerator addLossI(WWW w)
 	{
 		yield return w;
 		if (w.error == null) 
