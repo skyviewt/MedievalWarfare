@@ -258,7 +258,8 @@ public class mainMenu : MonoBehaviour {
 		resetSavedGameTexts ();
 		isALoadGame = true;
 		LoadGameCanvas.enabled = false;
-//		loadThisGame (gameLoadChoice);
+		SaveLoad sl = GameObject.Find("SaveLoad").GetComponent<SaveLoad>();
+		sl.loadThisGame (gameLoadChoice);
 		showLobby();
 	}
 	public void actualRegistrationPressed()
@@ -320,7 +321,8 @@ public class mainMenu : MonoBehaviour {
 	{
 		for (int i =0; i<gameNameTexts.Count; i++) 
 		{
-//			gameNameTexts[i].text += getSaveName(i+1);	
+			SaveLoad sl = GameObject.Find("SaveLoad").GetComponent<SaveLoad>();
+			gameNameTexts[i].text += sl.getSaveName(i+1);	
 		}
 		LoadGameCanvas.enabled = true;
 	}
