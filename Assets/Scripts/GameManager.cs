@@ -271,4 +271,55 @@ public class GameManager : MonoBehaviour {
 	void overWritePlayerList(){
 		players = tempList;
 	}
+
+	public void checkLoss(Player p)
+	{
+		int numVillages = p.getVillages().Count();
+		if (numVillages == 0)
+		{
+			int curPlayerIndex = findPlayerIndex (p);
+			game.networkView.RPC ("setPlayerStatus",RPCMode.AllBuffered,(int)PlayerStatus.LOST,curPlayerIndex);
+			p.addLoss(); //update database
+			gameGUI.displayError (@""+ p.getName ()+" has lost and is out of the game.");
+
+		}
+
+		int loserCounter = 0;
+		int winnerIndex = 0;
+		for(int i = 0; i < game.getPlayerStatuses().Count; i++)
+		{
+			if(game.getPlayerStatuses()[i] == PlayerStatus.LOST)
+			{
+				loserCounter++;
+			}
+			else if (game.getPlayerStatuses()[i] == PlayerStatus.PLAYING)
+			{
+				winnerIndex = i;
+			}
+		}
+		if (loserCounter == players.Count ()-2) 
+		{
+			game.networkView.RPC ("setPlayerStatus",RPCMode.AllBuffered,(int)PlayerStatus.WIN,winnerIndex);
+		}
+	}
+	
+	public void checkWin()
+	{
+		//retrieve number of players in the list
+		int winner = 100;
+		for(int i = 0; i < game.getPlayerStatuses().Count;i++)
+		{
+			if(game.getPlayerStatuses()[i] == PlayerStatus.WIN)
+			{
+				winner = i;
+			}
+		}
+		if(winner != 100)
+		{
+			Player winningPlayer = this.players[winner];
+			winningPlayer.addWin();
+			gameGUI.displayError (@""+ winningPlayer.getName ()+" wins!");
+		}
+
+	}
 }

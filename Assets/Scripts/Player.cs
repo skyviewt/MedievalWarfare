@@ -100,11 +100,11 @@ public class Player : MonoBehaviour{
 		yield return w;
 		if (w.error == null) 
 		{			
-			print ("Error encountered.");
+			print ("player wins added");
 		} 
 		else 
 		{
-			print ("player wins added");
+			print ("Error encountered.");
 		}
 	}
 	
@@ -122,11 +122,11 @@ public class Player : MonoBehaviour{
 		yield return w;
 		if (w.error == null) 
 		{			
-			print ("Error encountered.");
+			print ("player losses added");
 		} 
 		else 
 		{
-			print ("player losses added");
+			print ("error encountered");
 		}
 	}
 	

@@ -44,7 +44,7 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType vAction = v.getAction ();
 		if (vType == VillageType.Fort)
 		{
-			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle. ¯\(°_o)/¯\n Press Build Castle to go to the next level!");
+			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle. ¯\(°_o)/¯ Press Build Castle to go to the next level!");
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
@@ -102,16 +102,17 @@ public class VillageManager : MonoBehaviour {
 				// remove prefab
 				Tile villageLocation = village.getLocatedAt();
 				//Destroy (villageLocation.prefab);
-				villageLocation.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+				//villageLocation.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 				//villageLocation.setLandType (LandType.Meadow);
+				myPlayer.gameObject.networkView.RPC("removeVillageNet",RPCMode.AllBuffered, village.gameObject.networkView.viewID, myPlayer.getColor ());
+
 				villageLocation.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
 				GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
 				villageLocation.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
 				//villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 				//myPlayer.myVillages.Remove (village);
-				myPlayer.gameObject.networkView.RPC("removeVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID,myPlayer.getColor ());
 				//Destroy (village.gameObject.networkView.viewID);
-				gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID);
+				//gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID);
 			}
 		}
 	}
@@ -121,6 +122,7 @@ public class VillageManager : MonoBehaviour {
 		GameObject vilObject = NetworkView.Find (villageObjectID).gameObject;
 		Destroy (vilObject);
 	}
+
 	[RPC]
 	void DontDestroyVillageManager(NetworkViewID mID)
 	{
@@ -128,6 +130,7 @@ public class VillageManager : MonoBehaviour {
 	}
 	public void plunderVillage (Village pluderingVillage, Village plunderedVillage, Tile dest)
 	{
+		Debug.Log ("in plunder village");
 		//determine amount to steal
 		int wood = plunderedVillage.getWood ();
 		int gold = plunderedVillage.getGold ();
@@ -142,7 +145,7 @@ public class VillageManager : MonoBehaviour {
 
 		//Destroy (dest.prefab); // destroy the village, create a meadow
 		GameObject meadow = Network.Instantiate(meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation,0) as GameObject;
-		dest.gameObject.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadowPrefab.networkView.viewID);
+		dest.gameObject.networkView.RPC ("switchTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
 		// respawn enemy hovel happens during the split
 	}
 
@@ -159,7 +162,10 @@ public class VillageManager : MonoBehaviour {
 		invader.gameObject.networkView.RPC ("addTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
 //		invadedVillage.removeTile(dest);
 		invadedVillage.gameObject.networkView.RPC ("removeTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
+		Debug.Log (invader.getPlayer ().getName ()+ " is invading "+invadedVillage.getPlayer ().getName ());
 		splitRegion(dest, invadedVillage);
+		int color = invader.getPlayer().getColor();
+		dest.gameObject.networkView.RPC ("setAndColor",RPCMode.AllBuffered,color);
 	}
 
 	public Tile getTileForRespawn(List<Tile> region){
@@ -207,33 +213,16 @@ public class VillageManager : MonoBehaviour {
 			}
 		}
 		print ("after the bfs");
-		/*// working test methods color each new region a different color
-		Color[] lstColors = {Color.black, Color.cyan, Color.yellow};
-		int i = 0;
-		foreach (List<Tile> region in lstRegions){
-			Color RandomColor = lstColors[i];
-			i++;
-			foreach (Tile t in region){
-				t.gameObject.renderer.material.color = RandomColor;
-			}
-		}*/
 
 		if (lstRegions.Count <= 0) {
-			//oldLocation.replace (null);
-
-//			oldLocation.setLandType (LandType.Meadow);
+			Debug.Log ("Inside Regions <= 0");
 			oldLocation.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
-//			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 			GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
-			oldLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
-
 			villageToSplit.retireAllUnits();
-			// remove village from player if not already done so
-//			p.myVillages.Remove (villageToSplit);
-			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID);
-//			Destroy (villageToSplit.gameObject);
-			gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID);
-//			print ("Village destroyed completely");
+			Debug.Log ("after retire all units");
+			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID,p.getColor());
+			oldLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
+			Debug.Log ("after lstRegions <= 0");
 			return; //stop here if no region is big enough
 		}
 
@@ -258,7 +247,7 @@ public class VillageManager : MonoBehaviour {
 			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
 			Village v = newTown.GetComponent<Village>();
 			//tileLocation.replace (newTown);
-			tileLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,newTown.networkView.viewID);
+			tileLocation.networkView.RPC ("switchTilePrefabNet",RPCMode.AllBuffered,newTown.networkView.viewID);
 			v.addRegion (region); //adds T<>V and any U<>V
 
 //			v.setLocation (tileLocation);
@@ -316,10 +305,13 @@ public class VillageManager : MonoBehaviour {
 			v.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,splitWood);
 
 		}
-//		villageToSplit.gameObject.transform.Translate (0, 1, 0);
-		villageToSplit.networkView.RPC ("transformVillageNet", RPCMode.AllBuffered);
-//		Destroy (villageToSplit.gameObject);
+		Debug.Log ("villageToSplit: "+villageToSplit.getPlayer ().getName ());
+		p.networkView.RPC ("removeVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID, p.getColor ());
 		gameObject.networkView.RPC ("destroyVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID);
+
+		GameManager GMA = GameObject.Find ("preserveGM").gameObject.GetComponent<GameManager>();
+		GMA.checkLoss (p);
+		GMA.checkWin ();
 	}
 
 	// de-color, kill units, destroy structures, etc

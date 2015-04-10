@@ -7,8 +7,12 @@ public class SaveLoad : MonoBehaviour {
 	
 	public bool saveGame = false;
 	public bool loadGame = false;
-	public int numberOfSaves;
-	public int saveGameID = 1;
+	public bool firstName = false;
+	public string saveIndexStr = "1";
+
+	//public int saveGameID = 1;
+	public bool clear1 = false;
+	public bool clear2 = false;
 	
 	//Prefabs:
 	public GameObject GrassPrefab;
@@ -16,14 +20,14 @@ public class SaveLoad : MonoBehaviour {
 	public GameObject TreePrefab;
 	public GameObject HovelPrefab;
 	public GameObject UnitPrefab;
-	public float offset = 3.0f;
-
+	public float offset = 0.0f;
+	public string saveName;
 	
 	//names of the saved files:
 
-	public string saveName;
-	public int saveID = 1;
-	public string firstSavedGameName;
+
+	//public int saveID = 1;
+	//public string firstSavedGameName;
 
 
 
@@ -57,9 +61,32 @@ public class SaveLoad : MonoBehaviour {
 			saveGame = false;
 		}
 		if (loadGame) {
-			loadThisGame(saveGameID);
+			//destroy stuff:
+			GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>() ;
+			foreach(GameObject go in allObjects){
+				if (go.tag=="Grass"||go.tag=="Meadow"||go.tag=="Town"||go.tag=="Trees"){
+					Network.Destroy(go);
+				}
+			}
 
 			loadGame = false;
+			loadThisGame(saveIndexStr);
+
+
+		}
+		if (firstName) {
+//			string result = "Name of saved game: "+getSaveName(saveGameID);
+//			Debug.Log (result);
+//			firstName = false;
+
+//			PlayerPrefs.SetString("TEST11", "Hello");
+//			print ("MSG: "+  PlayerPrefs.GetString("TEST11"));
+			print(getSaveName(2));
+		}
+		if (clear1 == true && clear2 == true) {
+			clear1=false;
+			clear2=false;
+			PlayerPrefs.DeleteAll();
 		}
 	}
 
@@ -70,7 +97,9 @@ public class SaveLoad : MonoBehaviour {
 
 	//Get the name of the saved game with an integer
 	public string getSaveName(int saveID){
-		return PlayerPrefs.GetString ("NameByID"+saveID, name);
+//		print(PlayerPrefs.GetString ("NameByID"+saveID));
+		return PlayerPrefs.GetString ("NameByID" + saveIndexStr);
+		//return "Hiiiii";
 	}
 
 	public void saveThisGame(string name){
@@ -85,15 +114,21 @@ public class SaveLoad : MonoBehaviour {
 		int saveID = numberOfSaves + 1;
 		PlayerPrefs.SetInt ("NumberOfSaves", saveID);
 		//set the name to ID
-		PlayerPrefs.SetString ("NameByID"+saveID, name);
+		PlayerPrefs.SetString ("NameByID"+saveIndexStr, name);
 
-		saveTiles(saveID.ToString());
-		savePlayerAndVillages (saveID.ToString());
+		saveTiles(saveIndexStr);
+		savePlayerAndVillages (saveIndexStr);
 	}
 	
-	public void loadThisGame(int gameID){
-		loadTiles(gameID.ToString());
-		loadPlayerAndVillages (gameID.ToString());
+	public void loadThisGame(string id){
+		loadTiles(id);
+		loadPlayerAndVillages (id);
+
+//		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+//		foreach (GameObject o in allObjects) {
+//			o.tag = "LoadedMap";
+//		}
+
 		tileList = new List<Tile>();
 		villageList = new List<Village>();
 		playerList = new List<Player>();
@@ -102,7 +137,7 @@ public class SaveLoad : MonoBehaviour {
 	
 	public void saveTiles(string gameID){
 		//BE CAREFUL!!!!!! DELETES EVERYTHING
-		PlayerPrefs.DeleteAll();
+		//PlayerPrefs.DeleteAll();
 		
 		Debug.Log ("Saving Tiles!!");
 		GameObject[] tileGO = GameObject.FindGameObjectsWithTag("Grass");
@@ -300,6 +335,7 @@ public class SaveLoad : MonoBehaviour {
 					Tile utile = u.getLocation();
 					PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+unitID+unitNB+uLocationx, utile.point.x);
 					PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+unitID+unitNB+uLocationy, utile.point.y);
+					unitNB++;
 				}
 
 
@@ -409,7 +445,7 @@ public class SaveLoad : MonoBehaviour {
 			//Player newPlayer = game.getPlayers()[playerID-1];
 			//newPlayer.setColor(color);
 			//playerList.Add(newPlayer);
-			Player newPlayer;
+			Player newPlayer = game.getPlayers()[playerID-1];
 			foreach(Player p in game.getPlayers()){
 				if (p.getColor()==color){
 					newPlayer = p;
@@ -460,6 +496,10 @@ public class SaveLoad : MonoBehaviour {
 
 				//set locatedAt tile for the village
 				newVillage.networkView.RPC("setLocatedAtNet", RPCMode.AllBuffered, myLocation.networkView.viewID);
+
+				//ADDING Players:
+				newVillage.networkView.RPC("setControlledByWithColorNet", RPCMode.AllBuffered, newPlayer.getColor());
+				newPlayer.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID, newPlayer.getColor());
 
 				//set regions:
 				//VillageManager vilMan = GameObject.Find("VillageManager").GetComponent<VillageManager>();
@@ -519,28 +559,28 @@ public class SaveLoad : MonoBehaviour {
 	}
 	
 	
-	public void loadVillage(){
-		string id = "1";
-		string name = "savedName";
-		string pID = "PlayerID";
-		string pNum = "NumberOfPlayers";
-		string clr = "Color";
-		
-		//village data names
-		string vID = "VillageID";
-		string vNum = "NumberOfVillage";
-		string gold = "Gold";
-		string wood = "Wood";
-		string health = "Health";
-		
-		string locationx= "Locationx";
-		string locationy= "Locationy";
-		
-		//get number of villages per player:
-		
-		
-		
-	}
+//	public void loadVillage(){
+//		string id = "1";
+//		string name = "savedName";
+//		string pID = "PlayerID";
+//		string pNum = "NumberOfPlayers";
+//		string clr = "Color";
+//		
+//		//village data names
+//		string vID = "VillageID";
+//		string vNum = "NumberOfVillage";
+//		string gold = "Gold";
+//		string wood = "Wood";
+//		string health = "Health";
+//		
+//		string locationx= "Locationx";
+//		string locationy= "Locationy";
+//		
+//		//get number of villages per player:
+//		
+//		
+//		
+//	}
 
 	//Searching for tiles that belong to this village: copied from MapGenerator
 	public void searchVillagesLoad(Tile toSearch, List<Tile> TilesToReturn, int color )

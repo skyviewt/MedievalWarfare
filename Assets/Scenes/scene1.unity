@@ -1199,7 +1199,7 @@ MonoBehaviour:
   myTurn: 0
   turnOrder: 0
   UnitPrefab: {fileID: 168650, guid: 1c1c75f75bd321e4f87a5f5a48a1b2ea, type: 2}
-  cannonPrefab: {fileID: 171120, guid: 6e2a8ceb8053f442bba752d33bf4de82, type: 2}
+  cannonPrefab: {fileID: 104884, guid: 9c2dd31a467424cb3ae20de0c1ad6ace, type: 2}
   _Village: {fileID: 0}
   _Unit: {fileID: 0}
   _Tile: {fileID: 0}
@@ -5935,6 +5935,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveGame: 0
   loadGame: 0
+  firstName: 0
   numberOfSaves: 0
   saveGameID: 1
   GrassPrefab: {fileID: 161544, guid: a05b14bb6a6914215b6cb6c9cd8d797d, type: 2}

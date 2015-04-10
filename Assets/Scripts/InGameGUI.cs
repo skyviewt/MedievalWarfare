@@ -86,7 +86,7 @@ public class InGameGUI : MonoBehaviour {
 		gameManager.initializeNextPlayersVillages();
 		gameManager.updateTurnsPlayed();
 		this.networkView.RPC ("updateEndTurnButtonsNet", RPCMode.AllBuffered);
-		gameObject.networkView.RPC ("enableInteractionsNet", RPCMode.AllBuffered);
+		this.gameObject.networkView.RPC ("enableInteractionsNet", RPCMode.AllBuffered);
 	}
 
 	public void returnToGamePressed()
@@ -368,8 +368,9 @@ public class InGameGUI : MonoBehaviour {
 					unitManager.moveUnit (u, _move);
 					
 					if (selection.getVillage () == null) {
-							v.addTile (selection);
-							int redrawRegion = v.getRegionSize();
+						//v.addTile (selection);
+						v.networkView.RPC ("addTileNet", RPCMode.AllBuffered, selection.gameObject.networkView.viewID);
+						int redrawRegion = v.getRegionSize();
 							_RegionText.text = redrawRegion.ToString ();
 					}
 					
@@ -639,6 +640,10 @@ public class InGameGUI : MonoBehaviour {
 
 	public void fireCannonPressed()
 	{
+		if (_Unit.GetComponent<Unit> ().getUnitType () != UnitType.CANNON) {
+			this.displayError("You are not a siege engine!");
+			return;
+		}
 		UnitCanvas.enabled = false;
 		menuUp = false;
 		if (_Unit.GetComponent<Unit> ().getVillage ().getWood () < 1) {

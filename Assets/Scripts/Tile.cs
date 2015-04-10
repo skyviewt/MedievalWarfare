@@ -71,7 +71,11 @@ public class Tile : MonoBehaviour
 		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0.15f, this.point.y), TreePrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Trees );
 	}
-
+	[RPC]
+	void switchTilePrefabNet(NetworkViewID gameobjectID)
+	{
+		this.prefab = NetworkView.Find (gameobjectID).gameObject;
+	}
 	public bool checkVillagePrefab()
 	{
 		if (prefab == null) 
@@ -275,27 +279,27 @@ public class Tile : MonoBehaviour
 		}
 		else if( color == 1 )
 		{
-			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.7f);
+			gameObject.renderer.material.color = Color.red;
 		}
 		else if ( color == 2 )
 		{
-			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 1.0f, 0.7f);
+			gameObject.renderer.material.color = Color.blue;
 		}
 		else if ( color == 3 )
 		{
-			gameObject.renderer.material.color = new Color(0.2f, 0.0f, 0.0f, 0.7f);
+			gameObject.renderer.material.color = Color.green;
 		}
 		else if ( color == 4 )
 		{
-			gameObject.renderer.material.color = new Color(0.0f, 0.2f, 0.0f, 0.7f);
+			gameObject.renderer.material.color = Color.yellow;
 		}
 		else if ( color == 5 )
 		{
-			gameObject.renderer.material.color = new Color(0.0f, 0.0f, 0.2f, 0.7f);
+			gameObject.renderer.material.color = Color.cyan;
 		}
 		else if ( color == 6 )
 		{
-			gameObject.renderer.material.color = new Color(0.1f, 0.0f, 0.0f, 0.7f);
+			gameObject.renderer.material.color = Color.gray;
 		}
 	}
 	

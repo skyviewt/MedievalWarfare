@@ -6012,6 +6012,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveGame: 0
   loadGame: 0
+  firstName: 0
   numberOfSaves: 0
   saveGameID: 1
   GrassPrefab: {fileID: 161544, guid: a05b14bb6a6914215b6cb6c9cd8d797d, type: 2}
@@ -6189,7 +6190,7 @@ Transform:
   - {fileID: 1005764418}
   - {fileID: 60649537}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!95 &450827934
 Animator:
   serializedVersion: 3
@@ -16180,6 +16181,7 @@ GameObject:
   - 4: {fileID: 1385500323}
   - 114: {fileID: 1385500322}
   - 148: {fileID: 1385500321}
+  - 114: {fileID: 1385500324}
   m_Layer: 0
   m_Name: VillageManager
   m_TagString: Untagged
@@ -16229,6 +16231,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
+--- !u!114 &1385500324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1385500320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef6ccdd19c114230975251dd0c342bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meadowPrefab: {fileID: 0}
+  tombPrefab: {fileID: 0}
+  curEffect: {fileID: 0}
+  attackEffect1: {fileID: 0}
+  attackEffect2: {fileID: 0}
+  villageManager: {fileID: 0}
+  tileManager: {fileID: 0}
+  gameGUI: {fileID: 0}
 --- !u!1 &1388421304
 GameObject:
   m_ObjectHideFlags: 0
@@ -21948,7 +21969,7 @@ Transform:
   - {fileID: 1674724569}
   - {fileID: 503439074}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
 --- !u!65 &1871164575
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22121,7 +22142,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!1 &1882082737
 GameObject:
   m_ObjectHideFlags: 0

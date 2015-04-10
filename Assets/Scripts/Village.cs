@@ -25,7 +25,7 @@ public class Village : MonoBehaviour {
 
 	public List<Tile> controlledRegion;
 	public Player controlledBy;
-	public string playerName;
+//	public string playerName;
 	private Tile locatedAt;
 	private List<Unit> supportedUnits;
 	private VillageType myType;
@@ -46,7 +46,7 @@ public class Village : MonoBehaviour {
 		//Debug.Log (vm);
 		wage = 0;
 		health = 1;
-		playerName = this.controlledBy.getName ();
+//		playerName = this.controlledBy.getName ();
 	}
 	
 	// Update is called once per frame
@@ -353,7 +353,7 @@ public class Village : MonoBehaviour {
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
-			unitLocation.gameObject.networkView.RPC("destroyPrefabNet",RPCMode.AllBuffered);
+			//unitLocation.gameObject.networkView.RPC("destroyPrefabNet",RPCMode.AllBuffered);
 			GameObject tomb = Network.Instantiate (vm.tombPrefab, new Vector3 (unitLocation.point.x, 0, unitLocation.point.y), vm.tombPrefab.transform.rotation, 0) as GameObject;
 			unitLocation.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered, tomb.networkView.viewID);
 			unitLocation.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Tombstone);
@@ -392,13 +392,24 @@ public class Village : MonoBehaviour {
 	void addUnitNet(NetworkViewID unitID){
 		Unit unitToAdd = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
 		supportedUnits.Add (unitToAdd);
-		unitToAdd.setVillage (this);
+		//unitToAdd.setVillage (this);
 	}
 
 	[RPC] // i think this is where the bug was.
 	void setControlledByNet(int playerIndex){
 		GameManager GM = GameObject.Find ("preserveGM").GetComponent<GameManager> ();
 		this.controlledBy = GM.players[playerIndex];
+	}
+
+	[RPC]
+	void setControlledByWithColorNet(int color){
+		Game gm = GameObject.Find ("preserveGM").GetComponent<Game> ();
+		foreach(Player pl in gm.getPlayers()){
+			if(pl.getColor()== color){
+				this.controlledBy=pl;
+				break;
+			}
+		}
 	}
 	[RPC]
 	void switchPrefabNet(int type)

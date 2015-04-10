@@ -7,7 +7,7 @@ using System.Linq;
 public enum PlayerStatus
 {
 	PLAYING,
-	LOSE,
+	LOST,
 	WIN,
 };
 
@@ -93,6 +93,12 @@ public class Game : MonoBehaviour
 	void setNextPlayerNet(int nextPlayer)
 	{
 		this.currentTurn = nextPlayer;
+	}
+
+	[RPC]
+	void setPlayerStatus(int status,int playerIndex)
+	{
+		playerStatuses [playerIndex] = (PlayerStatus)status;
 	}
 
 	/********* GETTERS ****************/
