@@ -73,6 +73,12 @@ public class Game : MonoBehaviour
 		this.turnsPlayed = turnsPlayed;
 	}
 
+	[RPC]
+	public void setNextPlayerNet(int nextPlayer)
+	{
+		this.currentTurn = nextPlayer;
+	}
+
 	/********* GETTERS ****************/
 	public List<Player> getPlayers()
 	{

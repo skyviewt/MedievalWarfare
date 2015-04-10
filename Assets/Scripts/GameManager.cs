@@ -123,36 +123,38 @@ public class GameManager : MonoBehaviour {
 	[RPC]
 	public void setFinalMap(int finalMapChoice)
 	{
-		this.finalMap = mapGen.getMap(finalMapChoice);
+		finalMap = mapGen.getMap(finalMapChoice);
 	}
-
-	[RPC]
+	
 	public void createNewGame ()
 	{
-		Debug.Log ("In create new game");
 		game.gameObject.networkView.RPC ("setMap",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("setPlayers",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("initializeStatuses",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("setStartingPlayer",RPCMode.AllBuffered,0);
 		game.gameObject.networkView.RPC ("setTurnsPlayed",RPCMode.AllBuffered,0);
-		turnsSoFar = game.getTurnsPlayed();
+		gameObject.networkView.RPC ("setTurnsSoFar",RPCMode.AllBuffered,0);
 	}
+	[RPC]
+	public void setTurnsSoFar(int turnNumber)
+	{
+		this.turnsSoFar = turnNumber;
+	}
+
+		                       
 	[RPC]
 	public void createSavedGame()
 	{
 
 	}
 
-	[RPC]
 	public void setNextPlayer(int nextTurn)
 	{
-		Debug.Log ("inSetNextPlayer");
-		game.setTurn(nextTurn);
+		game.gameObject.networkView.RPC ("setNextPlayerNet", RPCMode.AllBuffered, nextTurn);
 	}
 
 	public int findNextPlayer()
 	{
-		gameGUI.disableInteractions ();
 		int currentTurn = game.getCurrentTurn();
 		int numberOfPlayers = game.getPlayers().Count;
 		List<PlayerStatus> playerStatuses = game.getPlayerStatuses();
@@ -181,9 +183,12 @@ public class GameManager : MonoBehaviour {
 		Debug.Log ("in initialize next player villages");
 		Player p = game.getCurrentPlayer ();
 		List<Village> villagesToUpdate = p.getVillages ();
+		Debug.Log ("current player in turn to play is: " + p);
+		Debug.Log ("number of villages of current player :" +villagesToUpdate.Count);
 		foreach (Village v in villagesToUpdate)
 		{
-			villageManager.gameObject.networkView.RPC("updateVillageNet",RPCMode.AllBuffered,v.gameObject.networkView.viewID);
+			Debug.Log ("updating village: "+v);
+			villageManager.updateVillage(v);
 		}
 	}
 
