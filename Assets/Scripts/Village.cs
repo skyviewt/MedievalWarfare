@@ -368,9 +368,9 @@ public class Village : MonoBehaviour {
 	}
 
 	[RPC] // i think this is where the bug was.
-	void setControlledByNet(List<Player> players, int playerIndex){
-		//Player[] pls = NetworkView.Find(objectId).gameObject.GetComponents<Player>();
-		controlledBy = players [playerIndex];
+	void setControlledByNet(NetworkViewID gm, int playerIndex){
+		GameManager gameM = NetworkView.Find(gm).gameObject.GetComponent<GameManager>();
+		controlledBy = gameM.players[playerIndex];
 	}
 	[RPC]
 	void switchPrefabNet(int type)

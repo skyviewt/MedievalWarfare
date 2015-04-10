@@ -6,6 +6,7 @@ using System.Linq;
 [System.Serializable]
 public class TileManager : MonoBehaviour {
 
+	public bool isInGame;
 	// Use this for initialization
 	void Start () {
 			
@@ -40,8 +41,19 @@ public class TileManager : MonoBehaviour {
 	}
 
 	[RPC]
-	void destroyTile(NetworkViewID tileid){
-		Destroy (NetworkView.Find (tileid).gameObject);
+	void DontDestroyTileManager(NetworkViewID mID)
+	{
+		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
+	}
+
+	[RPC]
+	void destroyTile(NetworkViewID tileID){
+		Destroy (NetworkView.Find (tileID).gameObject);
+	}
+	
+	[RPC]
+	void DontDestroyTile(NetworkViewID tileID){
+		DontDestroyOnLoad(NetworkView.Find (tileID).gameObject);
 	}
 
 	/* DEPRECATED

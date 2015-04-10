@@ -107,7 +107,11 @@ public class VillageManager : MonoBehaviour {
 			}
 		}
 	}
-
+	[RPC]
+	void DontDestroyVillageManager(NetworkViewID mID)
+	{
+		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
+	}
 	public void plunderVillage (Village pluderingVillage, Village plunderedVillage, Tile dest)
 	{
 		//determine amount to steal
