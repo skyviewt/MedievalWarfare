@@ -72,7 +72,7 @@ public class Tile : MonoBehaviour
 		this.setLandType( LandType.Trees );
 	}
 	[RPC]
-	void switchTilePrefab(NetworkViewID gameobjectID)
+	void switchTilePrefabNet(NetworkViewID gameobjectID)
 	{
 		this.prefab = NetworkView.Find (gameobjectID).gameObject;
 	}
