@@ -493,7 +493,7 @@ public class SaveLoad : MonoBehaviour {
 
 					//setLocation:
 					newUnit.networkView.RPC ("setLocationNet", RPCMode.AllBuffered, uT.networkView.viewID);
-					uT.networkView.RPC ("setOccupyingUnitNet", RPCMode.AllBuffered, newUnit.networkView.viewID);
+					newUnit.networkView.RPC ("DontDestroy", RPCMode.AllBuffered, newUnit.networkView.viewID);
 
 					//set actionType:
 					newUnit.networkView.RPC ("setActionNet", RPCMode.AllBuffered, unitActType);

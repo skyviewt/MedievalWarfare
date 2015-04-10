@@ -88,6 +88,24 @@ public class Unit : MonoBehaviour {
 //		}
 //	}
 
+	[RPC]
+	void changeMapLayer( int mapNum )
+	{
+		switch (mapNum) {
+		case 0:
+			this.gameObject.layer = LayerMask.NameToLayer ("map1");
+			break;
+		case 1:
+			this.gameObject.layer = LayerMask.NameToLayer ("map2");
+			break;
+			//TODO: do this for units and villages.
+		case 2:
+			this.gameObject.layer = LayerMask.NameToLayer("loadedMap");
+			this.gameObject.tag = "LoadedMap";			
+			break;
+		}
+	}
+
 
 	[RPC]
 	void initUnitNet(int unitTypeID, NetworkViewID locationTileID, NetworkViewID villageID){
@@ -220,7 +238,12 @@ public class Unit : MonoBehaviour {
 			this.transform.FindChild("Knight").gameObject.SetActive (true);
 		}
 	}
-	
+
+		[RPC]
+		void DontDestroy(NetworkViewID tileID){
+			DontDestroyOnLoad(NetworkView.Find (tileID).gameObject);
+		}
+
 	public UnitActionType getAction()
 	{
 		return this.myAction;
