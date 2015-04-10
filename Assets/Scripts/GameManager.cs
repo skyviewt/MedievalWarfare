@@ -116,10 +116,9 @@ public class GameManager : MonoBehaviour {
 	}
 	
 
-	[RPC]
-	public void setFinalMap(int finalMapChoice)
+	public void setFinalMap(Graph finalMap)
 	{
-		finalMap = mapGen.getMap(finalMapChoice);
+		this.finalMap = finalMap;
 	}
 	
 	public void createNewGame ()
