@@ -68,10 +68,17 @@ public class Player : MonoBehaviour{
 		//myVillages.Add (vil);
 	}
 	[RPC]
-	void removeVillageNet(NetworkViewID villageID)
+	void removeVillageNet(NetworkViewID villageID,int color)
 	{
 		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
-		myVillages.Remove (vil);
+
+		Player[] ply = GameObject.Find ("preserveGM").GetComponents<Player>();
+		foreach(Player p in ply){
+			if( p.getColor()==color){
+				p.myVillages.Remove(vil);
+				break;
+			}
+		}
 	}
 	
 	[RPC]
