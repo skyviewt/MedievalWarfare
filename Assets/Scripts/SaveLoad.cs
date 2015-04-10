@@ -413,7 +413,7 @@ public class SaveLoad : MonoBehaviour {
 				int tp = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vType);
 				newVillage.networkView.RPC("setVillageTypeNet", RPCMode.AllBuffered, tp);
 
-				int villagegold = PlayerPrefs.GetInt(id+name+pID+vID+playerID+vIndex+vGold);
+				int villagegold = PlayerPrefs.GetInt(id+name+pID+vID+playerID+vID+vIndex+vGold);
 				newVillage.networkView.RPC("setGoldNet", RPCMode.AllBuffered, villagegold);
 
 				int vilWood = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vWood);
