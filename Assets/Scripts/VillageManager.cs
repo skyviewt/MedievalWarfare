@@ -155,13 +155,13 @@ public class VillageManager : MonoBehaviour {
 	public void takeoverTile(Village invader, Tile dest)
 	{
 		Village invadedVillage = dest.getVillage ();
-
-		invader.gameObject.networkView.RPC ("addTileNet",RPCMode.AllBuffered,dest.gameObject.networkView.viewID);
-		dest.gameObject.networkView.RPC ("setVillageNet",RPCMode.AllBuffered,invader.gameObject.networkView.viewID);
-		int color = invader.getPlayer().getColor();
-		dest.gameObject.networkView.RPC ("setAndColor",RPCMode.AllBuffered,color);
-
+//		dest.setVillage (invader);
+		dest.gameObject.networkView.RPC ("setVillageNet", RPCMode.AllBuffered, invader.gameObject.networkView.viewID);
+//		invader.addTile(dest);
+		invader.gameObject.networkView.RPC ("addTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
+//		invadedVillage.removeTile(dest);
 		invadedVillage.gameObject.networkView.RPC ("removeTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
+		Debug.Log (invader.getPlayer ().getName ()+ " is invading "+invadedVillage.getPlayer ().getName ());
 		splitRegion(dest, invadedVillage);
 	}
 
@@ -212,6 +212,7 @@ public class VillageManager : MonoBehaviour {
 		print ("after the bfs");
 
 		if (lstRegions.Count <= 0) {
+			Debug.Log ("Inside Regions <= 0");
 			oldLocation.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
 			GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
 			villageToSplit.retireAllUnits();
@@ -299,6 +300,7 @@ public class VillageManager : MonoBehaviour {
 			v.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,splitWood);
 
 		}
+		Debug.Log ("villageToSplit: "+villageToSplit.getPlayer ().getName ());
 //		villageToSplit.gameObject.transform.Translate (0, 1, 0);
 		villageToSplit.networkView.RPC ("transformVillageNet", RPCMode.AllBuffered);
 //		Destroy (villageToSplit.gameObject);
