@@ -9,8 +9,8 @@ public class SaveLoad : MonoBehaviour {
 	public bool loadGame = false;
 	public bool firstName = false;
 	public string saveIndexStr = "1";
-	public string saveName;
-	public int saveGameID = 1;
+
+	//public int saveGameID = 1;
 	public bool clear1 = false;
 	public bool clear2 = false;
 	
@@ -20,14 +20,14 @@ public class SaveLoad : MonoBehaviour {
 	public GameObject TreePrefab;
 	public GameObject HovelPrefab;
 	public GameObject UnitPrefab;
-	public float offset = 3.0f;
-
+	public float offset = 0.0f;
+	public string saveName;
 	
 	//names of the saved files:
 
 
-	public int saveID = 1;
-	public string firstSavedGameName;
+	//public int saveID = 1;
+	//public string firstSavedGameName;
 
 
 

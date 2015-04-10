@@ -55,7 +55,7 @@ public class mainMenu : MonoBehaviour {
 	public bool isALoadGame = false;
 
 	// game load choice
-	public int gameLoadChoice = -1;
+	public string gameLoadChoice = "1";
 
 	public Text _ipInput;
 	public Text _portInput;
@@ -259,7 +259,7 @@ public class mainMenu : MonoBehaviour {
 		isALoadGame = true;
 		LoadGameCanvas.enabled = false;
 		SaveLoad sl = GameObject.Find("SaveLoad").GetComponent<SaveLoad>();
-		sl.loadThisGame (gameLoadChoice.ToString());
+		sl.loadThisGame (gameLoadChoice);
 		showLobby();
 	}
 	public void actualRegistrationPressed()
@@ -329,44 +329,44 @@ public class mainMenu : MonoBehaviour {
 
 	public void game1Pressed()
 	{
-		gameLoadChoice = 1;
+		gameLoadChoice = "1";
 	}
 	public void game2Pressed()
 	{
-		gameLoadChoice = 2;
+		gameLoadChoice = "2";
 	}
 	public void game3Pressed()
 	{
-		gameLoadChoice = 3;
+		gameLoadChoice = "3";
 	}
 	public void game4Pressed()
 	{
-		gameLoadChoice = 4;
+		gameLoadChoice = "4";
 	}
 	public void game5Pressed()
 	{
-		gameLoadChoice = 5;
+		gameLoadChoice = "5";
 	}
 
 	public void game6Pressed()
 	{
-		gameLoadChoice = 6;
+		gameLoadChoice = "6";
 	}
 	public void game7Pressed()
 	{
-		gameLoadChoice = 7;
+		gameLoadChoice = "7";
 	}
 	public void game8Pressed()
 	{
-		gameLoadChoice = 8;
+		gameLoadChoice = "8";
 	}
 	public void game9Pressed()
 	{
-		gameLoadChoice = 9;
+		gameLoadChoice = "9";
 	}
 	public void game10Pressed()
 	{
-		gameLoadChoice = 10;
+		gameLoadChoice = "10";
 	}
 
 	public void returntoMainMenuCanvas()
