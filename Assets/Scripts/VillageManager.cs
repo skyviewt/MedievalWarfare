@@ -26,16 +26,13 @@ public class VillageManager : MonoBehaviour {
 	public GameObject towerPrefab;
 
 	private UnitManager unitManager;
-
-	void Start()
-	{
-	}
+	
 	void Update () {
 		if( isInGame && gameGUI == null )
 		{
 			Debug.Log ("finding attachingGUI");
-			unitManager = GameObject.Find ("UnitManager").GetComponent<UnitManager> ();
 			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
+			unitManager = GameObject.Find ("UnitManager").GetComponent<UnitManager> ();
 			Debug.Log (gameGUI);
 		}
 	}
@@ -491,16 +488,12 @@ public class VillageManager : MonoBehaviour {
 				tile.networkView.RPC("setLandTypeNet", RPCMode.AllBuffered, (int) LandType.Meadow);
 				GameObject meadow = Network.Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation,0) as GameObject;
 				tile.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, meadow.networkView.viewID);
-				//tile.setLandType(LandType.Meadow);
-				//tile.prefab = Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation) as GameObject;
 				u.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ReadyForOrders);
 			}
 			else if(currentUnitAction == UnitActionType.BuildingRoad)
 			{
 				Tile tile = u.getLocation();
 				tile.networkView.RPC ("setRoadNet", RPCMode.AllBuffered, true);
-				//tile.isRoad = true;
-				//tile.prefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
 				u.gameObject.networkView.RPC("setActionNet",RPCMode.AllBuffered,(int)UnitActionType.ReadyForOrders);
 			}
 			else if(currentUnitAction == UnitActionType.UpgradingCombining)
@@ -520,33 +513,27 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType action = v.getAction ();
 		if (action == VillageActionType.StartedUpgrading) 
 		{
-			//v.setAction (VillageActionType.FinishedUpgrading);
 			v.gameObject.networkView.RPC ("setVillageActionNet",RPCMode.AllBuffered,(int)VillageActionType.FinishedUpgrading);
 		} 
 		else if (action == VillageActionType.FinishedUpgrading) 
 		{
-			//v.setAction (VillageActionType.ReadyForOrders);
 			v.gameObject.networkView.RPC ("setVillageActionNet",RPCMode.AllBuffered,(int)VillageActionType.ReadyForOrders);
-			//network update the prefab
 			VillageType vType = v.getMyType();
 			if (vType == VillageType.Hovel) 
 			{
-				this.transform.FindChild("Hovel").gameObject.SetActive (false);
-				this.transform.FindChild("Town").gameObject.SetActive (true);
+				v.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)VillageType.Town);
 				v.gameObject.networkView.RPC ("setVillageTypeNet",RPCMode.AllBuffered,(int)VillageType.Town);
 				v.gameObject.networkView.RPC ("setHealthNet",RPCMode.AllBuffered,2);
 			}
 			else if (vType == VillageType.Town) 
 			{
-				transform.FindChild("Town").gameObject.SetActive (false);
-				transform.FindChild("Fort").gameObject.SetActive (true);
+				v.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)VillageType.Fort);
 				v.gameObject.networkView.RPC ("setVillageTypeNet",RPCMode.AllBuffered,(int)VillageType.Fort);
 				v.gameObject.networkView.RPC ("setHealthNet",RPCMode.AllBuffered,5);
 			}
 			else if (vType == VillageType.Fort) 
 			{
-				transform.FindChild("Fort").gameObject.SetActive (false);
-				transform.FindChild("Castle").gameObject.SetActive (true);
+				v.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)VillageType.Castle);
 				v.gameObject.networkView.RPC ("setVillageTypeNet",RPCMode.AllBuffered,(int)VillageType.Castle);
 				v.gameObject.networkView.RPC ("setHealthNet",RPCMode.AllBuffered,10);
 				v.gameObject.networkView.RPC ("setWageNet",RPCMode.AllBuffered,80);

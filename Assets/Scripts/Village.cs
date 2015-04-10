@@ -372,6 +372,39 @@ public class Village : MonoBehaviour {
 		Player[] pls = NetworkView.Find(objectId).gameObject.GetComponents<Player>();
 		controlledBy = pls [playerIndex];
 	}
+	[RPC]
+	void switchPrefabNet(int type)
+	{
+		VillageType newType = (VillageType) type;
+		if (newType == VillageType.Hovel) 
+		{
+			this.transform.FindChild("Hovel").gameObject.SetActive (true);
+			this.transform.FindChild("Town").gameObject.SetActive (false);
+			this.transform.FindChild("Fort").gameObject.SetActive (false);
+			this.transform.FindChild("Castle").gameObject.SetActive (false);
+		}
+		else if (newType == VillageType.Town) 
+		{
+			this.transform.FindChild("Hovel").gameObject.SetActive (false);
+			this.transform.FindChild("Town").gameObject.SetActive (true);
+			this.transform.FindChild("Fort").gameObject.SetActive (false);
+			this.transform.FindChild("Castle").gameObject.SetActive (false);
+		}
+		else if (newType == VillageType.Fort) 
+		{
+			this.transform.FindChild("Hovel").gameObject.SetActive (false);
+			this.transform.FindChild("Town").gameObject.SetActive (false);
+			this.transform.FindChild("Fort").gameObject.SetActive (true);
+			this.transform.FindChild("Castle").gameObject.SetActive (false);
+		}
+		else if (newType == VillageType.Castle) 
+		{
+			this.transform.FindChild("Hovel").gameObject.SetActive (false);
+			this.transform.FindChild("Town").gameObject.SetActive (false);
+			this.transform.FindChild("Fort").gameObject.SetActive (false);
+			this.transform.FindChild("Castle").gameObject.SetActive (true);
+		}
+	}
 
 	public void takeDamage(){
 		--health;
