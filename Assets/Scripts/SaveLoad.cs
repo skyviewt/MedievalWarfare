@@ -33,22 +33,24 @@ public class SaveLoad : MonoBehaviour {
 	void Update () {
 		if (saveGame) {
 			saveThisGame(saveGameID);
+
 			saveGame = false;
 		}
 		if (loadGame) {
 			loadThisGame(saveGameID);
+
 			loadGame = false;
 		}
 	}
 	
 	public void saveThisGame(int gameID){
 		saveTiles(gameID);
-		
+		//savePlayerAndVillages ();
 	}
 	
 	public void loadThisGame(int gameID){
 		loadTiles(gameID);
-		
+		//loadPlayerAndVillages ();
 		tileList = new List<Tile>();
 		villageList = new List<Village>();
 		playerList = new List<Player>();
@@ -100,7 +102,6 @@ public class SaveLoad : MonoBehaviour {
 			//UPDATE INDEX LAST!!!
 			startIndex++;
 		}
-		
 	}
 	
 	public void loadTiles(int gameID){
@@ -188,7 +189,7 @@ public class SaveLoad : MonoBehaviour {
 		
 		//Get villages by the order of players
 		Debug.Log ("Saving villages!!");
-		GameObject GM = GameObject.Find("PreserveGM");
+		GameObject GM = GameObject.Find("preserveGM");
 		Game game = GM.GetComponent<GameManager>().game;
 		List<Player> playerList = game.getPlayers ();
 		//TODO: What happens when a player loses and is out of the game??
@@ -214,9 +215,13 @@ public class SaveLoad : MonoBehaviour {
 			
 			//LAST: increment playerNb:
 			playerNb++;
+
+
 		}
+
+
 	}
-	//Does NOT load Villages
+
 	public void loadPlayerAndVillages(){
 		//player data names
 		string id = "1";
@@ -238,6 +243,7 @@ public class SaveLoad : MonoBehaviour {
 		
 		//total number of players:
 		int nbOfPlayer = PlayerPrefs.GetInt (id+name+pNum);
+		Debug.LogError ("NUMBEROFPLAYERS" + nbOfPlayer);
 		//get player and color
 		for (int playerID=1; playerID <=nbOfPlayer; playerID++) {
 			int color = PlayerPrefs.GetInt(id+name+pID+clr);
@@ -245,13 +251,19 @@ public class SaveLoad : MonoBehaviour {
 			if (color ==0){
 				Debug.LogError("SaveLoad-> Player Color is 0");
 			}
-			
-			Player newPlayer = new Player();
+
+			//ASSUMING PreserveGM is there and has a GAME component (only need players)
+			GameObject GM = GameObject.Find("preserveGM");
+			Game game = GM.GetComponent<GameManager>().game;
+
+
+			Player newPlayer = game.getPlayers()[playerID-1];
 			newPlayer.setColor(color);
 			playerList.Add(newPlayer);
 			
 			//Villages:
 			int nbOfVillages = PlayerPrefs.GetInt(id+name+pID+vNum);
+			Debug.Log(nbOfVillages);
 			for (int vIndex = 1; vIndex <= nbOfVillages; vIndex++){
 				//hovel Location:
 				float x = PlayerPrefs.GetFloat(id+name+pID+nbOfPlayer+vID+vIndex+locationx);
