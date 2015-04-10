@@ -161,7 +161,7 @@ public class UnitManager : MonoBehaviour {
 			dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 		}
 		//movePrefab (unit,new Vector3 (dest.point.x, 0.15f,dest.point.y));
-		gameObject.networkView.RPC ("moveUnitPrefabNet", RPCMode.AllBuffered, unit.networkView.viewID, new Vector3 (dest.point.x, 0.15f, dest.point.y));
+		this.gameObject.networkView.RPC ("moveUnitPrefabNet", RPCMode.AllBuffered, unit.networkView.viewID, new Vector3 (dest.point.x, 0.15f, dest.point.y));
 	}
 
 	[RPC]
