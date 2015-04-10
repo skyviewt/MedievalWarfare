@@ -163,6 +163,8 @@ public class VillageManager : MonoBehaviour {
 		invadedVillage.gameObject.networkView.RPC ("removeTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
 		Debug.Log (invader.getPlayer ().getName ()+ " is invading "+invadedVillage.getPlayer ().getName ());
 		splitRegion(dest, invadedVillage);
+		int color = invader.getPlayer().getColor();
+		dest.gameObject.networkView.RPC ("setAndColor",RPCMode.AllBuffered,color);
 	}
 
 	public Tile getTileForRespawn(List<Tile> region){
