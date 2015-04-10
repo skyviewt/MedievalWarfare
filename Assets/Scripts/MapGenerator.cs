@@ -374,15 +374,14 @@ public class MapGenerator : MonoBehaviour {
 			}
 			t.gameObject.networkView.RPC("DontDestroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
-		gameObject.networkView.RPC("DontDestroyGM", RPCMode.AllBuffered, gameObject.networkView.viewID);
-		DontDestroyOnLoad (GameObject.Find ("VillageManager"));
-		DontDestroyOnLoad (GameObject.Find ("TileManager"));
+		gameObject.networkView.RPC("DontDestroyManagers", RPCMode.AllBuffered, gameObject.networkView.viewID);
 	}
 
 	[RPC]
-	void DontDestroyGM(NetworkViewID gmID){
-		DontDestroyOnLoad(NetworkView.Find (gmID).gameObject);
+	void DontDestroyManagers(NetworkViewID mID){
+		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
 	}
+
 
 	[RPC]
 	void logMsg(string text){

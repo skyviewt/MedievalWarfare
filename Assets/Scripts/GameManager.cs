@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour {
 	private Player localPlayer; // has getter
 	private int localTurn; //has getter and setter
 	private int turnsSoFar;
-	private VillageManager villageManager;
+	public VillageManager villageManager;
 
 	// Use this for initialization
 	void Start () 

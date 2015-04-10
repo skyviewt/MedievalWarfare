@@ -461,6 +461,11 @@ public class mainMenu : MonoBehaviour {
 	// 3. [host] performs [RPC] calls for initializing the assets on the graph
 	// 4. 
 
+	[RPC]
+	void DontDestroyManagers(NetworkViewID mID)
+	{
+		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
+	}
 	public void launchGamePressed()
 	{	if(GM.isServer)
 		{
@@ -471,6 +476,10 @@ public class mainMenu : MonoBehaviour {
 			GM.initializeSelectedMap(); //initializes the graph 
 
 			GM.mapGen.preserveFinalMap( GM.finalMapChoice ); // preserves the choice 
+			GM.villageManager.networkView.RPC("DontDestroyManagers", RPCMode.AllBuffered, GM.villageManager.gameObject.networkView.viewID);
+
+			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
+			tileManager.networkView.RPC("DontDestroyManagers", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
 		}
 		List<Player> players = GM.getPlayers();
 		GM.createNewGame();
