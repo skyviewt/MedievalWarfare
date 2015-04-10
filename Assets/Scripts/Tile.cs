@@ -263,7 +263,7 @@ public class Tile : MonoBehaviour
 		// 0 is the neutral color
 		if( color == 0 )
 		{
-			gameObject.renderer.material.color = Color.clear;
+			gameObject.renderer.material.color = Color.white;
 		}
 		else if( color == 1 )
 		{
