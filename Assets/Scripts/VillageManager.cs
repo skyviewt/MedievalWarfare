@@ -242,7 +242,7 @@ public class VillageManager : MonoBehaviour {
 			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
 			Village v = newTown.GetComponent<Village>();
 			//tileLocation.replace (newTown);
-			tileLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,newTown.networkView.viewID);
+			tileLocation.networkView.RPC ("switchTilePrefab",RPCMode.AllBuffered,newTown.networkView.viewID);
 			v.addRegion (region); //adds T<>V and any U<>V
 
 //			v.setLocation (tileLocation);

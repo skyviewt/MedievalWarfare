@@ -71,7 +71,11 @@ public class Tile : MonoBehaviour
 		prefab = Instantiate(TreePrefab, new Vector3(this.point.x, 0.15f, this.point.y), TreePrefab.transform.rotation) as GameObject;
 		this.setLandType( LandType.Trees );
 	}
-
+	[RPC]
+	void switchTilePrefab(NetworkViewID gameobjectID)
+	{
+		this.prefab = GameObject.Find (gameobjectID).gameObject;
+	}
 	public bool checkVillagePrefab()
 	{
 		if (prefab == null) 
