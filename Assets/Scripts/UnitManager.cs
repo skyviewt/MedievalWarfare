@@ -82,7 +82,8 @@ public class UnitManager : MonoBehaviour {
 							// kill enemy unit, remove it from tile, remove it from village, perform move gets called after.
 							destVillage.gameObject.networkView.RPC ("removeUnitNet",RPCMode.AllBuffered,destUnit.gameObject.networkView.viewID);
 							dest.gameObject.networkView.RPC ("setOccupyingUnitNet",RPCMode.AllBuffered,unit.gameObject.networkView.viewID);
-							gameObject.networkView.RPC ("destroyUnitNet",RPCMode.AllBuffered,unit.gameObject.networkView.viewID);
+							gameObject.networkView.RPC ("destroyUnitNet",RPCMode.AllBuffered,destUnit.gameObject.networkView.viewID);
+
 						} else {
 							gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
 							return;
