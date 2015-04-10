@@ -440,6 +440,8 @@ public class SaveLoad : MonoBehaviour {
 				//actiontypes, gold, wood, wage, .....
 				int tp = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vType);
 				newVillage.networkView.RPC("setVillageTypeNet", RPCMode.AllBuffered, tp);
+				//switchPrefab:
+				newVillage.networkView.RPC ("switchPrefabNet", RPCMode.AllBuffered, tp);
 
 				int villagegold = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vGold);
 				newVillage.networkView.RPC("setGoldNet", RPCMode.AllBuffered, villagegold);
