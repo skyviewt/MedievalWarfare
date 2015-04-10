@@ -66,10 +66,11 @@ public class InGameGUI : MonoBehaviour {
 	
 	//PLEASE READ TO UNDERSTAND HOW ENDING A TURN WORKS:
 	// When the current player ends his turn:
-	// 1. [RPC] to all clients to disable their GUIs
+	// 1. [RPC] disable everyones GUIs
 	// 2. [LOCAL] find the next player in turn to play
 	// 3. [RPC] to all clients to set currentTurn of Game.cs to nextPlayer
-	// 4.
+	// 4. [RPC] initializes the 
+
 	public void endTurnPressed()
 	{	
 		Debug.Log ("End Turn Pressed");
