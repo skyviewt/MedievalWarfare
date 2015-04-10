@@ -7,6 +7,7 @@ public class SaveLoad : MonoBehaviour {
 	
 	public bool saveGame = false;
 	public bool loadGame = false;
+	public int numberOfSaves = PlayerPrefs.GetInt("NumberOfSaves");
 	public int saveGameID = 1;
 	
 	//Prefabs:
@@ -16,12 +17,20 @@ public class SaveLoad : MonoBehaviour {
 	public GameObject HovelPrefab;
 	public float offset = 3.0f;
 	
-	
+	//names of the saved files:
+
+	public string saveName;
+	public int saveID = 1;
+
+
+
 	//Saves the gameobjects instanciated
 	//DELETE THIS LIST EVERY TIME THE GAME LOADS
 	public List<Tile> tileList;
 	public List<Village> villageList;
 	public List<Player> playerList;
+
+
 	// Use this for initialization
 	void Start () {
 		tileList = new List<Tile>();
@@ -35,7 +44,7 @@ public class SaveLoad : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (saveGame) {
-			saveThisGame(saveGameID);
+			saveThisGame(saveName);
 
 			saveGame = false;
 		}
@@ -45,14 +54,32 @@ public class SaveLoad : MonoBehaviour {
 			loadGame = false;
 		}
 	}
+
+	public int saveNumber(){
+		return PlayerPrefs.GetInt("NumberOfSaves");
+	}
+
 	
-	public void saveThisGame(int gameID){
-		saveTiles(gameID);
+	public void saveThisGame(string name){
+		//get number of saves:
+		int numberOfSaves = PlayerPrefs.GetInt("NumberOfSaves");
+
+		if (numberOfSaves >= 10) {
+			Debug.LogError("Max number of games exceeded");
+		}
+
+		//The saveID is incremented and is used as id:
+		int saveID = numberOfSaves + 1;
+		PlayerPrefs.SetInt ("NumberOfSaves", saveID);
+		//set the name to ID
+		PlayerPrefs.SetString ("NameByID"+saveID, name);
+
+		saveTiles(saveID.ToString());
 		//savePlayerAndVillages ();
 	}
 	
 	public void loadThisGame(int gameID){
-		loadTiles(gameID);
+		loadTiles(gameID.ToString());
 		//loadPlayerAndVillages ();
 		tileList = new List<Tile>();
 		villageList = new List<Village>();
@@ -60,13 +87,13 @@ public class SaveLoad : MonoBehaviour {
 	}
 	
 	
-	public void saveTiles(int gameID){
+	public void saveTiles(string gameID){
 		//BE CAREFUL!!!!!! DELETES EVERYTHING
 		PlayerPrefs.DeleteAll();
 		
 		Debug.Log ("Saving Tiles!!");
 		GameObject[] tileGO = GameObject.FindGameObjectsWithTag("Grass");
-		string id = "1";
+		string id = gameID;
 		string name = "savedName";
 		string tileNB = "tNB";
 		string land = "LandType";
@@ -107,8 +134,8 @@ public class SaveLoad : MonoBehaviour {
 		}
 	}
 	
-	public void loadTiles(int gameID){
-		string id = "1";
+	public void loadTiles(string gameID){
+		string id = gameID;
 		string name = "savedName";
 		string tileNB = "tNB";
 		string land = "LandType";
@@ -170,9 +197,9 @@ public class SaveLoad : MonoBehaviour {
 		
 	}
 	
-	public void savePlayerAndVillages(){
+	public void savePlayerAndVillages(int gameID){
 		//player data names
-		string id = "1";
+		string id = gameID.ToString();
 		string name = "savedName";
 		string pID = "PlayerID";
 		string pNum = "NumberOfPlayers";
@@ -221,13 +248,52 @@ public class SaveLoad : MonoBehaviour {
 
 
 		}
-
-
 	}
 
-	public void loadPlayerAndVillages(){
+	public void setsNeighbors(Tile[] tiles)
+	{	
+		foreach(Tile curr in tiles)
+		{
+			foreach (Tile tmp in tiles)
+			{			
+				if(curr.point.x == tmp.point.x + 1 && curr.point.y == tmp.point.y)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				if(curr.point.x == tmp.point.x - 1 && curr.point.y == tmp.point.y)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				
+				if(curr.point.x == tmp.point.x + 0.5f && curr.point.y == tmp.point.y + 0.75f)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				if(curr.point.x == tmp.point.x + 0.5f && curr.point.y == tmp.point.y - 0.75f)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				if(curr.point.x == tmp.point.x - 0.5f && curr.point.y == tmp.point.y + 0.75f)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				if(curr.point.x == tmp.point.x - 0.5f && curr.point.y == tmp.point.y - 0.75f)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+			}			
+		}
+	}
+	
+	
+	public void loadPlayerAndVillages(int gameID){
 		//player data names
-		string id = "1";
+		string id = gameID.ToString();
 		string name = "savedName";
 		string pID = "PlayerID";
 		string pNum = "NumberOfPlayers";
