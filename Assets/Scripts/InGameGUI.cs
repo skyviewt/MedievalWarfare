@@ -63,6 +63,10 @@ public class InGameGUI : MonoBehaviour {
 		ErrorCanvas.enabled = false;
 		disableAllCanvases ();
 		myTurn = gameManager.getLocalTurn ();
+		if (myTurn == 0) 
+		{
+			gameObject.networkView.RPC ("updateEndTurnButtonsNet",RPCMode.AllBuffered);
+		}
 	}
 	
 	//PLEASE READ TO UNDERSTAND HOW ENDING A TURN WORKS:
@@ -77,8 +81,10 @@ public class InGameGUI : MonoBehaviour {
 		Debug.Log ("End Turn Pressed");
 		gameObject.networkView.RPC ("disableInteractionsNet", RPCMode.AllBuffered);
 		int nextPlayer = gameManager.findNextPlayer ();
+		Debug.Log ("nextplayer number: "+ nextPlayer);
 		gameManager.setNextPlayer(nextPlayer);
 		gameManager.initializeNextPlayersVillages();
+		gameManager.updateTurnsPlayed();
 		this.networkView.RPC ("updateEndTurnButtonsNet", RPCMode.AllBuffered);
 		gameObject.networkView.RPC ("enableInteractionsNet", RPCMode.AllBuffered);
 	}
@@ -389,6 +395,7 @@ public class InGameGUI : MonoBehaviour {
 		_move = null;
 		_Tile = null;
 		_isAUnitSelected = false;
+		_isACannonSelected = false;
 		_Village = null;
 		_isVillageSelected = false;
 	}
@@ -424,7 +431,7 @@ public class InGameGUI : MonoBehaviour {
 						_RegionText.text = redrawRegion.ToString();
 						_UnitsText.text = redrawUnits.ToString();
 						
-						if(myTurn == turnOrder) //&& owningPlayer == localPlayer)
+						if(myTurn == turnOrder && owningPlayer == localPlayer)
 						{
 							if(action == VillageActionType.ReadyForOrders)
 							{
@@ -457,7 +464,7 @@ public class InGameGUI : MonoBehaviour {
 						_RegionText.text = redrawRegion.ToString();
 						_UnitsText.text = redrawUnits.ToString();
 						
-						if(myTurn == turnOrder) //&& owningPlayer == localPlayer)
+						if(myTurn == turnOrder && owningPlayer == localPlayer)
 						{
 							if(action == UnitActionType.ReadyForOrders || action == UnitActionType.Moved)
 							{
@@ -476,7 +483,7 @@ public class InGameGUI : MonoBehaviour {
 						if (_isAUnitSelected == true){
 							ErrorCanvas.enabled = true;
 							validateMove(hit);
-						} else if (_isAUnitSelected == true){
+						} else if (_isACannonSelected == true){
 							ErrorCanvas.enabled = true;
 							validateAttack(hit);
 						} else if (_isVillageSelected==true){

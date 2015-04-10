@@ -83,6 +83,11 @@ public class Game : MonoBehaviour
 	{
 		this.turnsPlayed = turnsPlayed;
 	}
+	[RPC]
+	void incrementTurnsPlayedInGameNet()
+	{
+		this.turnsPlayed++;
+	}
 
 	[RPC]
 	void setNextPlayerNet(int nextPlayer)

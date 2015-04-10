@@ -126,7 +126,6 @@ public class GameManager : MonoBehaviour {
 	
 	public void createNewGame ()
 	{
-
 		game.gameObject.networkView.RPC ("setMap",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("setPlayers",RPCMode.AllBuffered);
 		game.gameObject.networkView.RPC ("initializeStatuses",RPCMode.AllBuffered);
@@ -152,13 +151,27 @@ public class GameManager : MonoBehaviour {
 		game.gameObject.networkView.RPC ("setNextPlayerNet", RPCMode.AllBuffered, nextTurn);
 	}
 
+
+
+	public void updateTurnsPlayed()
+	{
+		game.gameObject.networkView.RPC ("incrementTurnsPlayedInGameNet", RPCMode.AllBuffered);
+		gameObject.networkView.RPC ("updateTurnsPlayedInManagerNet", RPCMode.AllBuffered);
+	}
+
+	[RPC]
+	void updateTurnsPlayedInManagerNet()
+	{
+		this.turnsSoFar = game.getTurnsPlayed ();
+	}
+
 	public int findNextPlayer()
 	{
 		int currentTurn = game.getCurrentTurn();
 		int numberOfPlayers = game.getPlayers().Count;
 		List<PlayerStatus> playerStatuses = game.getPlayerStatuses();
 		
-		for(int i = 0; i < numberOfPlayers; i++)
+		for(int i = 1; i <= numberOfPlayers; i++)
 		{
 			int nextPlayerTurn = (currentTurn + i) % numberOfPlayers;
 			if(playerStatuses[nextPlayerTurn] == PlayerStatus.PLAYING)
@@ -166,10 +179,6 @@ public class GameManager : MonoBehaviour {
 				Debug.Log ("Next Player Turn is: " + nextPlayerTurn);
 				Debug.Log ("My player turn is: " + localTurn);
 				return nextPlayerTurn;
-			}
-			else
-			{
-				continue;
 			}
 		}
 		Debug.Log ("this shouldnt get printed");
@@ -246,9 +255,7 @@ public class GameManager : MonoBehaviour {
 			Debug.Log (gameGUI);
 		}
 		if (printList) {
-			foreach (Player p in players){
-				print (p.getName ());
-			}
+			print (localPlayer.getName ());
 			printList = false;
 		}
 	}
