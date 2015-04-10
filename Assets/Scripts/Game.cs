@@ -20,7 +20,18 @@ public class Game : MonoBehaviour
 	private int currentTurn;
 	private int turnsPlayed;
 	private GameManager GM;
-	
+	public bool printList;
+
+
+	void Update(){
+		if (printList) {
+			foreach (Player p in players){
+				print (p.getName ());
+			}
+			printList = false;
+		}
+	}
+
 	//constructor
 //	public static Game CreateComponent ( List<Player> participants, Graph map,  GameObject g) 
 //	{
