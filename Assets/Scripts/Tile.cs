@@ -345,4 +345,9 @@ public class Tile : MonoBehaviour
 		}
 	}
 
+	[RPC]
+	public void setStructureNet(Structure s){
+		occupyingStructure = s;
+	}
+
 }

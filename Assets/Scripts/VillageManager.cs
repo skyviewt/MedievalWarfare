@@ -448,20 +448,16 @@ public class VillageManager : MonoBehaviour {
 
 	}
 
-	//TODO needs networking guuuuuuuuh
-	[RPC]
+	//TODO networking good?
 	public void buildTower(NetworkViewID village, NetworkViewID tile)
 	{
 		Village v = NetworkView.Find (village).gameObject.GetComponent<Village>();
 		Tile t = NetworkView.Find (tile).gameObject.GetComponent<Tile>();
 		GameObject tower = Network.Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity, 0) as GameObject;
-		tower.transform.localScale = new Vector3 (0.03f,0.03f,0.03f);
-		tower.transform.eulerAngles = new Vector3(-90,0,0);
-
+		tower.gameObject.networkView.RPC("initTower",RPCMode.AllBuffered,v.networkView.viewID,t.networkView.viewID );
 		Structure s = tower.GetComponent<Structure> ();
-		s.myVillage = v;
-		t.replace (tower);
-		t.setStructure (s);
+		t.gameObject.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, tower.networkView.viewID);
+		t.gameObject.networkView.RPC ("setStructureNet", RPCMode.AllBuffered, s);
 		v.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,-5);
 	}
 
