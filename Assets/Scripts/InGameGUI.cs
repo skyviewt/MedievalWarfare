@@ -78,7 +78,7 @@ public class InGameGUI : MonoBehaviour {
 		int nextPlayer = gameManager.findNextPlayer ();
 		gameManager.setNextPlayer(nextPlayer);
 		gameManager.initializeNextPlayersVillages();
-		this.networkView.RPC ("setTurnButton", RPCMode.AllBuffered);
+		this.networkView.RPC ("updateEndTurnButtonsNet", RPCMode.AllBuffered);
 		gameObject.networkView.RPC ("enableInteractionsNet", RPCMode.AllBuffered);
 	}
 
@@ -108,7 +108,7 @@ public class InGameGUI : MonoBehaviour {
 	}
 
 	[RPC]
-	public void setTurnButton()
+	public void updateEndTurnButtonsNet()
 	{
 		disableAllCanvases ();
 		turnOrder = gameManager.game.getCurrentTurn ();
