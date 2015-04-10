@@ -11,7 +11,7 @@ public class Player : MonoBehaviour{
 	private int wins;
 	private int losses;
 	public List<Village> myVillages;
-	private Game aGame;
+//	private Game aGame;
 	private int color;
 	public string ipAddress;
 

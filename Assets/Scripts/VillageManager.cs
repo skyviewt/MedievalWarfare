@@ -130,6 +130,7 @@ public class VillageManager : MonoBehaviour {
 	}
 	public void plunderVillage (Village pluderingVillage, Village plunderedVillage, Tile dest)
 	{
+		Debug.Log ("in plunder village");
 		//determine amount to steal
 		int wood = plunderedVillage.getWood ();
 		int gold = plunderedVillage.getGold ();
@@ -218,8 +219,10 @@ public class VillageManager : MonoBehaviour {
 			oldLocation.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
 			GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
 			villageToSplit.retireAllUnits();
+			Debug.Log ("after retire all units");
 			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID,p.getColor());
 			oldLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
+			Debug.Log ("after lstRegions <= 0");
 			return; //stop here if no region is big enough
 		}
 
@@ -305,6 +308,10 @@ public class VillageManager : MonoBehaviour {
 		Debug.Log ("villageToSplit: "+villageToSplit.getPlayer ().getName ());
 		p.networkView.RPC ("removeVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID, p.getColor ());
 		gameObject.networkView.RPC ("destroyVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID);
+
+		GameManager GM = GameObject.Find ("preserveGM").gameObject.GetComponent<GameManager>();
+		GM.checkLoss (p);
+		GM.checkWin ();
 	}
 
 	// de-color, kill units, destroy structures, etc
