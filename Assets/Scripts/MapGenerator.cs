@@ -233,7 +233,8 @@ public class MapGenerator : MonoBehaviour {
 
 	public void initializeColorAndVillagesOnMap(List<Player> players, int i, Graph map)
 	{
-	
+		GameObject gm = GameObject.Find ("preserveGM");
+
 		foreach ( Tile t in map.getVertices() )
 		{
 			int color = rand.Next(0,players.Count+1);
@@ -283,7 +284,7 @@ public class MapGenerator : MonoBehaviour {
 					hovel.networkView.RPC ("updateControlledRegionNet", RPCMode.AllBuffered);
 
 					//set controlling player of the tile over the network
-					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, players, color);
+					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gm.networkView.viewID, color);
 
 					hovel.networkView.RPC("addGoldNet", RPCMode.AllBuffered, 200);
 
