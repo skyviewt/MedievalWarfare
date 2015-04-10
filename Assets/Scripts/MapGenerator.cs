@@ -359,8 +359,8 @@ public class MapGenerator : MonoBehaviour {
 			{
 				t.gameObject.networkView.RPC("destroyPrefab", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 			}
-			//tileManager.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
-			t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			tileManager.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			//t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
 
 		unwantedMap = null;
