@@ -228,10 +228,10 @@ public class Tile : MonoBehaviour
 		this.myType = (LandType)type;
 	}
 
-//	[RPC]
-//	void destroyTile(NetworkViewID tileid){
-//		Destroy (NetworkView.Find (tileid).gameObject);
-//	}
+	[RPC]
+	void destroyTile(NetworkViewID tileid){
+		Destroy (NetworkView.Find (tileid).gameObject);
+	}
 
 	[RPC]
 	void setPrefab (NetworkViewID prefID ){

@@ -285,7 +285,7 @@ public class MapGenerator : MonoBehaviour {
 					hovel.networkView.RPC ("updateControlledRegionNet", RPCMode.AllBuffered);
 
 					//set controlling player of the tile over the network
-					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gameObject.networkView.viewID, color);
+					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, players, color);
 
 					hovel.networkView.RPC("addGoldNet", RPCMode.AllBuffered, 200);
 
