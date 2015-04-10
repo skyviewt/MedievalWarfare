@@ -114,11 +114,7 @@ public class GameManager : MonoBehaviour {
 	{
 		return this.finalMap;
 	}
-
-	public void preserveMostVotedMap()
-	{
-		mapGen.gameObject.networkView.RPC("preserveFinalMap", RPCMode.AllBuffered, finalMapChoice);
-	}
+	
 
 	[RPC]
 	public void setFinalMap(int finalMapChoice)

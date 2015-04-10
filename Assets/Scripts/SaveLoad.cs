@@ -91,7 +91,7 @@ public class SaveLoad : MonoBehaviour {
 			//set color:
 			PlayerPrefs.SetInt(id+name+tileNB+startIndex+color, curTile.getColor());
 			//setRoad:
-			if (curTile.isRoad){
+			if (curTile.hasRoad){
 				PlayerPrefs.SetInt(id+name+tileNB+startIndex+road, 1);
 			} else{
 				PlayerPrefs.SetInt(id+name+tileNB+startIndex+road, 0);

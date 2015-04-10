@@ -462,16 +462,16 @@ public class mainMenu : MonoBehaviour {
 	// 4. 
 
 	public void launchGamePressed()
-	{	
-		List<Player> players = GM.getPlayers();
-		Debug.Log (players.Count);
-		Graph finalMap = GM.mapGen.getMap(GM.finalMapChoice);
-		GM.gameObject.networkView.RPC("setFinalMap",RPCMode.AllBuffered, GM.finalMapChoice);
-		GM.initializeSelectedMap(); //initializes the graph 
-		if(GM.isServer)
+	{	if(GM.isServer)
 		{
-			GM.preserveMostVotedMap(); // preserves the choice 
+			Graph finalMap = GM.mapGen.getMap(GM.finalMapChoice);
+			print ("final map choice" + GM.finalMapChoice);
+			GM.networkView.RPC("setFinalMap",RPCMode.AllBuffered, GM.finalMapChoice);
+			GM.initializeSelectedMap(); //initializes the graph 
+
+			GM.mapGen.preserveFinalMap( GM.finalMapChoice ); // preserves the choice 
 		}
+		List<Player> players = GM.getPlayers();
 		GM.createNewGame();
 		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.
 		for (int i = 0; i < Network.connections.Length; i++) {
@@ -484,6 +484,7 @@ public class mainMenu : MonoBehaviour {
 	{
 		//i.e load saved game, TODO
 	}
+
 //	void OnPlayerConnected()
 //	{
 //		GM.networkView.RPC ("addPlayerNet", 

@@ -581,7 +581,7 @@ public class InGameGUI : MonoBehaviour {
 				this.displayError ("Towers go AROUND your village");
 			} else {
 				//villageManager.networkView.RPC ("buildTowerNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID, _Tile.gameObject.networkView.viewID);
-				villageManager.buildTower(v, selection);
+				//villageManager.buildTower(v, selection);
 			}
 			//selection.gameObject.renderer.material.color = Color.yellow;
 		}
@@ -595,7 +595,7 @@ public class InGameGUI : MonoBehaviour {
 		Tile t = u.getLocation ();
 		if (u.getUnitType () != UnitType.PEASANT) {
 			this.displayError ("Only peasants can build roads");
-		} else if (t.checkRoad ()) {
+		} else if (t.hasRoad) {
 			this.displayError ("This tile already has a road");
 		} else {
 			//t.buildRoad ();
