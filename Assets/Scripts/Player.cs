@@ -58,7 +58,13 @@ public class Player : MonoBehaviour{
 		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
 		myVillages.Add (vil);
 	}
+	[RPC]
+	void removeVillageNet(NetworkViewID villageID)
+	{
+		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
+		myVillages.Remove (vil);
 
+	}
 	public void addWin()
 	{
 		this.wins++;

@@ -225,6 +225,12 @@ public class Tile : MonoBehaviour
 	{
 		this.occupyingUnit = null;
 	}
+	[RPC]
+	void setOccupyingUnitNet(NetworkViewID unitID)
+	{
+		Unit unit = NetworkView.Find (unitID).gameObject.GetComponent<Unit> ();
+		this.occupyingUnit = unit;
+	}
 
 	[RPC]
 	public void setLandTypeNet(int type)
@@ -321,7 +327,7 @@ public class Tile : MonoBehaviour
 	[RPC]
 	//sets the village of the tile to new village attached to that gameObject
 	void setVillageNet(NetworkViewID villageID){
-		myVillage = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
+		this.myVillage = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
 	}
 
 	[RPC]
@@ -343,7 +349,7 @@ public class Tile : MonoBehaviour
 	}
 
 	[RPC]
-	public void setRoadNet(bool b)
+	void setRoadNet(bool b)
 	{
 		if (b==true) {
 			GameObject road = Network.Instantiate (roadPrefab, new Vector3 (point.x, .11f, point.y), roadPrefab.transform.rotation, 0) as GameObject;
@@ -356,8 +362,13 @@ public class Tile : MonoBehaviour
 	}
 
 	[RPC]
-	public void setStructureNet(Structure s){
+	void setStructureNet(Structure s){
 		occupyingStructure = s;
+	}
+	[RPC]
+	void removeStructureNet()
+	{
+		occupyingStructure = null;
 	}
 
 }

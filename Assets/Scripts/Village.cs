@@ -295,14 +295,18 @@ public class Village : MonoBehaviour {
 	{	
 		//doing exactly what the gameManager.addregion(List<Tile>, Village village) is doing
 		foreach (Tile t in regions) {
-			t.setVillage(this);
-			controlledRegion.Add(t);
+			//t.setVillage(this);
+			t.gameObject.networkView.RPC ("setVillageNet",RPCMode.AllBuffered,gameObject.networkView.viewID);
+			//controlledRegion.Add(t);
+			this.gameObject.networkView.RPC("addTileNet",RPCMode.AllBuffered,t.gameObject.networkView.viewID);
 
 			//if there is a unit on the tile
 			Unit u = t.getOccupyingUnit();
 			if(u != null && u.getVillage()!=this){
-				u.setVillage(this);
-				supportedUnits.Add(u);
+//				u.setVillage(this);
+				u.gameObject.networkView.RPC ("setVillageNet",RPCMode.AllBuffered,gameObject.networkView.viewID);
+				//supportedUnits.Add(u);
+				gameObject.networkView.RPC ("addUnitNet",RPCMode.AllBuffered,u.gameObject.networkView.viewID);
 			}
 		}
 	}

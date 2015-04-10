@@ -89,23 +89,35 @@ public class VillageManager : MonoBehaviour {
 
 		foreach (Village village in villagesToMerge) {
 			if (village != biggestVillage) {
-				biggestVillage.addGold (village.getGold ());
-				biggestVillage.addWood (village.getWood ());
+//				biggestVillage.addGold (village.getGold ());
+				biggestVillage.gameObject.networkView.RPC ("addGoldNet",RPCMode.AllBuffered,village.getGold ());
+//				biggestVillage.addWood (village.getWood ());
+				biggestVillage.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,village.getGold ());
 				biggestVillage.addRegion(village.getControlledRegion ());
 				//foreach (Unit u in village.getControlledUnits ()){
 				//	biggestVillage.addUnit (u);
 				//}
 				// remove prefab
 				Tile villageLocation = village.getLocatedAt();
-				Destroy (villageLocation.prefab);
-				villageLocation.setLandType (LandType.Meadow);
-				villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
-
-				myPlayer.myVillages.Remove (village);
-				Destroy (village.gameObject);
-
+				//Destroy (villageLocation.prefab);
+				villageLocation.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+				//villageLocation.setLandType (LandType.Meadow);
+				villageLocation.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
+				GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
+				villageLocation.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
+				//villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+				//myPlayer.myVillages.Remove (village);
+				myPlayer.gameObject.networkView.RPC("removeVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID);
+				//Destroy (village.gameObject.networkView.viewID);
+				gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID);
 			}
 		}
+	}
+	[RPC]
+	void destroyVillageNet(NetworkViewID villageObjectID)
+	{
+		GameObject vilObject = NetworkView.Find (villageObjectID).gameObject;
+		Destroy (vilObject);
 	}
 	[RPC]
 	void DontDestroyVillageManager(NetworkViewID mID)

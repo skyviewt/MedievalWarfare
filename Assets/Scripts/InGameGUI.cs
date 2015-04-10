@@ -234,7 +234,7 @@ public class InGameGUI : MonoBehaviour {
 			}
 			else if(landType == LandType.Grass)
 			{
-				unitManager.gameObject.networkView.RPC("cultivateMeadowNet",RPCMode.AllBuffered,u.gameObject.networkView.viewID);
+				unitManager.cultivateMeadow (u);
 			}
 			else if (landType == LandType.Meadow)
 			{
@@ -600,8 +600,7 @@ public class InGameGUI : MonoBehaviour {
 		} else if (t.hasRoad) {
 			this.displayError ("This tile already has a road");
 		} else {
-			//t.buildRoad ();
-			u.setAction(UnitActionType.BuildingRoad);
+			unitManager.buildRoad (u);
 		}
 
 		UnitCanvas.enabled = false;

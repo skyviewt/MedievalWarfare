@@ -140,7 +140,12 @@ public class Unit : MonoBehaviour {
 	{
 		
 	}
-	
+	[RPC]
+	void setVillageNet(NetworkViewID villageID)
+	{
+		this.myVillage = NetworkView.Find (villageID).gameObject.GetComponent<Village> ();
+	}
+
 	public void setVillage(Village v)
 	{
 		this.myVillage = v;
@@ -160,21 +165,25 @@ public class Unit : MonoBehaviour {
 	{
 		return this.myType;
 	}
-	
-	public void setLocation(Tile t)
-	{
-		this.locatedAt = t;
-	}
-	public void setAction(UnitActionType action)
-	{
-		this.myAction = action;
-	}
 
 	[RPC]
-	public void setActionNet(int action)
+	void setLocationNet(NetworkViewID tileID)
+	{
+		Tile t = NetworkView.Find (tileID).gameObject.GetComponent<Tile> ();
+		this.locatedAt = t;
+	}
+	[RPC]
+	void setActionNet(int action)
 	{
 		this.myAction = (UnitActionType)action;
 	}
+
+//	public void setAction(UnitActionType action)
+//	{
+//		this.myAction = action;
+//	}
+
+
 	
 	public UnitActionType getAction()
 	{
