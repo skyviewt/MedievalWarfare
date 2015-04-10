@@ -483,15 +483,21 @@ public class VillageManager : MonoBehaviour {
 			else if (currentUnitAction == UnitActionType.FinishedCultivating)
 			{
 				Tile tile = u.getLocation();
-				tile.setLandType(LandType.Meadow);
-				tile.prefab = Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation) as GameObject;
+				tile.networkView.RPC("setLandTypeNet", RPCMode.AllBuffered, (int) LandType.Meadow);
+				GameObject meadow = Network.Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation,0) as GameObject;
+				tile.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, meadow.networkView.viewID);
+				//tile.setLandType(LandType.Meadow);
+				//tile.prefab = Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation) as GameObject;
 				u.setAction (UnitActionType.ReadyForOrders);
 			}
 			else if(currentUnitAction == UnitActionType.BuildingRoad)
 			{
 				Tile tile = u.getLocation();
-				tile.isRoad = true;
-				tile.prefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
+				GameObject road = Network.Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation,0) as GameObject;
+				tile.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, road.networkView.viewID);
+
+				//tile.isRoad = true;
+				//tile.prefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
 				u.setAction (UnitActionType.ReadyForOrders);
 			}
 			else if(currentUnitAction == UnitActionType.UpgradingCombining)
