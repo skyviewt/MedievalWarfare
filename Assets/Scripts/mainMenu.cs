@@ -93,6 +93,7 @@ public class mainMenu : MonoBehaviour {
 		cam2.enabled = false;
 		resCam1.enabled = false;
 		resCam2.enabled = false;
+		loadCam.enabled = false;
 		ErrorLobbyMsg.enabled = false;
 		ErrorJoinRegisterLoginMsg.enabled = false;
 		LaunchText.GetComponent<Button>().enabled = false;
@@ -243,11 +244,21 @@ public class mainMenu : MonoBehaviour {
 		}
 
 	}
+
+	void resetSavedGameTexts()
+	{
+		for (int i =0; i<gameNameTexts.Count; i++) 
+		{
+			gameNameTexts[i].text = ("Game " + i.ToString() + ": ");	
+		}
+	}
+
 	public void actualLoadGamePressed()
 	{
+		resetSavedGameTexts ();
 		isALoadGame = true;
 		LoadGameCanvas.enabled = false;
-		loadThisGame (gameLoadChoice);
+//		loadThisGame (gameLoadChoice);
 		showLobby();
 	}
 	public void actualRegistrationPressed()
@@ -309,7 +320,7 @@ public class mainMenu : MonoBehaviour {
 	{
 		for (int i =0; i<gameNameTexts.Count; i++) 
 		{
-			gameNameTexts[i].text += getSaveName(i+1);	
+//			gameNameTexts[i].text += getSaveName(i+1);	
 		}
 		LoadGameCanvas.enabled = true;
 	}
