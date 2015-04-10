@@ -231,7 +231,7 @@ public class MapGenerator : MonoBehaviour {
 	
 		foreach ( Tile t in map.getVertices() )
 		{
-			print ("the gm has players: "+ players.Count);
+			print ("player count in GM: "+ players.Count);
 			int color = rand.Next(0,players.Count+1);
 			print ("rand color: "+color);
 			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
@@ -279,17 +279,14 @@ public class MapGenerator : MonoBehaviour {
 					//update the tile regions: Not done over a network, The client at this point should have all the necessary info from controlledRegion
 					hovel.networkView.RPC ("updateControlledRegionNet", RPCMode.AllBuffered);
 
-					//TODO: Set Player (Controlled by), Currently NOT set over network
-					//newVillage.setControlledBy(p);
+					//set controlling player of the tile over the network
 					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gameObject.networkView.viewID, color);
 
-					//newVillage.addGold( 200 );
 					hovel.networkView.RPC("addGoldNet", RPCMode.AllBuffered, 200);
-					//newVillage.addWood ( 200);
+
 					hovel.networkView.RPC("addWoodNet", RPCMode.AllBuffered, 200);
 
-					//TODO: add village to player over network
-					//p.addVillage( newVillage );
+					//add village to the player
 					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
 				}
 			}

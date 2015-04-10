@@ -140,11 +140,41 @@ public class Village : MonoBehaviour {
 		gold += goldToAdd;
 	}
 	[RPC]
-	//adding wood values
 	void addWoodNet(int woodToAdd){
 		wood += woodToAdd;
 	}
-	
+	[RPC]
+	void setGoldNet(int gold)
+	{
+		this.gold = gold;
+	}
+	[RPC]
+	void setWoodNet(int wood)
+	{
+		this.wood = wood;
+	}
+
+	[RPC]
+	void setVillageTypeNet(int type)
+	{
+		myType = (VillageType) type;
+	}
+	[RPC]
+	void setVillageActionNet(int action)
+	{
+		myAction = (VillageActionType) action;
+	}
+	[RPC]
+	void setHealthNet(int health)
+	{
+		this.health = health;
+	}
+
+	[RPC]
+	void setWageNet(int wage)
+	{
+		this.wage = wage;
+	}
 	//setters and getters
 	public void setGold(int goldValue)
 	{
@@ -289,9 +319,7 @@ public class Village : MonoBehaviour {
 		}
 		return totalWage;
 	}
-
-
-	//TODO think this needs to be done over the network
+	
 	public void retireAllUnits()
 	{
 		foreach (Unit u in supportedUnits) {

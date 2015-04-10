@@ -455,6 +455,11 @@ public class mainMenu : MonoBehaviour {
 		                    Network.player.ipAddress);
 	}
 
+	// PLEASE READ TO UNDERSTAND HOW A GAME IS LAUNCHED FROM SCRATCH
+	// 1. [host] gets the list of players from GM and the map with the most votes
+	// 2. [RPC] to all clients to tell them which map was selected
+	// 3. [host] performs [RPC] calls for initializing the assets on the graph
+	// 4. 
 
 	public void launchGamePressed()
 	{	if(GM.isServer)
@@ -470,7 +475,7 @@ public class mainMenu : MonoBehaviour {
 		GM.createNewGame();
 		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.
 		for (int i = 0; i < Network.connections.Length; i++) {
-			GM.networkView.RPC ("setLocalTurnAndPlayer",Network.connections[i],i);
+			GM.gameObject.networkView.RPC ("setLocalTurnAndPlayer",Network.connections[i],i);
 		}
 		this.networkView.RPC("startLevel", RPCMode.AllBuffered);
 	}

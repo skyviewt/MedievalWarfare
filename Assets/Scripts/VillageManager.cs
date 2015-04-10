@@ -461,14 +461,11 @@ public class VillageManager : MonoBehaviour {
 		List<Tile> controlledRegion = v.getControlledRegion ();
 		foreach (Tile tile in controlledRegion) {
 			LandType currentTileType = tile.getLandType ();
-			if (currentTileType == LandType.Tombstone) 
+			if (currentTileType == LandType.Tombstone && !tile.hasRoad) 
 			{
-				if (!tile.checkRoad()){
-					tile.prefab = Instantiate (treePrefab, new Vector3 (tile.point.x, 0, tile.point.y), treePrefab.transform.rotation) as GameObject;
-					tile.prefab.transform.eulerAngles = new Vector3 (0, Random.Range (0, 360), 0); //give it a random rotation		
-					tile.replace (tile.prefab);
-					tile.setLandType (LandType.Trees);
-				}
+				tile.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered, (int)LandType.Trees);
+				GameObject tree = Network.Instantiate (treePrefab, new Vector3 (tile.point.x, 0, tile.point.y), treePrefab.transform.rotation, 0) as GameObject;
+				tile.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered, tree.networkView.viewID);
 			}
 		}
 	}
@@ -486,15 +483,19 @@ public class VillageManager : MonoBehaviour {
 			else if (currentUnitAction == UnitActionType.FinishedCultivating)
 			{
 				Tile tile = u.getLocation();
-				tile.setLandType(LandType.Meadow);
-				tile.prefab = Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation) as GameObject;
+				tile.networkView.RPC("setLandTypeNet", RPCMode.AllBuffered, (int) LandType.Meadow);
+				GameObject meadow = Network.Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation,0) as GameObject;
+				tile.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, meadow.networkView.viewID);
+				//tile.setLandType(LandType.Meadow);
+				//tile.prefab = Instantiate(meadowPrefab, new Vector3 (tile.point.x, 0, tile.point.y), meadowPrefab.transform.rotation) as GameObject;
 				u.setAction (UnitActionType.ReadyForOrders);
 			}
 			else if(currentUnitAction == UnitActionType.BuildingRoad)
 			{
 				Tile tile = u.getLocation();
-				tile.isRoad = true;
-				tile.prefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
+				tile.networkView.RPC ("setRoadNet", RPCMode.AllBuffered, true);
+				//tile.isRoad = true;
+				//tile.prefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
 				u.setAction (UnitActionType.ReadyForOrders);
 			}
 			else if(currentUnitAction == UnitActionType.UpgradingCombining)
@@ -514,34 +515,36 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType action = v.getAction ();
 		if (action == VillageActionType.StartedUpgrading) 
 		{
-			v.setAction (VillageActionType.FinishedUpgrading);
+			//v.setAction (VillageActionType.FinishedUpgrading);
+			v.gameObject.networkView.RPC ("setVillageActionNet",RPCMode.AllBuffered,(int)VillageActionType.FinishedUpgrading);
 		} 
 		else if (action == VillageActionType.FinishedUpgrading) 
 		{
-			v.setAction (VillageActionType.ReadyForOrders);
-			//should update the village prefab here instead of immediately 
+			//v.setAction (VillageActionType.ReadyForOrders);
+			v.gameObject.networkView.RPC ("setVillageActionNet",RPCMode.AllBuffered,(int)VillageActionType.ReadyForOrders);
+			//network update the prefab
 			VillageType vType = v.getMyType();
 			if (vType == VillageType.Hovel) 
 			{
 				this.transform.FindChild("Hovel").gameObject.SetActive (false);
 				this.transform.FindChild("Town").gameObject.SetActive (true);
-				v.setMyType(VillageType.Town);
-				v.health = 2;
+				v.gameObject.networkView.RPC ("setVillageTypeNet",RPCMode.AllBuffered,(int)VillageType.Town);
+				v.gameObject.networkView.RPC ("setHealthNet",RPCMode.AllBuffered,2);
 			}
 			else if (vType == VillageType.Town) 
 			{
 				transform.FindChild("Town").gameObject.SetActive (false);
 				transform.FindChild("Fort").gameObject.SetActive (true);
-				v.setMyType(VillageType.Fort);
-				v.health=5;
+				v.gameObject.networkView.RPC ("setVillageTypeNet",RPCMode.AllBuffered,(int)VillageType.Fort);
+				v.gameObject.networkView.RPC ("setHealthNet",RPCMode.AllBuffered,5);
 			}
 			else if (vType == VillageType.Fort) 
 			{
 				transform.FindChild("Fort").gameObject.SetActive (false);
 				transform.FindChild("Castle").gameObject.SetActive (true);
-				v.setMyType(VillageType.Castle);
-				v.health=10;
-				v.wage=80;
+				v.gameObject.networkView.RPC ("setVillageTypeNet",RPCMode.AllBuffered,(int)VillageType.Castle);
+				v.gameObject.networkView.RPC ("setHealthNet",RPCMode.AllBuffered,10);
+				v.gameObject.networkView.RPC ("setWageNet",RPCMode.AllBuffered,80);
 			}
 		}
 	}
@@ -555,13 +558,13 @@ public class VillageManager : MonoBehaviour {
 			LandType currentTileType = tile.getLandType();
 			if (currentTileType == LandType.Grass) 
 			{
-				v.addGold (1); //add gold by 1
+				v.gameObject.networkView.RPC ("addGoldNet",RPCMode.AllBuffered,1);
 				
 			}
 			if (currentTileType == LandType.Meadow) 
 			{
 				
-				v.addGold (2); //add gold by 2
+				v.gameObject.networkView.RPC ("addGoldNet",RPCMode.AllBuffered,2);
 			}
 		}
 	}
@@ -572,17 +575,17 @@ public class VillageManager : MonoBehaviour {
 		int villageGold = v.getGold ();
 		if (villageGold >= totalWages) { //means have enough money to pay units
 			villageGold = villageGold - totalWages;
+			v.gameObject.networkView.RPC ("setGoldNet",RPCMode.AllBuffered,villageGold);
 		} 
 		else {
 			v.retireAllUnits();
 		}
 	}
 
-	[RPC]
-	public void updateVillageNet(NetworkViewID villageID)
+
+	public void updateVillage(Village v)
 	{
 		Debug.Log ("in update village net");
-		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
 		tombstonePhase(v);
 		updateUnitActions(v);
 		updateVillageActions(v);

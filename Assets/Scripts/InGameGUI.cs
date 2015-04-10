@@ -64,13 +64,22 @@ public class InGameGUI : MonoBehaviour {
 		myTurn = gameManager.getLocalTurn ();
 	}
 	
-	//Functions on the HUD
+	//PLEASE READ TO UNDERSTAND HOW ENDING A TURN WORKS:
+	// When the current player ends his turn:
+	// 1. [RPC] disable everyones GUIs
+	// 2. [LOCAL] find the next player in turn to play
+	// 3. [RPC] to all clients to set currentTurn of Game.cs to nextPlayer
+	// 4. [RPC] initializes the 
+
 	public void endTurnPressed()
 	{	
-		Debug.Log ("inEndTurn");
-		gameManager.networkView.RPC ("setNextPlayer", RPCMode.AllBuffered,gameManager.findNextPlayer()); // disables gui interaction while map is updating
+		Debug.Log ("End Turn Pressed");
+		gameObject.networkView.RPC ("disableInteractionsNet", RPCMode.AllBuffered);
+		int nextPlayer = gameManager.findNextPlayer ();
+		gameManager.setNextPlayer(nextPlayer);
 		gameManager.initializeNextPlayersVillages();
-		this.networkView.RPC ("setTurnButton", RPCMode.AllBuffered);					//reenables gui interaction after map is updated
+		this.networkView.RPC ("updateEndTurnButtonsNet", RPCMode.AllBuffered);
+		gameObject.networkView.RPC ("enableInteractionsNet", RPCMode.AllBuffered);
 	}
 
 	public void returnToGamePressed()
@@ -87,19 +96,19 @@ public class InGameGUI : MonoBehaviour {
 	{
 
 	}
-
-
-	public void disableInteractions()
+	[RPC]
+	public void disableInteractionsNet()
 	{
 		currentlyUpdatingGame = true;
 	}
-	public void allowInteractions()
+	[RPC]
+	public void enableInteractionsNet()
 	{
-		this.currentlyUpdatingGame = false;
+		currentlyUpdatingGame = false;
 	}
 
 	[RPC]
-	public void setTurnButton()
+	public void updateEndTurnButtonsNet()
 	{
 		disableAllCanvases ();
 		turnOrder = gameManager.game.getCurrentTurn ();
@@ -115,7 +124,6 @@ public class InGameGUI : MonoBehaviour {
 			EndButton.GetComponent<Button>().interactable = false;
 		}
 		notifyTurnStart();
-		this.allowInteractions();
 	}
 
 	public void notifyTurnStart()

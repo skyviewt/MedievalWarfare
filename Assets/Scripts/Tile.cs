@@ -26,11 +26,11 @@ public class Tile : MonoBehaviour
 	public Shader outline;
 	public System.Random rand = new System.Random();
 	public GameObject prefab;
-	public GameObject roadPrefab;
-
-	public bool isRoad; // NEEDS TO GET IMPLEMENTED
+	public GameObject myRoad;
+	public bool hasRoad;
 
 	private bool visited;
+	public GameObject roadPrefab;
 
 
 	//This function should not be used, the Tile component is now always attached to a Grass Tile
@@ -201,7 +201,7 @@ public class Tile : MonoBehaviour
 	{
 		this.visited = isVisited;
 	}
-
+	/*
 	public void buildRoad()
 	{
 		this.isRoad = true;
@@ -211,7 +211,7 @@ public class Tile : MonoBehaviour
 	public bool checkRoad()
 	{
 		return this.isRoad;
-	}
+	}*/
 
 	[RPC]
 	public void setLandTypeNet(int type)
@@ -281,9 +281,10 @@ public class Tile : MonoBehaviour
 			this.getNeighbours().Add(t);
 		}
 	}
-	[RPC]
+
 	//replaces the prefab on this tile ie: replace tree with hovel
-	void replaceTilePrefabNet(NetworkViewID prefID){
+	[RPC]
+	public void replaceTilePrefabNet(NetworkViewID prefID){
 		Destroy (prefab);
 		prefab = NetworkView.Find (prefID).gameObject;
 	}
@@ -311,4 +312,18 @@ public class Tile : MonoBehaviour
 						break;
 				}
 	}
+
+	[RPC]
+	public void setRoadNet(bool b)
+	{
+		if (b==true) {
+			GameObject road = Network.Instantiate (roadPrefab, new Vector3 (point.x, .11f, point.y), roadPrefab.transform.rotation, 0) as GameObject;
+			myRoad = road;
+			hasRoad = true;
+		} else if (b==false) {
+			Destroy (myRoad);
+			hasRoad = false;
+		}
+	}
+
 }
