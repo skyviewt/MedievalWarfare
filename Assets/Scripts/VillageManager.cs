@@ -29,12 +29,12 @@ public class VillageManager : MonoBehaviour {
 
 	void Start()
 	{
-		unitManager = GameObject.Find ("UnitManager").GetComponent<UnitManager> ();
 	}
 	void Update () {
 		if( isInGame && gameGUI == null )
 		{
 			Debug.Log ("finding attachingGUI");
+			unitManager = GameObject.Find ("UnitManager").GetComponent<UnitManager> ();
 			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 			Debug.Log (gameGUI);
 		}
