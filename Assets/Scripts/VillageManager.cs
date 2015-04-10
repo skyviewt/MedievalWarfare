@@ -53,12 +53,6 @@ public class VillageManager : MonoBehaviour {
 		} 
 	}	
 
-	[RPC]
-	void upgradeVillageNet(NetworkViewID villageID){
-		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
-		upgradeVillage (v);
-	}
-	
 	public void MergeAlliedRegions(Tile newTile)
 	{
 		Village myVillage = newTile.getVillage ();

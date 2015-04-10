@@ -467,14 +467,14 @@ public class mainMenu : MonoBehaviour {
 		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
 	}
 	public void launchGamePressed()
-	{	if(GM.isServer)
+	{	
+		if(GM.isServer)
 		{
 			Graph finalMap = GM.mapGen.getMap(GM.finalMapChoice);
 			Debug.Log (finalMap);
 			print ("final map choice" + GM.finalMapChoice);
 			GM.setFinalMap(finalMap);
 			GM.initializeSelectedMap(); //initializes the graph 
-
 			GM.mapGen.preserveFinalMap( GM.finalMapChoice ); // preserves the choice 
 			GM.villageManager.networkView.RPC("DontDestroyManagers", RPCMode.AllBuffered, GM.villageManager.gameObject.networkView.viewID);
 
