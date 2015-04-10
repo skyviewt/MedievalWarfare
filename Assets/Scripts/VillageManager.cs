@@ -497,14 +497,11 @@ public class VillageManager : MonoBehaviour {
 		List<Tile> controlledRegion = v.getControlledRegion ();
 		foreach (Tile tile in controlledRegion) {
 			LandType currentTileType = tile.getLandType ();
-			if (currentTileType == LandType.Tombstone) 
+			if (currentTileType == LandType.Tombstone && !tile.checkRoad ()) 
 			{
-				tile.setLandType (LandType.Trees);
-				Destroy (tile.roadPrefab);
-				tile.roadPrefab = null; 	// TODO is this how you remove a prefab?
-				Destroy (tile.prefab); 		// TODO is this how you remove a prefab?
-//				tile.prefab = Instantiate (treePrefab, new Vector3 (tile.point.x, 0, tile.point.y), treePrefab.transform.rotation, 0) as GameObject;
-				tile.prefab.transform.eulerAngles = new Vector3 (0, Random.Range (0, 360), 0); //give it a random rotation		
+				tile.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered, (int)LandType.Trees);
+				GameObject tree = Network.Instantiate (treePrefab, new Vector3 (tile.point.x, 0, tile.point.y), treePrefab.transform.rotation, 0) as GameObject;
+				tile.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered, tree.networkView.viewID);
 			}
 		}
 	}
@@ -591,11 +588,10 @@ public class VillageManager : MonoBehaviour {
 		}
 	}
 
-	[RPC]
-	public void updateVillageNet(NetworkViewID villageID)
+
+	public void updateVillage(Village v)
 	{
 		Debug.Log ("in update village net");
-		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
 		tombstonePhase(v);
 		updateUnitActions(v);
 		updateVillageActions(v);

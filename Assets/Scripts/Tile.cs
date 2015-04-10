@@ -274,9 +274,10 @@ public class Tile : MonoBehaviour
 			this.getNeighbours().Add(t);
 		}
 	}
-	[RPC]
+
 	//replaces the prefab on this tile ie: replace tree with hovel
-	void replaceTilePrefabNet(NetworkViewID prefID){
+	[RPC]
+	public void replaceTilePrefabNet(NetworkViewID prefID){
 		Destroy (prefab);
 		prefab = NetworkView.Find (prefID).gameObject;
 	}
