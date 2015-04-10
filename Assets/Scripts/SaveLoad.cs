@@ -55,11 +55,16 @@ public class SaveLoad : MonoBehaviour {
 		}
 	}
 
+	//returns the number of saved games
 	public int saveNumber(){
 		return PlayerPrefs.GetInt("NumberOfSaves");
 	}
 
-	
+	//Get the name of the saved game with an integer
+	public string getSaveName(int saveID){
+		return PlayerPrefs.GetString ("NameByID"+saveID, name);
+	}
+
 	public void saveThisGame(string name){
 		//get number of saves:
 		int numberOfSaves = PlayerPrefs.GetInt("NumberOfSaves");
@@ -75,12 +80,12 @@ public class SaveLoad : MonoBehaviour {
 		PlayerPrefs.SetString ("NameByID"+saveID, name);
 
 		saveTiles(saveID.ToString());
-		//savePlayerAndVillages ();
+		savePlayerAndVillages (saveID.ToString());
 	}
 	
 	public void loadThisGame(int gameID){
 		loadTiles(gameID.ToString());
-		//loadPlayerAndVillages ();
+		loadPlayerAndVillages (gameID.ToString());
 		tileList = new List<Tile>();
 		villageList = new List<Village>();
 		playerList = new List<Player>();
@@ -180,8 +185,8 @@ public class SaveLoad : MonoBehaviour {
 				curtile.networkView.RPC ("setPrefab", RPCMode.AllBuffered, tpref.networkView.viewID);
 				curtile.networkView.RPC ("setLandTypeNet", RPCMode.AllBuffered, (int)LandType.Meadow);
 			}
-			//set prefab and landType:
-			
+			//set neighbour:
+			setsNeighbors(tileList);
 			
 		}
 		
@@ -197,9 +202,9 @@ public class SaveLoad : MonoBehaviour {
 		
 	}
 	
-	public void savePlayerAndVillages(int gameID){
+	public void savePlayerAndVillages(string gameID){
 		//player data names
-		string id = gameID.ToString();
+		string id = gameID;
 		string name = "savedName";
 		string pID = "PlayerID";
 		string pNum = "NumberOfPlayers";
@@ -234,13 +239,19 @@ public class SaveLoad : MonoBehaviour {
 			List<Village> villageList = t.getVillages();
 			//save the number of villages
 			PlayerPrefs.SetInt(id+name+pID+vNum, villageList.Count);
-			
+
+			//Printing the number of villages:
+			Debug.LogError(villageList.Count);
+
 			//saving each village of their respective player
 			int villageNb = 1;
 			foreach (Village v in villageList){
 				//LocationTile:
 				PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+locationx, v.getLocatedAt().point.x);
 				PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+locationy, v.getLocatedAt().point.y);
+
+				//increment villageNb
+				villageNb++;
 			}
 			
 			//LAST: increment playerNb:
@@ -250,7 +261,7 @@ public class SaveLoad : MonoBehaviour {
 		}
 	}
 
-	public void setsNeighbors(Tile[] tiles)
+	public void setsNeighbors(List<Tile> tiles)
 	{	
 		foreach(Tile curr in tiles)
 		{
@@ -291,9 +302,9 @@ public class SaveLoad : MonoBehaviour {
 	}
 	
 	
-	public void loadPlayerAndVillages(int gameID){
+	public void loadPlayerAndVillages(string gameID){
 		//player data names
-		string id = gameID.ToString();
+		string id = gameID;
 		string name = "savedName";
 		string pID = "PlayerID";
 		string pNum = "NumberOfPlayers";
