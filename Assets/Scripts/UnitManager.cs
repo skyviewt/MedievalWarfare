@@ -135,7 +135,7 @@ public class UnitManager : MonoBehaviour {
 
 		if (destLandType == LandType.Meadow) {
 			if (srcUnitType==UnitType.CANNON||srcUnitType==UnitType.SOLDIER||srcUnitType==UnitType.KNIGHT){
-				if (dest.checkRoad ()){
+				if (dest.hasRoad){
 					unit.setAction (UnitActionType.Moved);
 				} else {
 					gameGUI.displayError (@"You have trampled the crops!");

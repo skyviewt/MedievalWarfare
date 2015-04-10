@@ -461,7 +461,7 @@ public class VillageManager : MonoBehaviour {
 		List<Tile> controlledRegion = v.getControlledRegion ();
 		foreach (Tile tile in controlledRegion) {
 			LandType currentTileType = tile.getLandType ();
-			if (currentTileType == LandType.Tombstone && !tile.checkRoad ()) 
+			if (currentTileType == LandType.Tombstone && !tile.hasRoad) 
 			{
 				tile.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered, (int)LandType.Trees);
 				GameObject tree = Network.Instantiate (treePrefab, new Vector3 (tile.point.x, 0, tile.point.y), treePrefab.transform.rotation, 0) as GameObject;
@@ -493,9 +493,7 @@ public class VillageManager : MonoBehaviour {
 			else if(currentUnitAction == UnitActionType.BuildingRoad)
 			{
 				Tile tile = u.getLocation();
-				GameObject road = Network.Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation,0) as GameObject;
-				tile.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, road.networkView.viewID);
-
+				tile.networkView.RPC ("setRoadNet", RPCMode.AllBuffered, true);
 				//tile.isRoad = true;
 				//tile.prefab = Instantiate(roadPrefab, new Vector3 (tile.point.x, 0, tile.point.y), roadPrefab.transform.rotation) as GameObject;
 				u.setAction (UnitActionType.ReadyForOrders);
