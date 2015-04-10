@@ -248,10 +248,49 @@ public class SaveLoad : MonoBehaviour {
 
 
 		}
-
-
 	}
 
+	public void setsNeighbors(Tile[] tiles)
+	{	
+		foreach(Tile curr in tiles)
+		{
+			foreach (Tile tmp in tiles)
+			{			
+				if(curr.point.x == tmp.point.x + 1 && curr.point.y == tmp.point.y)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				if(curr.point.x == tmp.point.x - 1 && curr.point.y == tmp.point.y)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				
+				if(curr.point.x == tmp.point.x + 0.5f && curr.point.y == tmp.point.y + 0.75f)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				if(curr.point.x == tmp.point.x + 0.5f && curr.point.y == tmp.point.y - 0.75f)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				if(curr.point.x == tmp.point.x - 0.5f && curr.point.y == tmp.point.y + 0.75f)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+				
+				if(curr.point.x == tmp.point.x - 0.5f && curr.point.y == tmp.point.y - 0.75f)
+				{
+					curr.gameObject.networkView.RPC("addNeighbourN", RPCMode.AllBuffered, tmp.gameObject.networkView.viewID);
+				}
+			}			
+		}
+	}
+	
+	
 	public void loadPlayerAndVillages(int gameID){
 		//player data names
 		string id = gameID.ToString();
