@@ -259,7 +259,7 @@ public class SaveLoad : MonoBehaviour {
 			PlayerPrefs.SetInt(id+name+pID+vNum, villageList.Count);
 
 			//Printing the number of villages:
-			Debug.LogError(villageList.Count);
+			Debug.LogError("SavePV: " + villageList.Count);
 
 			//saving each village of their respective player
 			int villageNb = 1;
@@ -374,7 +374,7 @@ public class SaveLoad : MonoBehaviour {
 
 		//total number of players:
 		int nbOfPlayer = PlayerPrefs.GetInt (id+name+pNum);
-		Debug.LogError ("NUMBEROFPLAYERS" + nbOfPlayer);
+		Debug.LogError ("LoadPV, NUMBEROFPLAYERS:" + nbOfPlayer);
 		//get player and color
 		for (int playerID=1; playerID <=nbOfPlayer; playerID++) {
 			int color = PlayerPrefs.GetInt(id+name+pID+playerID+clr);
@@ -396,7 +396,7 @@ public class SaveLoad : MonoBehaviour {
 				if (p.getColor()==color){
 					newPlayer = p;
 					playerList.Add(newPlayer);
-					Debug.LogError("ADDED PLAYER: " + newPlayer.name+ " Color: "+ color);
+					Debug.LogError("loadPV: ADDED PLAYER: " + newPlayer.name+ " Color: "+ color);
 					break;
 				}
 			}
@@ -407,8 +407,8 @@ public class SaveLoad : MonoBehaviour {
 			Debug.Log(nbOfVillages);
 			for (int vIndex = 1; vIndex <= nbOfVillages; vIndex++){
 				//hovel Location:
-				float x = PlayerPrefs.GetFloat(id+name+pID+nbOfPlayer+vID+vIndex+locationx);
-				float y = PlayerPrefs.GetFloat(id+name+pID+nbOfPlayer+vID+vIndex+locationy);
+				float x = PlayerPrefs.GetFloat(id+name+pID+playerID+vID+vIndex+locationx);
+				float y = PlayerPrefs.GetFloat(id+name+pID+playerID+vID+vIndex+locationy);
 				Tile myLocation = getVillageTile(x, y);
 				//Create Villages:
 				Debug.LogError("TileLocation: " + myLocation.point);
@@ -447,9 +447,9 @@ public class SaveLoad : MonoBehaviour {
 				searchVillagesLoad(myLocation, tList, myLocation.getColor());
 				newVillage.addRegion(tList);
 
-				foreach(Tile tl in tList){
-					Debug.LogError(tl.point);
-				}
+//				foreach(Tile tl in tList){
+//					Debug.LogError(tl.point);
+//				}
 
 				foreach(Tile tl in tileList){
 					tl.setVisited(false);
