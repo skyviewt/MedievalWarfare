@@ -7,6 +7,7 @@ public class SaveLoad : MonoBehaviour {
 	
 	public bool saveGame = false;
 	public bool loadGame = false;
+	public bool firstName = false;
 	public int numberOfSaves;
 	public int saveGameID = 1;
 	
@@ -61,6 +62,11 @@ public class SaveLoad : MonoBehaviour {
 
 			loadGame = false;
 		}
+		if (firstName) {
+			Debug.LogError(getSaveName(2));
+			
+			firstName = false;
+		}
 	}
 
 	//returns the number of saved games
@@ -70,7 +76,7 @@ public class SaveLoad : MonoBehaviour {
 
 	//Get the name of the saved game with an integer
 	public string getSaveName(int saveID){
-		return PlayerPrefs.GetString ("NameByID"+saveID, name);
+		return PlayerPrefs.GetString ("NameByID"+saveID);
 	}
 
 	public void saveThisGame(string name){

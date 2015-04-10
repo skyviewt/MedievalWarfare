@@ -209,33 +209,13 @@ public class VillageManager : MonoBehaviour {
 			}
 		}
 		print ("after the bfs");
-		/*// working test methods color each new region a different color
-		Color[] lstColors = {Color.black, Color.cyan, Color.yellow};
-		int i = 0;
-		foreach (List<Tile> region in lstRegions){
-			Color RandomColor = lstColors[i];
-			i++;
-			foreach (Tile t in region){
-				t.gameObject.renderer.material.color = RandomColor;
-			}
-		}*/
 
 		if (lstRegions.Count <= 0) {
-			//oldLocation.replace (null);
-
-//			oldLocation.setLandType (LandType.Meadow);
 			oldLocation.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
-//			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 			GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
-			oldLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
-
 			villageToSplit.retireAllUnits();
-//			remove village from player if not already done so
-//			p.myVillages.Remove (villageToSplit);
 			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID,p.getColor());
-//			Destroy (villageToSplit.gameObject);
-			gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID);
-//			print ("Village destroyed completely");
+			oldLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
 			return; //stop here if no region is big enough
 		}
 
