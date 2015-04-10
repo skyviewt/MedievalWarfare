@@ -233,7 +233,6 @@ public class MapGenerator : MonoBehaviour {
 
 	public void initializeColorAndVillagesOnMap(List<Player> players, int i, Graph map)
 	{
-		print ("players in list at initialization "+players.Count);
 		GameObject gm = GameObject.Find ("preserveGM");
 
 		foreach ( Tile t in map.getVertices() )
@@ -242,7 +241,7 @@ public class MapGenerator : MonoBehaviour {
 			t.networkView.RPC ("setAndColor", RPCMode.AllBuffered, color);
 		}
 
-		foreach (Tile t in map.getVertices())
+		foreach ( Tile t in map.getVertices() )
 		{
 			// 0 is the neutral color.
 			if ( t.getVisited() == false  && t.getColor() != 0 )
@@ -293,7 +292,7 @@ public class MapGenerator : MonoBehaviour {
 
 					//add village to the player
 					Debug.Log (p);
-					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
+					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID, p.getColor());
 				}
 			}
 			if (t.getVillage() == null)

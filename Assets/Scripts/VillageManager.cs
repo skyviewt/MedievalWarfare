@@ -252,7 +252,7 @@ public class VillageManager : MonoBehaviour {
 			v.addRegion (region); //adds T<>V and any U<>V
 			v.setLocation (tileLocation);
 			p.addVillage(v);
-			v.setControlledBy(p);
+			//v.setControlledBy(p);
 
 			if (region.Contains (oldLocation)){
 				VillageType vType = villageToSplit.getMyType();
