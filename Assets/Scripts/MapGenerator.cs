@@ -337,23 +337,25 @@ public class MapGenerator : MonoBehaviour {
 		}
 
 	}
-
-	[RPC]
-	void preserveFinalMap(int mapchoice)
+	
+	public void preserveFinalMap(int mapchoice)
 	{
 		Graph wantedMap;
 		maps.TryGetValue (mapchoice, out wantedMap);
-
+		print ("--wantedmap--");
+		Debug.Log (wantedMap);
 		Graph unwantedMap;
 		maps.TryGetValue (Mathf.Abs(mapchoice-1), out unwantedMap);
 
+		print ("--un wantedmap--");
+		Debug.Log (unwantedMap);
 		foreach (Tile t in unwantedMap.getVertices()) 
 		{
 			if(t.prefab != null)
 			{
-				Destroy(t.prefab);
+				t.gameObject.networkView.RPC("destroyPrefab", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 			}
-			Destroy (t.gameObject);
+			t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
 
 		unwantedMap = null;

@@ -228,6 +228,13 @@ public class Tile : MonoBehaviour
 		prefab = NetworkView.Find (prefID).gameObject;
 	}
 	[RPC]
+	void destroyPrefab (NetworkViewID tileID )
+	{
+		Tile t = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
+		Destroy (t.prefab);
+		t.prefab = null;
+	}
+	[RPC]
 	void setAndColor(int newColor){
 		color = newColor;
 		// 0 is the neutral color
