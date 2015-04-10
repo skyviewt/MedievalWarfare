@@ -560,6 +560,7 @@ public class mainMenu : MonoBehaviour {
 				string name = p.getName ();
 				GM.networkView.RPC ("setPlayerColorsNet", RPCMode.AllBuffered, name, i+1);
 			}
+			GM.networkView.RPC ("overWritePlayerList", RPCMode.AllBuffered);
 
 			if(!isALoadGame)
 			{
@@ -593,7 +594,7 @@ public class mainMenu : MonoBehaviour {
 			}*/
 		}
 
-		List<Player> players = GM.getPlayers();
+		//List<Player> players = GM.getPlayers();
 		GM.createNewGame();
 		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.
 		for (int i = 0; i < Network.connections.Length; i++) {

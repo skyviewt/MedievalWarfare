@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
 	public bool isServer = true;
 	
 	public List<Player> players = new List<Player>();
+	private List<Player> tempList = new List<Player> ();
 	public Graph finalMap = null;
 
 	public int finalMapChoice = -1;
@@ -235,7 +236,12 @@ public class GameManager : MonoBehaviour {
 	[RPC]
 	public void setPlayerColorsNet(string name, int color){
 		Player p = players.Find(i => i.getName() == name); 
-		//Player p = this.players.Where (player => (player.getName () == name));
 		p.setColor (color);
+		tempList.Add (p);
+	}
+
+	[RPC]
+	public void overWritePlayerList(){
+		players = tempList;
 	}
 }
