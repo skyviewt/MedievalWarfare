@@ -109,7 +109,7 @@ public class VillageManager : MonoBehaviour {
 				villageLocation.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
 				//villageLocation.prefab = Instantiate (meadowPrefab, new Vector3 (villageLocation.point.x, 0.1f, villageLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
 				//myPlayer.myVillages.Remove (village);
-				myPlayer.gameObject.networkView.RPC("removeVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID);
+				myPlayer.gameObject.networkView.RPC("removeVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID,myPlayer.getColor ());
 				//Destroy (village.gameObject.networkView.viewID);
 				gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,village.gameObject.networkView.viewID);
 			}

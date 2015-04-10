@@ -5881,6 +5881,7 @@ MonoBehaviour:
   MeadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
   TreePrefab: {fileID: 126030, guid: bd74097a43dd548b0ae6323a66bb8952, type: 2}
   HovelPrefab: {fileID: 164132, guid: 32744c9f3c5c23d49834ce1d47d4f310, type: 2}
+  UnitPrefab: {fileID: 0}
   offset: 3
   saveName: 
   saveID: 0
