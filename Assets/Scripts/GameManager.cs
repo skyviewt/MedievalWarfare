@@ -201,7 +201,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	[RPC]
-	void setLocalTurnAndPlayer(int turnNumber)
+	void setLocalTurnAndPlayerNet(int turnNumber)
 	{
 		Debug.Log ("in set local turn and player");
 		this.localTurn = turnNumber;
@@ -210,7 +210,11 @@ public class GameManager : MonoBehaviour {
 		Debug.Log ("local turn: " + localTurn);
 		Debug.Log ("player name: " + localPlayer);
 	}
-
+	public void setLocalTurnAndPlayer(int turnNumber)
+	{
+		this.localTurn = 0;
+		this.localPlayer = players [0];
+	}
 
 	[RPC]
 	void addPlayerNet(string name, string pass, int color, int loss, int win, string ip)
