@@ -243,12 +243,12 @@ public class VillageManager : MonoBehaviour {
 				hovelLocation = new Vector3(tileLocation.point.x, 0.1f, tileLocation.point.y);		
 			} else {
 				tileLocation = getTileForRespawn(region);
-				tileLocation.replace (null);
 				hovelLocation = new Vector3(tileLocation.point.x, 0.1f, tileLocation.point.y);
 			}
 
 			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
 			Village v = newTown.GetComponent<Village>();
+			tileLocation.replace (newTown);
 			v.addRegion (region); //adds T<>V and any U<>V
 			v.setLocation (tileLocation);
 			p.addVillage(v);
@@ -311,6 +311,7 @@ public class VillageManager : MonoBehaviour {
 				Destroy (u.gameObject);
 				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
 				t.setLandType(LandType.Tombstone);
+				t.replace (tomb);
 			}
 			t.setStructure(null); // helper method needs to be finished
 		}

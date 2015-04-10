@@ -63,7 +63,12 @@ public class Player : MonoBehaviour{
 	{
 		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
 		myVillages.Remove (vil);
-
+	}
+	
+	[RPC]
+	void ColorPlayer(NetworkViewID pID, int c)
+	{
+		NetworkView.Find (pID).gameObject.GetComponent<Player> ().color = c;
 	}
 	public void addWin()
 	{
