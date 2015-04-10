@@ -26,16 +26,13 @@ public class VillageManager : MonoBehaviour {
 	public GameObject towerPrefab;
 
 	private UnitManager unitManager;
-
-	void Start()
-	{
-		unitManager = GameObject.Find ("UnitManager").GetComponent<UnitManager> ();
-	}
+	
 	void Update () {
 		if( isInGame && gameGUI == null )
 		{
 			Debug.Log ("finding attachingGUI");
 			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
+			unitManager = GameObject.Find ("UnitManager").GetComponent<UnitManager> ();
 			Debug.Log (gameGUI);
 		}
 	}
