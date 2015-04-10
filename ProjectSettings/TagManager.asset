@@ -17,6 +17,7 @@ TagManager:
   - cam1
   - cam2
   - Castle
+  - LoadedMap
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
@@ -28,7 +29,7 @@ TagManager:
   Builtin Layer 7: 
   User Layer 8: map1
   User Layer 9: map2
-  User Layer 10: 
+  User Layer 10: loadedMap
   User Layer 11: 
   User Layer 12: 
   User Layer 13: 
