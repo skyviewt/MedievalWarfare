@@ -595,7 +595,7 @@ public class InGameGUI : MonoBehaviour {
 		Tile t = u.getLocation ();
 		if (u.getUnitType () != UnitType.PEASANT) {
 			this.displayError ("Only peasants can build roads");
-		} else if (t.checkRoad ()) {
+		} else if (t.hasRoad) {
 			this.displayError ("This tile already has a road");
 		} else {
 			//t.buildRoad ();
