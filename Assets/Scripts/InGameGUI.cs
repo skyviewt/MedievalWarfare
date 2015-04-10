@@ -368,8 +368,9 @@ public class InGameGUI : MonoBehaviour {
 					unitManager.moveUnit (u, _move);
 					
 					if (selection.getVillage () == null) {
-							v.addTile (selection);
-							int redrawRegion = v.getRegionSize();
+						//v.addTile (selection);
+						v.networkView.RPC ("addTileNet", RPCMode.AllBuffered, selection.gameObject.networkView.viewID);
+						int redrawRegion = v.getRegionSize();
 							_RegionText.text = redrawRegion.ToString ();
 					}
 					
@@ -641,6 +642,7 @@ public class InGameGUI : MonoBehaviour {
 	{
 		if (_Unit.GetComponent<Unit> ().getUnitType () != UnitType.CANNON) {
 			this.displayError("You are not a siege engine!");
+			return;
 		}
 		UnitCanvas.enabled = false;
 		menuUp = false;

@@ -393,7 +393,7 @@ public class Village : MonoBehaviour {
 	void addUnitNet(NetworkViewID unitID){
 		Unit unitToAdd = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
 		supportedUnits.Add (unitToAdd);
-		unitToAdd.setVillage (this);
+		//unitToAdd.setVillage (this);
 	}
 
 	[RPC] // i think this is where the bug was.
