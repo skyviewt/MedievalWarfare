@@ -565,14 +565,14 @@ public class mainMenu : MonoBehaviour {
 				GameObject[] allTiles = GameObject.FindGameObjectsWithTag("LoadedMap");
 				foreach(GameObject o in allTiles)
 				{
-					o.networkView.RPC("DontDestroy", RPCMode.AllBuffered, o.gameObject.networkView.viewID);
+					networkView.RPC("DontDestroy", RPCMode.AllBuffered, o.gameObject.networkView.viewID);
 				}
 
 			}
-			GM.villageManager.networkView.RPC("DontDestroy", RPCMode.AllBuffered, GM.villageManager.gameObject.networkView.viewID);
+			networkView.RPC("DontDestroy", RPCMode.AllBuffered, GM.villageManager.gameObject.networkView.viewID);
 
 			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
-			tileManager.networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
+			networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
 
 			//setting up the colors properly
 			for(int i=0; i<GM.players.Count; i++)
