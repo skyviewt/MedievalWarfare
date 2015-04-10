@@ -76,24 +76,13 @@ public class UnitManager : MonoBehaviour {
 						gameGUI.displayError (@"That area is being protected");
 						return;
 					}
-					
 					// unit on unit combat!!
-					// if there is any enemy unit
 					if (destUnit!=null){
 						if(srcUnitType>destUnit.getUnitType()){
-							//unit.animation.CrossFade("attack");
-							// kill enemy unit, remove it from tile, remove it from village
-							//perform move gets called after.
-							//destVillage.removeUnit(destUnit); //removes U from V's army AND sets U's v to null
+							// kill enemy unit, remove it from tile, remove it from village, perform move gets called after.
 							destVillage.gameObject.networkView.RPC ("removeUnitNet",RPCMode.AllBuffered,destUnit.gameObject.networkView.viewID);
-							//dest.setOccupyingUnit(unit);
 							dest.gameObject.networkView.RPC ("setOccupyingUnitNet",RPCMode.AllBuffered,unit.gameObject.networkView.viewID);
-							//Destroy (destUnit.gameObject);
 							gameObject.networkView.RPC ("destroyUnitNet",RPCMode.AllBuffered,unit.gameObject.networkView.viewID);
-							//adding an attack effect
-							//curEffect = Instantiate(attackEffect1, new Vector3(dest.point.x, 0.2f, dest.point.y), attackEffect1.transform.rotation) as GameObject;
-							//unit.animation.CrossFadeQueued("idle");
-							
 						} else {
 							gameGUI.displayError (@"The enemy is too strong! I dont want to die!");
 							return;
