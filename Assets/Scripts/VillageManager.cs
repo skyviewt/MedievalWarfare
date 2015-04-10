@@ -162,6 +162,7 @@ public class VillageManager : MonoBehaviour {
 		dest.gameObject.networkView.RPC ("setAndColor",RPCMode.AllBuffered,color);
 
 		invadedVillage.gameObject.networkView.RPC ("removeTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
+		Debug.Log (invader.getPlayer().getName ()+ " is invading " + invadedVillage.getPlayer().getName());
 		splitRegion(dest, invadedVillage);
 	}
 
@@ -257,52 +258,23 @@ public class VillageManager : MonoBehaviour {
 				VillageType vType = villageToSplit.getMyType();
 				//v.setMyType(vType);
 				v.gameObject.networkView.RPC ("setVillageTypeNet",RPCMode.AllBuffered,(int)vType);
-				if (vType == VillageType.Hovel) 
-				{
-//					newTown.transform.FindChild("Hovel").gameObject.SetActive (true);
-//					newTown.transform.FindChild("Town").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+				if (vType == VillageType.Hovel) {
 					newTown.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)vType);
-				}
-				else if (vType == VillageType.Town) 
-				{
-//					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Town").gameObject.SetActive (true);
-//					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+				} else if (vType == VillageType.Town) {
 					newTown.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)vType);
-
-				}
-				else if (vType == VillageType.Fort) 
-				{					
-//					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Town").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Fort").gameObject.SetActive (true);
-//					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+				} else if (vType == VillageType.Fort) {					
 					newTown.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)vType);
-
-				}
-				else if (vType == VillageType.Castle) 
-				{					
-//					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Town").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
-//					newTown.transform.FindChild("Castle").gameObject.SetActive (true);
+				} else if (vType == VillageType.Castle) {					
 					newTown.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)vType);
 				}
 			}
-
-			//v.addGold(splitGold);
 			v.gameObject.networkView.RPC ("addGoldNet",RPCMode.AllBuffered,splitGold);
-//			v.addWood(splitWood);
 			v.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,splitWood);
-
 		}
-//		villageToSplit.gameObject.transform.Translate (0, 1, 0);
-		villageToSplit.networkView.RPC ("transformVillageNet", RPCMode.AllBuffered);
+		print (villageToSplit.getPlayer ().getName () + " owns village "+ villageToSplit.gameObject.networkView.viewID);
+		//villageToSplit.networkView.RPC ("transformVillageNet", RPCMode.AllBuffered);
 //		Destroy (villageToSplit.gameObject);
-		gameObject.networkView.RPC ("destroyVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID);
+		gameObject.networkView.RPC ("destroyVillageNet", RPCMode.AllBuffered, villageToSplit.gameObject.networkView.viewID);
 	}
 
 	// de-color, kill units, destroy structures, etc
