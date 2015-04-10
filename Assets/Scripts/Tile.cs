@@ -43,6 +43,10 @@ public class Tile : MonoBehaviour
 		return myTile;
 	}
 
+	void Awake() {
+		Network.minimumAllocatableViewIDs = 10000;
+	}
+
 	//newly created constructor. This will be called whenever a gameobject containing Tile.cs gets instantiated
 	public Tile (){
 		visited = false;
@@ -228,10 +232,10 @@ public class Tile : MonoBehaviour
 		this.myType = (LandType)type;
 	}
 
-//	[RPC]
-//	void destroyTile(NetworkViewID tileid){
-//		Destroy (NetworkView.Find (tileid).gameObject);
-//	}
+	[RPC]
+	void destroyTile(NetworkViewID tileid){
+		Destroy (NetworkView.Find (tileid).gameObject);
+	}
 
 //	[RPC]
 //	void DontDestroyTile(NetworkViewID tileID){
