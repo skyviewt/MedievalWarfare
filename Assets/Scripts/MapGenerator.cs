@@ -256,7 +256,7 @@ public class MapGenerator : MonoBehaviour {
 				if( TilesToReturn.Count >= 3 )
 				{
 					Player p = players[color-1];
-					Debug.Log (p);
+					Debug.Log (p.getName());
 					Tile location = TilesToReturn[0];
 					//location.setLandType (LandType.Grass);
 					location.networkView.RPC("setLandTypeNet", RPCMode.AllBuffered, (int) LandType.Grass);
@@ -284,7 +284,7 @@ public class MapGenerator : MonoBehaviour {
 					hovel.networkView.RPC ("updateControlledRegionNet", RPCMode.AllBuffered);
 
 					//set controlling player of the tile over the network
-					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gm.networkView.viewID, color);
+					hovel.networkView.RPC ("setControlledByNet", RPCMode.AllBuffered, gm.networkView.viewID, color-1);
 
 					hovel.networkView.RPC("addGoldNet", RPCMode.AllBuffered, 200);
 
