@@ -44,7 +44,7 @@ public class VillageManager : MonoBehaviour {
 		VillageActionType vAction = v.getAction ();
 		if (vType == VillageType.Fort)
 		{
-			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle. ¯\(°_o)/¯\n Press Build Castle to go to the next level!");
+			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle. ¯\(°_o)/¯ Press Build Castle to go to the next level!");
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
@@ -122,6 +122,7 @@ public class VillageManager : MonoBehaviour {
 		GameObject vilObject = NetworkView.Find (villageObjectID).gameObject;
 		Destroy (vilObject);
 	}
+
 	[RPC]
 	void DontDestroyVillageManager(NetworkViewID mID)
 	{
@@ -229,9 +230,9 @@ public class VillageManager : MonoBehaviour {
 			oldLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
 
 			villageToSplit.retireAllUnits();
-			// remove village from player if not already done so
+//			remove village from player if not already done so
 //			p.myVillages.Remove (villageToSplit);
-			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID);
+			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID,p.getColor());
 //			Destroy (villageToSplit.gameObject);
 			gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID);
 //			print ("Village destroyed completely");
