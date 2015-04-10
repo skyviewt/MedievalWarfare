@@ -8,7 +8,7 @@ public class SaveLoad : MonoBehaviour {
 	public bool saveGame = false;
 	public bool loadGame = false;
 	public bool firstName = false;
-	public int numberOfSaves;
+	public int numberOfSaves=0;
 	public int saveGameID = 1;
 	
 	//Prefabs:
@@ -63,9 +63,12 @@ public class SaveLoad : MonoBehaviour {
 			loadGame = false;
 		}
 		if (firstName) {
-			Debug.LogError(getSaveName(2));
-			
-			firstName = false;
+//			string result = "Name of saved game: "+getSaveName(saveGameID);
+//			Debug.Log (result);
+//			firstName = false;
+
+			PlayerPrefs.SetString("TEST11", "Hello");
+			print ("MSG: "+  PlayerPrefs.GetString("TEST11"));
 		}
 	}
 
@@ -76,7 +79,9 @@ public class SaveLoad : MonoBehaviour {
 
 	//Get the name of the saved game with an integer
 	public string getSaveName(int saveID){
-		return PlayerPrefs.GetString ("NameByID"+saveID);
+//		print(PlayerPrefs.GetString ("NameByID"+saveID));
+//		return PlayerPrefs.GetString ("NameByID" + saveID);
+		return "Hiiiii";
 	}
 
 	public void saveThisGame(string name){
@@ -100,6 +105,12 @@ public class SaveLoad : MonoBehaviour {
 	public void loadThisGame(int gameID){
 		loadTiles(gameID.ToString());
 		loadPlayerAndVillages (gameID.ToString());
+
+		GameObject[] allObjects = UnityEngine.Object.FindObjectsOfType<GameObject>();
+		foreach (GameObject o in allObjects) {
+			o.tag = "LoadedMap";
+		}
+
 		tileList = new List<Tile>();
 		villageList = new List<Village>();
 		playerList = new List<Player>();
@@ -470,7 +481,7 @@ public class SaveLoad : MonoBehaviour {
 
 				//ADDING Players:
 				newVillage.networkView.RPC("setControlledByWithColorNet", RPCMode.AllBuffered, newPlayer.getColor());
-				newPlayer.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newPlayer.getColor());
+				newPlayer.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID, newPlayer.getColor());
 
 				//set regions:
 				//VillageManager vilMan = GameObject.Find("VillageManager").GetComponent<VillageManager>();
