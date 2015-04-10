@@ -308,7 +308,6 @@ public class InGameGUI : MonoBehaviour {
 		_GoldText.text = redrawGold.ToString();
 		UnitCanvas.enabled = false;
 		menuUp = false;
-
 	}
 
 	public void displayError(string error)
