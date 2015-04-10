@@ -144,7 +144,7 @@ public class VillageManager : MonoBehaviour {
 
 		//Destroy (dest.prefab); // destroy the village, create a meadow
 		GameObject meadow = Network.Instantiate(meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation,0) as GameObject;
-		dest.gameObject.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadowPrefab.networkView.viewID);
+		dest.gameObject.networkView.RPC ("switchTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
 		// respawn enemy hovel happens during the split
 	}
 
@@ -244,7 +244,7 @@ public class VillageManager : MonoBehaviour {
 			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
 			Village v = newTown.GetComponent<Village>();
 			//tileLocation.replace (newTown);
-			tileLocation.networkView.RPC ("switchTilePrefab",RPCMode.AllBuffered,newTown.networkView.viewID);
+			tileLocation.networkView.RPC ("switchTilePrefabNet",RPCMode.AllBuffered,newTown.networkView.viewID);
 			v.addRegion (region); //adds T<>V and any U<>V
 
 //			v.setLocation (tileLocation);
@@ -303,9 +303,8 @@ public class VillageManager : MonoBehaviour {
 
 		}
 		Debug.Log ("villageToSplit: "+villageToSplit.getPlayer ().getName ());
-//		villageToSplit.gameObject.transform.Translate (0, 1, 0);
-		villageToSplit.networkView.RPC ("transformVillageNet", RPCMode.AllBuffered);
-//		Destroy (villageToSplit.gameObject);
+
+		p.networkView.RPC ("removeVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID, p.getColor ());
 		gameObject.networkView.RPC ("destroyVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID);
 	}
 
