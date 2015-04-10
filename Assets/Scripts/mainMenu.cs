@@ -259,7 +259,7 @@ public class mainMenu : MonoBehaviour {
 		isALoadGame = true;
 		LoadGameCanvas.enabled = false;
 		SaveLoad sl = GameObject.Find("SaveLoad").GetComponent<SaveLoad>();
-		sl.loadThisGame (gameLoadChoice.ToString());
+		//sl.loadThisGame (gameLoadChoice.ToString());
 		showLobby();
 	}
 	public void actualRegistrationPressed()
