@@ -350,10 +350,11 @@ public class Village : MonoBehaviour {
 	
 	public void retireAllUnits()
 	{
+		Debug.Log ("inside retire all");
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
-			unitLocation.gameObject.networkView.RPC("destroyPrefabNet",RPCMode.AllBuffered);
+			//unitLocation.gameObject.networkView.RPC("destroyPrefabNet",RPCMode.AllBuffered);
 			GameObject tomb = Network.Instantiate (vm.tombPrefab, new Vector3 (unitLocation.point.x, 0, unitLocation.point.y), vm.tombPrefab.transform.rotation, 0) as GameObject;
 			unitLocation.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered, tomb.networkView.viewID);
 			unitLocation.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Tombstone);
