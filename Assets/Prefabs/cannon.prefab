@@ -355,6 +355,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 471120}
   - 111: {fileID: 11171074}
+  - 114: {fileID: 11474150}
   m_Layer: 0
   m_Name: cannon
   m_TagString: Unit
@@ -688,6 +689,19 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 1
+--- !u!114 &11474150
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad70ec85a155046b2abd4f2be2e48b50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myAction: 0
+  myType: 4
 --- !u!137 &13771074
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
