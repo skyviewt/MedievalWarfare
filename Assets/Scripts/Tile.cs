@@ -104,7 +104,11 @@ public class Tile : MonoBehaviour
 	public void colorTile()
 	{
 	
-		if( color == 1 )
+		if( color == 0 )
+		{
+			gameObject.renderer.material.color = Color.clear;
+		}
+		else if( color == 1 )
 		{
 			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.7f);
 		}
@@ -257,8 +261,11 @@ public class Tile : MonoBehaviour
 	void setAndColor(int newColor){
 		color = newColor;
 		// 0 is the neutral color
-	
-		if( color == 1 )
+		if( color == 0 )
+		{
+			gameObject.renderer.material.color = Color.clear;
+		}
+		else if( color == 1 )
 		{
 			gameObject.renderer.material.color = new Color(1.0f, 0.0f, 1.0f, 0.7f);
 		}

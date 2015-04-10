@@ -295,7 +295,7 @@ public class MapGenerator : MonoBehaviour {
 					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
 				}
 			}
-			if (t.getVillage() == null && t.getColor() != 0)
+			if (t.getVillage() == null)
 			{
 				//t.setColor(players.Count);
 				//t.gameObject.renderer.material.color = Color.white;
