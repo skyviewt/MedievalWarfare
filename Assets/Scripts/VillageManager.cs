@@ -42,14 +42,16 @@ public class VillageManager : MonoBehaviour {
 		int vWood = v.getWood ();
 		VillageType vType = v.getMyType ();
 		VillageActionType vAction = v.getAction ();
-		if (vType == VillageType.Fort) 
+		if (vType == VillageType.Fort)
 		{
-			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle ¯\(°_o)/¯");
+			gameGUI.displayError(@"The only structure stronger than a Fort is a Castle. ¯\(°_o)/¯\n Press Build Castle to go to the next level!");
 		}
 		else if ((vType != VillageType.Fort) && (vWood >= 8) && (vAction == VillageActionType.ReadyForOrders)) 
 		{
-			v.setAction (VillageActionType.StartedUpgrading);
-			v.addWood(-8);
+			//v.setAction (VillageActionType.StartedUpgrading);
+			v.networkView.RPC ("setVillageActionNet",RPCMode.AllBuffered,(int)VillageActionType.StartedUpgrading);
+			//v.addWood(-8);
+			v.networkView.RPC("addWoodNet",RPCMode.AllBuffered,-8);
 		} 
 	}	
 

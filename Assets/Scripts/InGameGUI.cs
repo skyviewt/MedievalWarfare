@@ -225,8 +225,8 @@ public class InGameGUI : MonoBehaviour {
 	public void villageUpgradePressed()
 	{
 		Village v = _Village.GetComponent<Village> ();
-		//villageManager.upgradeVillage (v);
-		villageManager.gameObject.networkView.RPC ("upgradeVillageNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID);
+		//villageManager.gameObject.networkView.RPC ("upgradeVillageNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID);
+		villageManager.upgradeVillage (v);
 		int redrawWood = v.getWood();
 		_WoodText.text = redrawWood.ToString();
 		VillageCanvas.enabled = false;

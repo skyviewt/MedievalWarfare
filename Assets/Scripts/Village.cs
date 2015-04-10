@@ -166,11 +166,7 @@ public class Village : MonoBehaviour {
 	{
 		myType = (VillageType) type;
 	}
-	[RPC]
-	void setVillageActionNet(int action)
-	{
-		myAction = (VillageActionType) action;
-	}
+
 	[RPC]
 	void setHealthNet(int health)
 	{
@@ -259,6 +255,11 @@ public class Village : MonoBehaviour {
 	public Tile getLocatedAt()
 	{
 		return locatedAt;
+	}
+	[RPC]
+	void setVillageActionNet(int action)
+	{
+		this.myAction = (VillageActionType)action;
 	}
 
 	public void setAction(VillageActionType action)
