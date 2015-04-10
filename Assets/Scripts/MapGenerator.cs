@@ -291,7 +291,7 @@ public class MapGenerator : MonoBehaviour {
 
 					//add village to the player
 					Debug.Log (p);
-					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID);
+					p.gameObject.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newVillage.networkView.viewID, p.getColor());
 				}
 			}
 			if (t.getVillage() == null)

@@ -55,9 +55,18 @@ public class Player : MonoBehaviour{
 	}
 
 	[RPC]
-	void addVillageNet(NetworkViewID villageID){
+	void addVillageNet(NetworkViewID villageID, int color){
 		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
-		myVillages.Add (vil);
+
+		Player[] ply = GameObject.Find ("preserveGM").GetComponents<Player>();
+		foreach(Player p in ply){
+			if( p.getColor()==color){
+				p.myVillages.Add(vil);
+				Debug.LogError("PlayerFound:" + p.name+ " color "+p.getColor());
+				break;
+			}
+		}
+		//myVillages.Add (vil);
 	}
 	[RPC]
 	void removeVillageNet(NetworkViewID villageID)
@@ -67,9 +76,9 @@ public class Player : MonoBehaviour{
 	}
 	
 	[RPC]
-	void ColorPlayer(NetworkViewID pID, int c)
+	void colorPlayerNet(int c)
 	{
-		NetworkView.Find (pID).gameObject.GetComponent<Player> ().color = c;
+		color = c;
 	}
 	public void addWin()
 	{

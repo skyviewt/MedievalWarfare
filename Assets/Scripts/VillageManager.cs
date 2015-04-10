@@ -258,6 +258,7 @@ public class VillageManager : MonoBehaviour {
 			//tileLocation.replace (newTown);
 			tileLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,newTown.networkView.viewID);
 			v.addRegion (region); //adds T<>V and any U<>V
+
 //			v.setLocation (tileLocation);
 			v.gameObject.networkView.RPC ("setLocationNet",RPCMode.AllBuffered,tileLocation.networkView.viewID);
 //			p.addVillage(v);

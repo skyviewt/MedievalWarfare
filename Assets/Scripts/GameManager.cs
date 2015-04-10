@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
 	public bool isServer = true;
 	
 	public List<Player> players = new List<Player>();
+	private List<Player> tempList = new List<Player> ();
 	public Graph finalMap = null;
 
 	public int finalMapChoice = -1;
@@ -26,6 +27,8 @@ public class GameManager : MonoBehaviour {
 	private int localTurn; //has getter and setter
 	private int turnsSoFar;
 	public VillageManager villageManager;
+
+	public bool printList;
 
 	// Use this for initialization
 	void Start () 
@@ -235,5 +238,23 @@ public class GameManager : MonoBehaviour {
 			gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 			Debug.Log (gameGUI);
 		}
+		if (printList) {
+			foreach (Player p in players){
+				print (p.getName ());
+			}
+			printList = false;
+		}
+	}
+
+	[RPC]
+	public void setPlayerColorsNet(string name, int color){
+		Player p = players.Find(i => i.getName() == name); 
+		p.setColor (color);
+		tempList.Add (p);
+	}
+
+	[RPC]
+	public void overWritePlayerList(){
+		players = tempList;
 	}
 }

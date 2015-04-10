@@ -7,7 +7,7 @@ public class SaveLoad : MonoBehaviour {
 	
 	public bool saveGame = false;
 	public bool loadGame = false;
-	public int numberOfSaves = PlayerPrefs.GetInt("NumberOfSaves");
+	public int numberOfSaves;
 	public int saveGameID = 1;
 	
 	//Prefabs:
@@ -21,6 +21,7 @@ public class SaveLoad : MonoBehaviour {
 
 	public string saveName;
 	public int saveID = 1;
+	public string firstSavedGameName;
 
 
 
@@ -29,6 +30,11 @@ public class SaveLoad : MonoBehaviour {
 	public List<Tile> tileList;
 	public List<Village> villageList;
 	public List<Player> playerList;
+
+	//public SaveLoad(){
+	//	numberOfSaves = PlayerPrefs.GetInt ("NumberOfSaves");
+//		firstSavedGameName = PlayerPrefs.GetString("NameByID"+"1");
+//	}
 
 
 	// Use this for initialization
@@ -214,14 +220,26 @@ public class SaveLoad : MonoBehaviour {
 		string vID = "VillageID";
 		string vNum = "NumberOfVillage";
 		
-		string gold = "Gold";
-		string wood = "Wood";
-		string health = "Health";
+		//string gold = "Gold";
+		//string wood = "Wood";
+		//string health = "Health";
 		
 		string locationx= "Locationx";
 		string locationy= "Locationy";
 		
-		
+		string vType = "vType";
+		string vGold = "vGold";
+		string vWood = "vWood";
+		string vWage = "vWage";
+		string vHealth = "vHealth";
+		string vActType= "vActionType";
+
+		//UNITS:
+		string numberOfUnits = "uNum";
+		string unitID = "uID";
+		string uActionType = "uActType";
+		string uType = "uType";
+
 		//Get villages by the order of players
 		Debug.Log ("Saving villages!!");
 		GameObject GM = GameObject.Find("preserveGM");
@@ -249,6 +267,32 @@ public class SaveLoad : MonoBehaviour {
 				//LocationTile:
 				PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+locationx, v.getLocatedAt().point.x);
 				PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+locationy, v.getLocatedAt().point.y);
+
+				//VillageType, gold, wood, action, ...
+
+				PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+vType, (int)v.getMyType());
+				PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+vGold, v.getGold());
+				PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+vWage, v.getTotalWages());
+				PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+vWood, v.getWood());
+				PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+vHealth, v.health);
+				PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+vActType, (int)v.getAction());
+
+				//UNITS:
+				List<Unit> unitList = v.getControlledUnits();
+				int nbOfUnits = unitList.Count;
+
+				PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+numberOfUnits, nbOfUnits);
+
+				int unitNB = 1;
+				foreach(Unit u in unitList){
+					//unitType
+					UnitType uTp  = u.getUnitType();
+					PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+unitID+unitNB, (int)uTp);
+
+
+				}
+
+
 
 				//increment villageNb
 				villageNb++;
@@ -320,7 +364,14 @@ public class SaveLoad : MonoBehaviour {
 		
 		string locationx= "Locationx";
 		string locationy= "Locationy";
-		
+
+		string vType = "vType";
+		string vGold = "vGold";
+		string vWood = "vWood";
+		string vWage = "vWage";
+		string vHealth = "vHealth";
+		string vActType= "vActionType";
+
 		//total number of players:
 		int nbOfPlayer = PlayerPrefs.GetInt (id+name+pNum);
 		Debug.LogError ("NUMBEROFPLAYERS" + nbOfPlayer);
@@ -336,7 +387,7 @@ public class SaveLoad : MonoBehaviour {
 			GameObject GM = GameObject.Find("preserveGM");
 			Game game = GM.GetComponent<GameManager>().game;
 
-
+			//New player TODO: RECHECK
 			Player newPlayer = game.getPlayers()[playerID-1];
 			newPlayer.setColor(color);
 			playerList.Add(newPlayer);
@@ -357,6 +408,45 @@ public class SaveLoad : MonoBehaviour {
 				//Village newVillage = Village.CreateComponent(p, TilesToReturn, location, hovel );
 				Village newVillage = hovel.GetComponent<Village>();
 				villageList.Add (newVillage);
+
+				//actiontypes, gold, wood, wage, .....
+				int tp = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vType);
+				newVillage.networkView.RPC("setVillageTypeNet", RPCMode.AllBuffered, tp);
+
+				int villagegold = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vGold);
+				newVillage.networkView.RPC("setGoldNet", RPCMode.AllBuffered, villagegold);
+
+				int vilWood = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vWood);
+				newVillage.networkView.RPC("setWoodNet", RPCMode.AllBuffered, vilWood);
+
+				int vilWage = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vWage);
+				newVillage.networkView.RPC("setWageNet", RPCMode.AllBuffered, vilWage);
+
+				int vilHealth = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vHealth);
+				newVillage.networkView.RPC("setHealthNet", RPCMode.AllBuffered, vilHealth);
+
+				int vilAT = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+vActType);
+				newVillage.networkView.RPC("setVillageActionNet", RPCMode.AllBuffered, vilAT);
+
+				//set locatedAt tile for the village
+				newVillage.networkView.RPC("setLocatedAtNet", RPCMode.AllBuffered, myLocation.networkView.viewID);
+
+				//set regions:
+				//VillageManager vilMan = GameObject.Find("VillageManager").GetComponent<VillageManager>();
+				List<Tile> tList = new List<Tile>();
+				searchVillagesLoad(myLocation, tList, myLocation.getColor());
+				newVillage.addRegion(tList);
+
+				foreach(Tile tl in tList){
+					Debug.LogError(tl.point);
+				}
+
+				foreach(Tile tl in tileList){
+					tl.setVisited(false);
+				}
+
+				//UNITS!!!
+
 			}
 		}
 	}
@@ -394,5 +484,18 @@ public class SaveLoad : MonoBehaviour {
 		
 		
 	}
-	
+
+	//Searching for tiles that belong to this village: copied from MapGenerator
+	public void searchVillagesLoad(Tile toSearch, List<Tile> TilesToReturn, int color )
+	{
+		foreach( Tile n in toSearch.getNeighbours() )
+		{
+			if(n.getVisited() == false && n.getColor() == color)
+			{
+				n.setVisited( true );
+				TilesToReturn.Add(n);
+				searchVillagesLoad(n, TilesToReturn, color);
+			}
+		}
+	}
 }
