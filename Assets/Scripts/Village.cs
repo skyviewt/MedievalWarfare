@@ -400,6 +400,17 @@ public class Village : MonoBehaviour {
 		GameManager GM = GameObject.Find ("preserveGM").GetComponent<GameManager> ();
 		this.controlledBy = GM.players[playerIndex];
 	}
+
+	[RPC]
+	void setControlledByWithColorNet(int color){
+		Game gm = GameObject.Find ("preserveGM").GetComponent<Game> ();
+		foreach(Player pl in gm.getPlayers()){
+			if(pl.getColor()== color){
+				this.controlledBy=pl;
+				break;
+			}
+		}
+	}
 	[RPC]
 	void switchPrefabNet(int type)
 	{

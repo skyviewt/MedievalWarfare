@@ -416,7 +416,7 @@ public class SaveLoad : MonoBehaviour {
 			//Player newPlayer = game.getPlayers()[playerID-1];
 			//newPlayer.setColor(color);
 			//playerList.Add(newPlayer);
-			Player newPlayer;
+			Player newPlayer = game.getPlayers()[playerID-1];
 			foreach(Player p in game.getPlayers()){
 				if (p.getColor()==color){
 					newPlayer = p;
@@ -467,6 +467,10 @@ public class SaveLoad : MonoBehaviour {
 
 				//set locatedAt tile for the village
 				newVillage.networkView.RPC("setLocatedAtNet", RPCMode.AllBuffered, myLocation.networkView.viewID);
+
+				//ADDING Players:
+				newVillage.networkView.RPC("setControlledByWithColorNet", RPCMode.AllBuffered, newPlayer.getColor());
+				newPlayer.networkView.RPC ("addVillageNet", RPCMode.AllBuffered, newPlayer.getColor());
 
 				//set regions:
 				//VillageManager vilMan = GameObject.Find("VillageManager").GetComponent<VillageManager>();
