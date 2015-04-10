@@ -57,8 +57,8 @@ public class Player : MonoBehaviour{
 	void addVillageNet(NetworkViewID villageID, int color){
 		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
 
-		Game thisGame = GameObject.Find ("preserveGM").GetComponent<Game>();
-		foreach(Player p in thisGame.getPlayers()){
+		Player[] ply = GameObject.Find ("preserveGM").GetComponents<Player>();
+		foreach(Player p in ply){
 			if( p.getColor()==color){
 				p.myVillages.Add(vil);
 				Debug.LogError("PlayerFound:" + p.name+ " color "+p.getColor());
