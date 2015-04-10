@@ -20620,7 +20620,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1715274790}
-        m_MethodName: quitTextPressed
+        m_MethodName: logoutButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

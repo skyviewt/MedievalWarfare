@@ -372,7 +372,7 @@ public class MapGenerator : MonoBehaviour {
 
 				t.gameObject.networkView.RPC("DontDestroyPrefab", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 			}
-			t.gameObject.networkView.RPC("DontDestroyPrefab", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			t.gameObject.networkView.RPC("DontDestroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
 		gameObject.networkView.RPC("DontDestroyGM", RPCMode.AllBuffered, gameObject.networkView.viewID);
 		DontDestroyOnLoad (GameObject.Find ("VillageManager"));

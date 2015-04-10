@@ -465,8 +465,9 @@ public class mainMenu : MonoBehaviour {
 	{	if(GM.isServer)
 		{
 			Graph finalMap = GM.mapGen.getMap(GM.finalMapChoice);
+			Debug.Log (finalMap);
 			print ("final map choice" + GM.finalMapChoice);
-			GM.networkView.RPC("setFinalMap",RPCMode.AllBuffered, GM.finalMapChoice);
+			GM.setFinalMap(finalMap);
 			GM.initializeSelectedMap(); //initializes the graph 
 
 			GM.mapGen.preserveFinalMap( GM.finalMapChoice ); // preserves the choice 
