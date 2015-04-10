@@ -590,6 +590,7 @@ public class mainMenu : MonoBehaviour {
 		GM.createNewGame();
 		//now we need to give every connection on the network a unique "int turn". Host is always turn 0.
 		for (int i = 0; i < Network.connections.Length; i++) {
+			Debug.LogError("INSIDE SET LOCAL TURN AND PLAYER RPC LOOP");
 			GM.gameObject.networkView.RPC ("setLocalTurnAndPlayer",Network.connections[i],i);
 		}
 		this.networkView.RPC("startLevel", RPCMode.AllBuffered);

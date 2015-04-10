@@ -203,9 +203,12 @@ public class GameManager : MonoBehaviour {
 	[RPC]
 	void setLocalTurnAndPlayer(int turnNumber)
 	{
+		Debug.Log ("in set local turn and player");
 		this.localTurn = turnNumber;
 		//List<Player> temp = game.getPlayers ();
 		this.localPlayer = players[turnNumber];
+		Debug.Log ("local turn: " + localTurn);
+		Debug.Log ("player name: " + localPlayer);
 	}
 
 
