@@ -38,6 +38,12 @@ public class TileManager : MonoBehaviour {
 		}
 		return false;
 	}
+
+	[RPC]
+	void destroyTile(NetworkViewID tileid){
+		Destroy (NetworkView.Find (tileid).gameObject);
+	}
+
 	/* DEPRECATED
 	public void removeUnitFromTile(Tile t, Unit u)
 	{

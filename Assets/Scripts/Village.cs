@@ -324,16 +324,16 @@ public class Village : MonoBehaviour {
 	{
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
-			unitLocation.setOccupyingUnit(null);
-			Destroy (unitLocation.prefab);
-			GameObject tombPrefab = vm.tombPrefab;
-			unitLocation.prefab = Instantiate (tombPrefab, new Vector3 (unitLocation.point.x, 0.4f, unitLocation.point.y), tombPrefab.transform.rotation) as GameObject;
-			unitLocation.setLandType(LandType.Tombstone);
-			supportedUnits.Remove(u);
-			Destroy (u.gameObject);
+			unitLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
+			unitLocation.gameObject.networkView.RPC("destroyPrefabNet",RPCMode.AllBuffered);
+			GameObject tomb = Network.Instantiate (vm.tombPrefab, new Vector3 (unitLocation.point.x, 0, unitLocation.point.y), vm.tombPrefab.transform.rotation, 0) as GameObject;
+			unitLocation.gameObject.networkView.RPC("replaceTilePrefabNet",RPCMode.AllBuffered, tomb.networkView.viewID);
+			unitLocation.gameObject.networkView.RPC("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Tombstone);
+			gameObject.networkView.RPC ("removeUnitNet",RPCMode.AllBuffered,u.gameObject.networkView.viewID);
+			UnitManager temp = GameObject.Find ("UnitManager").GetComponent<UnitManager> ();
+			temp.gameObject.networkView.RPC("destroyUnitNet",RPCMode.AllBuffered,u.gameObject.networkView.viewID);
 		}
 	}
-	
 	//sets gold to 0 and returns the previous gold value
 	public int pillageGold()
 	{
@@ -352,7 +352,14 @@ public class Village : MonoBehaviour {
 	public void setControlledBy(Player p){
 		controlledBy = p;
 	}
-
+	
+	[RPC]
+	void removeUnitNet(NetworkViewID unitID)
+	{
+		Unit unitToRemove = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
+		supportedUnits.Remove (unitToRemove);
+	}
+			
 	[RPC]
 	void addUnitNet(NetworkViewID unitID){
 		Unit unitToAdd = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();

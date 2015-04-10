@@ -258,7 +258,12 @@ public class UnitManager : MonoBehaviour {
 		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
 		upgradeUnit (u, (UnitType)newlvl);
 	}
-	
+	[RPC]
+	void destroyUnitNet(NetworkViewID unitID)
+	{
+		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
+		Destroy(u);
+	}
 	[RPC]
 	public void cultivateMeadowNet (NetworkViewID unitID)
 	{
