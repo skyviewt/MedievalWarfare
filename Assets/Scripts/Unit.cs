@@ -73,20 +73,20 @@ public class Unit : MonoBehaviour {
 	public Unit(){
 	}
 
-	[RPC]
-	void setActiveNet(string unitClass){
-
-		gameObject.transform.FindChild ("Peasant").gameObject.SetActive (false);
-		gameObject.transform.FindChild ("Infantry").gameObject.SetActive (false);
-		gameObject.transform.FindChild ("Soldier").gameObject.SetActive (false);
-		gameObject.transform.FindChild ("Knight").gameObject.SetActive (false);
-
-		gameObject.transform.FindChild (unitClass).gameObject.SetActive (true);
-
-		if (!(unitClass == "Peasant" || unitClass == "Infantry" || unitClass == "Soldier" || unitClass == "Knight")) {
-			Debug.Log("Invalid Unit.SetActive() parameter: " + unitClass);
-		}
-	}
+//	[RPC]
+//	void setActiveNet(string unitClass){
+//
+//		gameObject.transform.FindChild ("Peasant").gameObject.SetActive (false);
+//		gameObject.transform.FindChild ("Infantry").gameObject.SetActive (false);
+//		gameObject.transform.FindChild ("Soldier").gameObject.SetActive (false);
+//		gameObject.transform.FindChild ("Knight").gameObject.SetActive (false);
+//
+//		gameObject.transform.FindChild (unitClass).gameObject.SetActive (true);
+//
+//		if (!(unitClass == "Peasant" || unitClass == "Infantry" || unitClass == "Soldier" || unitClass == "Knight")) {
+//			Debug.Log("Invalid Unit.SetActive() parameter: " + unitClass);
+//		}
+//	}
 
 
 	[RPC]
@@ -182,8 +182,44 @@ public class Unit : MonoBehaviour {
 //	{
 //		this.myAction = action;
 //	}
-
-
+	[RPC]
+	void setUnitTypeNet(int type)
+	{
+		myType = (UnitType)type;
+	}
+	[RPC]
+	void switchUnitPrefabNet(int pType)
+	{
+		UnitType newType = (UnitType)pType;
+		if (newType == UnitType.PEASANT) 
+		{
+			this.transform.FindChild("Peasant").gameObject.SetActive (true);
+			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+			this.transform.FindChild("Knight").gameObject.SetActive (false);
+		}
+		else if (newType == UnitType.INFANTRY) 
+		{
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (true);
+			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+			this.transform.FindChild("Knight").gameObject.SetActive (false);
+		}
+		else if (newType == UnitType.SOLDIER) 
+		{
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+			this.transform.FindChild("Soldier").gameObject.SetActive (true);
+			this.transform.FindChild("Knight").gameObject.SetActive (false);
+		}
+		else if (newType == UnitType.KNIGHT) 
+		{
+			this.transform.FindChild("Peasant").gameObject.SetActive (false);
+			this.transform.FindChild("Infantry").gameObject.SetActive (false);
+			this.transform.FindChild("Soldier").gameObject.SetActive (false);
+			this.transform.FindChild("Knight").gameObject.SetActive (true);
+		}
+	}
 	
 	public UnitActionType getAction()
 	{

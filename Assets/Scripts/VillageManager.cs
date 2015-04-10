@@ -365,27 +365,14 @@ public class VillageManager : MonoBehaviour {
 
 	public void hirePeasant(Village v,GameObject unitPrefab)
 	{
-		Tile tileAt = v.getLocatedAt ();
+//		Tile tileAt = v.getLocatedAt ();
 		int villageGold = v.getGold ();
-		if (villageGold >= 10) 
+		if (villageGold >= 10)
 		{
-			//Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, unitPrefab);
-			GameObject newPeasant = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
-
-			newPeasant.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.PEASANT, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
-
-			//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (true);
-			//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
-			//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
-			//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
-
-			//new method that sets the mesh active:
-			newPeasant.networkView.RPC("setActiveNet", RPCMode.All, "Peasant");
-			//v.setGold (villageGold - TEN);
-			v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -10);
-			//v.addUnit (p);
-			v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newPeasant.networkView.viewID);
-		} else {
+			unitManager.initializeUnit(v,unitPrefab,UnitType.PEASANT);
+		} 
+		else 
+		{
 			gameGUI.displayError (@"Wow you're broke, can't even afford a peasant? ¯\(°_o)/¯");
 		}
 
@@ -393,24 +380,25 @@ public class VillageManager : MonoBehaviour {
 
 	public void hireInfantry(Village v,GameObject unitPrefab)
 	{
-		Tile tileAt = v.getLocatedAt ();
+//		Tile tileAt = v.getLocatedAt ();
 		int villageGold = v.getGold ();
 		if (villageGold >= 20) {
-			//Unit p = Unit.CreateComponent (UnitType.INFANTRY, tileAt, v, unitPrefab);
-			GameObject newInfantry = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
-			newInfantry.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.INFANTRY, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+//			//Unit p = Unit.CreateComponent (UnitType.INFANTRY, tileAt, v, unitPrefab);
+//			GameObject newInfantry = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+//			newInfantry.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.INFANTRY, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+			unitManager.initializeUnit(v,unitPrefab,UnitType.INFANTRY);
 
 			//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
 			//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (true);
 			//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
 			//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
-			newInfantry.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Infantry");
-
-			//v.setGold (villageGold - TWENTY);
-			v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -20);
-
-			//v.addUnit (p);
-			v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newInfantry.networkView.viewID);
+//			newInfantry.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Infantry");
+//
+//			//v.setGold (villageGold - TWENTY);
+//			v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -20);
+//
+//			//v.addUnit (p);
+//			v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newInfantry.networkView.viewID);
 		} else {
 			gameGUI.displayError (@"You do not have enough gold to train infantry. ¯\(°_o)/¯");
 		}
@@ -418,25 +406,27 @@ public class VillageManager : MonoBehaviour {
 
 	public void hireSoldier(Village v, GameObject unitPrefab)
 	{
-		Tile tileAt = v.getLocatedAt ();
+//		Tile tileAt = v.getLocatedAt ();
 		int villageGold = v.getGold ();
 		if (villageGold >= 30) {
 			if(v.getMyType() >= VillageType.Town)
 			{
-				//Unit p = Unit.CreateComponent (UnitType.SOLDIER, tileAt, v, unitPrefab);
-				GameObject newSoldier = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
-				newSoldier.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.SOLDIER, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+				unitManager.initializeUnit(v,unitPrefab,UnitType.SOLDIER);
 
-				//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
-				//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
-				//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (true);
-				//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
-
-				newSoldier.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Soldier");
-				//v.setGold (villageGold - THIRTY);
-				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -30);
-				//v.addUnit (p);
-				v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newSoldier.networkView.viewID);
+//				//Unit p = Unit.CreateComponent (UnitType.SOLDIER, tileAt, v, unitPrefab);
+//				GameObject newSoldier = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+//				newSoldier.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.SOLDIER, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+//
+//				//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
+//				//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
+//				//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (true);
+//				//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (false);
+//
+//				newSoldier.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Soldier");
+//				//v.setGold (villageGold - THIRTY);
+//				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -30);
+//				//v.addUnit (p);
+//				v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newSoldier.networkView.viewID);
 			}
 			else
 			{
@@ -448,26 +438,28 @@ public class VillageManager : MonoBehaviour {
 	}
 	public void hireKnight(Village v, GameObject unitPrefab)
 	{
-		Tile tileAt = v.getLocatedAt ();
+//		Tile tileAt = v.getLocatedAt ();
 		int villageGold = v.getGold ();
 		if (villageGold >= 40) {
 			if(v.getMyType() == VillageType.Fort)
 			{
-				//Unit p = Unit.CreateComponent (UnitType.KNIGHT, tileAt, v, unitPrefab);
-				GameObject newKnight = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
-				newKnight.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.KNIGHT, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+				unitManager.initializeUnit(v,unitPrefab,UnitType.KNIGHT);
 
-				//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
-				//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
-				//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
-				//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (true);
-				newKnight.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Knight");
-
-				//v.setGold (villageGold - FOURTY);
-				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -40);
-
-				//v.addUnit (p);
-				v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newKnight.networkView.viewID);
+//				//Unit p = Unit.CreateComponent (UnitType.KNIGHT, tileAt, v, unitPrefab);
+//				GameObject newKnight = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+//				newKnight.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.KNIGHT, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+//
+//				//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (false);
+//				//p.gameObject.transform.FindChild("Infantry").gameObject.SetActive (false);
+//				//p.gameObject.transform.FindChild("Soldier").gameObject.SetActive (false);
+//				//p.gameObject.transform.FindChild("Knight").gameObject.SetActive (true);
+//				newKnight.networkView.RPC ("setActiveNet", RPCMode.AllBuffered, "Knight");
+//
+//				//v.setGold (villageGold - FOURTY);
+//				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -40);
+//
+//				//v.addUnit (p);
+//				v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newKnight.networkView.viewID);
 			}
 			else
 			{
@@ -479,16 +471,37 @@ public class VillageManager : MonoBehaviour {
 
 	}
 
-	//TODO networking good?
-	public void buildTower(NetworkViewID village, NetworkViewID tile)
+	public void hireCannon(Village v, GameObject cannonPrefab)
 	{
-		Village v = NetworkView.Find (village).gameObject.GetComponent<Village>();
-		Tile t = NetworkView.Find (tile).gameObject.GetComponent<Tile>();
+//		Tile tileAt = v.getLocatedAt ();
+		int vGold = v.getGold ();
+		int vWood = v.getWood ();
+		if (vGold >= 35 && vWood>=12) {
+			if(v.getMyType() >= VillageType.Fort)
+			{
+				unitManager.initializeCannon(v,cannonPrefab);
+				// initialize the cannon
+//				cannon.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.CANNON, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
+//				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -35);
+//				v.gameObject.networkView.RPC("addWoodNet", RPCMode.AllBuffered, -12);
+//				v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, cannon.networkView.viewID);
+			}
+			else
+			{
+				gameGUI.displayError(@"Please upgrade your village to a Fort first. ¯\(°_o)/¯");
+			}
+		} else {
+			gameGUI.displayError(@"Cannons cost 35 gold and 12 wood");
+		}
+	}
+
+	public void buildTower(Village v, Tile t)
+	{
 		GameObject tower = Network.Instantiate(towerPrefab, new Vector3(t.point.x, 0.1f, t.point.y), Quaternion.identity, 0) as GameObject;
-		tower.gameObject.networkView.RPC("initTower",RPCMode.AllBuffered,v.networkView.viewID,t.networkView.viewID );
 		Structure s = tower.GetComponent<Structure> ();
+		s.gameObject.networkView.RPC("initTower",RPCMode.AllBuffered,v.networkView.viewID,t.networkView.viewID );
 		t.gameObject.networkView.RPC ("replaceTilePrefabNet", RPCMode.AllBuffered, tower.networkView.viewID);
-		t.gameObject.networkView.RPC ("setStructureNet", RPCMode.AllBuffered, s);
+		t.gameObject.networkView.RPC ("setStructureNet", RPCMode.AllBuffered, true);
 		v.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,-5);
 	}
 
@@ -635,31 +648,7 @@ public class VillageManager : MonoBehaviour {
 			v.addWood (-12);
 		}
 	}	
-	//TODO NOT NETWORKED PROPERLY
-	public void buildCannon(Village v, GameObject cannonPrefab)
-	{
-		Tile tileAt = v.getLocatedAt ();
-		int vGold = v.getGold ();
-		int vWood = v.getWood ();
-		if (vGold >= 35 && vWood>=12) {
-			if(v.getMyType() >= VillageType.Fort)
-			{
 
-				GameObject cannon = Network.Instantiate(cannonPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
-				// initialize the cannon
-				cannon.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.CANNON, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
-				v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -35);
-				v.gameObject.networkView.RPC("addWoodNet", RPCMode.AllBuffered, -12);
-				v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, cannon.networkView.viewID);
-			}
-			else
-			{
-				gameGUI.displayError(@"Please upgrade your village to a Fort first. ¯\(°_o)/¯");
-			}
-		} else {
-			gameGUI.displayError(@"Cannons cost 35 gold and 12 wood");
-		}
-	}
 
 	public void takeCannonDamage (Village v)
 	{

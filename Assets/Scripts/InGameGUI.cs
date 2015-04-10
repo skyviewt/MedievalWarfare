@@ -209,6 +209,18 @@ public class InGameGUI : MonoBehaviour {
 		menuUp = false;
 	}
 
+	public void buildCannonPressed()
+	{
+		Village v = _Village.GetComponent<Village> ();
+		villageManager.hireCannon (v,cannonPrefab);
+		int redrawUnits = v.getUnitSize ();
+		int redrawGold = v.getGold();
+		_UnitsText.text = redrawUnits.ToString();
+		_GoldText.text = redrawGold.ToString();
+		VillageCanvas.enabled = false;
+		menuUp = false;
+	}
+
 
 	public void villageUpgradePressed()
 	{
@@ -354,7 +366,6 @@ public class InGameGUI : MonoBehaviour {
 					//print ("doing the move now");
 
 					unitManager.moveUnit (u, _move);
-					//gameObject.networkView.RPC ("moveUnitNet", RPCMode.AllBuffered, u.gameObject.networkView.viewID, _move.gameObject.networkView.viewID);
 					
 					if (selection.getVillage () == null) {
 							v.addTile (selection);
@@ -589,6 +600,7 @@ public class InGameGUI : MonoBehaviour {
 			} else if (selection == v.getLocatedAt()){
 				this.displayError ("Towers go AROUND your village");
 			} else {
+				villageManager.buildTower(v,selection);
 				//villageManager.networkView.RPC ("buildTowerNet", RPCMode.AllBuffered, v.gameObject.networkView.viewID, _Tile.gameObject.networkView.viewID);
 				//villageManager.buildTower(v, selection);
 			}
@@ -621,18 +633,6 @@ public class InGameGUI : MonoBehaviour {
 		villageManager.buildCastle (v);
 		int redrawWood = v.getWood();
 		_WoodText.text = redrawWood.ToString();
-		VillageCanvas.enabled = false;
-		menuUp = false;
-	}
-
-	public void buildCannonPressed()
-	{
-		Village v = _Village.GetComponent<Village> ();
-		villageManager.buildCannon (v,cannonPrefab);
-		int redrawUnits = v.getUnitSize ();
-		int redrawGold = v.getGold();
-		_UnitsText.text = redrawUnits.ToString();
-		_GoldText.text = redrawGold.ToString();
 		VillageCanvas.enabled = false;
 		menuUp = false;
 	}

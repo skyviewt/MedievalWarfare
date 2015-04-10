@@ -24,14 +24,6 @@ public class UnitManager : MonoBehaviour {
 		gameGUI = GameObject.Find ("attachingGUI").GetComponent<InGameGUI>();
 	}
 	
-	[RPC]
-	void moveUnitNet(NetworkViewID unitID, NetworkViewID tileID){
-		Unit unitToMove = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
-		Tile dest = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
-		moveUnit (unitToMove, dest);
-	}
-	
-	
 	public void moveUnit(Unit unit, Tile dest)
 	{
 		Village destVillage = dest.getVillage ();
@@ -279,7 +271,68 @@ public class UnitManager : MonoBehaviour {
 			}
 		}
 	}
-	
+	public void initializeUnit(Village v,GameObject unitPrefab, UnitType type)
+	{
+		Tile tileAt = v.getLocatedAt ();
+		GameObject newUnit = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+		Unit u = newUnit.GetComponent<Unit>();
+
+		Tile toplace = null;
+		foreach (Tile a in tileAt.getNeighbours()) 
+		{
+			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == tileAt.getColor())
+			{
+				toplace = a;
+			}
+		}
+		if(toplace == null)
+		{
+			toplace = tileAt;
+		}
+		gameObject.networkView.RPC ("moveUnitPrefabNet",RPCMode.AllBuffered,u.networkView.viewID,new Vector3(toplace.point.x, 0.15f, toplace.point.y));
+//		locatedAt = toplace;
+		u.networkView.RPC ("setLocationNet", RPCMode.AllBuffered, u.getLocation ().networkView.viewID);
+//		myType = unitType;
+		u.networkView.RPC ("setUnitTypeNet", RPCMode.AllBuffered, (int)type);
+		u.networkView.RPC ("switchUnitPrefabNet", RPCMode.AllBuffered, (int)type);
+//		myVillage = v;
+		u.networkView.RPC ("setVillageNet", RPCMode.AllBuffered, v.networkView.viewID);
+//		myAction = UnitActionType.ReadyForOrders;
+		u.networkView.RPC ("setActionNet", RPCMode.AllBuffered, (int)UnitActionType.ReadyForOrders);
+		u.getLocation ().networkView.RPC ("setOccupyingUnitNet", RPCMode.AllBuffered, u.networkView.viewID);
+		int unitCost = 10 *((int)type+1);
+		v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -unitCost);
+		v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newUnit.networkView.viewID);
+	}
+
+	public void initializeCannon(Village v, GameObject cannonPrefab)
+	{
+		Tile tileAt = v.getLocatedAt ();
+		GameObject newCannon = Network.Instantiate(cannonPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+		Unit u = newCannon.GetComponent<Unit>();
+
+		Tile toplace = null;
+		foreach (Tile a in tileAt.getNeighbours()) 
+		{
+			if(a.prefab == null && a.getOccupyingUnit() == null && a.getColor() == tileAt.getColor())
+			{
+				toplace = a;
+			}
+		}
+		if(toplace == null)
+		{
+			toplace = tileAt;
+		}
+		gameObject.networkView.RPC ("moveUnitPrefabNet",RPCMode.AllBuffered,u.networkView.viewID,new Vector3(toplace.point.x, 0.15f, toplace.point.y));
+		u.networkView.RPC ("setLocationNet", RPCMode.AllBuffered, u.getLocation ().networkView.viewID);
+		u.networkView.RPC ("setUnitTypeNet", RPCMode.AllBuffered, (int)UnitType.CANNON);
+		u.networkView.RPC ("setVillageNet", RPCMode.AllBuffered, v.networkView.viewID);
+		u.networkView.RPC ("setActionNet", RPCMode.AllBuffered, (int)UnitActionType.ReadyForOrders);
+		u.getLocation ().networkView.RPC ("setOccupyingUnitNet", RPCMode.AllBuffered, u.networkView.viewID);
+		v.gameObject.networkView.RPC("addGoldNet", RPCMode.AllBuffered, -35);
+		v.gameObject.networkView.RPC("addWoodNet", RPCMode.AllBuffered, -12);
+		v.gameObject.networkView.RPC("addUnitNet", RPCMode.AllBuffered, newCannon.networkView.viewID);
+	}
 	[RPC]
 	void upgradeUnitNet(NetworkViewID unitID, int newlvl){
 		Unit u = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
