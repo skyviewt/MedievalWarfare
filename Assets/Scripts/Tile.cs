@@ -230,10 +230,9 @@ public class Tile : MonoBehaviour
 	[RPC]
 	void destroyPrefab (NetworkViewID tileID )
 	{
-		Tile t = NetworkView.Find (tileID);
+		Tile t = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
 		Destroy (t.prefab);
 		t.prefab = null;
-
 	}
 	[RPC]
 	void setAndColor(int newColor){

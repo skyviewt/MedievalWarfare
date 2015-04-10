@@ -464,7 +464,7 @@ public class mainMenu : MonoBehaviour {
 //			GM.networkView.RPC("setFinalMap",RPCMode.AllBuffered, GM.finalMapChoice);
 			GM.initializeSelectedMap(); //initializes the graph 
 
-			GM.mapGen.preserveFinalMap( GM.finalMapChoice ) // preserves the choice 
+			GM.mapGen.preserveFinalMap( GM.finalMapChoice ); // preserves the choice 
 		}
 		List<Player> players = GM.getPlayers();
 		GM.createNewGame();
