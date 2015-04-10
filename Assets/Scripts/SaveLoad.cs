@@ -488,6 +488,19 @@ public class SaveLoad : MonoBehaviour {
 					int unitType = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+unitID+unitNb+uType);
 
 					int unitActType = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+unitID+unitNb+uActionType);
+
+					//setLocation:
+					newUnit.networkView.RPC ("setLocationNet", RPCMode.AllBuffered, uT.networkView.viewID);
+					uT.networkView.RPC ("setOccupyingUnitNet", RPCMode.AllBuffered, newUnit.networkView.viewID);
+
+					//set actionType:
+					newUnit.networkView.RPC ("setActionNet", RPCMode.AllBuffered, unitActType);
+					//switch prefab:
+					newUnit.networkView.RPC ("switchUnitPrefabNet", RPCMode.AllBuffered, unitType);
+
+					//setVillage:
+					newUnit.networkView.RPC ("setVillageNet", RPCMode.AllBuffered, uT.getVillage().networkView.viewID);
+					uT.getVillage().networkView.RPC ("addUnitNet", RPCMode.AllBuffered, newUnit.networkView.viewID);
 				}
 			}
 		}

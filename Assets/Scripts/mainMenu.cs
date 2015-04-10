@@ -652,14 +652,8 @@ public class mainMenu : MonoBehaviour {
 				// only counting the joining players.
 				for (int i = 0; i<Network.connections.Length; i++) 
 				{
-					
-					print ("-----joining players ip-----");
-					Debug.Log (Network.connections[i].ipAddress);
-					//get the player with the same ipAddress
-					Debug.Log (GM.players.Count);
 					for(int j = 0; j<GM.players.Count; j++)
 					{
-						print ("what is j:"+j);
 						Player playa = GM.players[j];
 						if( playa.ipAddress == Network.connections[i].ipAddress )
 						{
