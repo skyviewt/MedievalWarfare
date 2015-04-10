@@ -124,7 +124,7 @@ public class Tile : MonoBehaviour
 		}
 		else if ( color == 3 )
 		{
-			gameObject.renderer.material.color = Color.magenta;
+			gameObject.renderer.material.color = Color.green;
 		}
 		else if ( color == 4 )
 		{

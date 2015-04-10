@@ -204,8 +204,8 @@ public class GameManager : MonoBehaviour {
 	public void setLocalTurnAndPlayer(int turnNumber)
 	{
 		this.localTurn = turnNumber;
-		List<Player> temp = game.getPlayers ();
-		this.localPlayer = temp[turnNumber];
+		//List<Player> temp = game.getPlayers ();
+		this.localPlayer = players[turnNumber];
 	}
 
 
