@@ -304,4 +304,10 @@ public class Tile : MonoBehaviour
 						break;
 				}
 	}
+
+	[RPC]
+	public void setRoadNet(bool b)
+	{
+		this.isRoad = b;
+	}
 }
