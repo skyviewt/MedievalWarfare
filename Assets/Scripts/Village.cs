@@ -350,7 +350,6 @@ public class Village : MonoBehaviour {
 	
 	public void retireAllUnits()
 	{
-		Debug.Log ("inside retire all units");
 		foreach (Unit u in supportedUnits) {
 			Tile unitLocation = u.getLocation();
 			unitLocation.gameObject.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
@@ -393,7 +392,7 @@ public class Village : MonoBehaviour {
 	void addUnitNet(NetworkViewID unitID){
 		Unit unitToAdd = NetworkView.Find (unitID).gameObject.GetComponent<Unit>();
 		supportedUnits.Add (unitToAdd);
-		unitToAdd.setVillage (this);
+		//unitToAdd.setVillage (this);
 	}
 
 	[RPC] // i think this is where the bug was.

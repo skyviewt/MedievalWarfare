@@ -309,9 +309,9 @@ public class VillageManager : MonoBehaviour {
 		p.networkView.RPC ("removeVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID, p.getColor ());
 		gameObject.networkView.RPC ("destroyVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID);
 
-		GameManager GM = GameObject.Find ("preserveGM").gameObject.GetComponent<GameManager>();
-		GM.checkLoss (p);
-		GM.checkWin ();
+		GameManager GMA = GameObject.Find ("preserveGM").gameObject.GetComponent<GameManager>();
+		GMA.checkLoss (p);
+		GMA.checkWin ();
 	}
 
 	// de-color, kill units, destroy structures, etc
