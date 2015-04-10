@@ -86,7 +86,7 @@ public class InGameGUI : MonoBehaviour {
 		gameManager.initializeNextPlayersVillages();
 		gameManager.updateTurnsPlayed();
 		this.networkView.RPC ("updateEndTurnButtonsNet", RPCMode.AllBuffered);
-		gameObject.networkView.RPC ("enableInteractionsNet", RPCMode.AllBuffered);
+		this.gameObject.networkView.RPC ("enableInteractionsNet", RPCMode.AllBuffered);
 	}
 
 	public void returnToGamePressed()
