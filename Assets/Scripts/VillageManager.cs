@@ -371,6 +371,7 @@ public class VillageManager : MonoBehaviour {
 		{
 			//Unit p = Unit.CreateComponent (UnitType.PEASANT, tileAt, v, unitPrefab);
 			GameObject newPeasant = Network.Instantiate(unitPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
+
 			newPeasant.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.PEASANT, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
 
 			//p.gameObject.transform.FindChild("Peasant").gameObject.SetActive (true);
