@@ -74,7 +74,7 @@ public class Tile : MonoBehaviour
 	[RPC]
 	void switchTilePrefab(NetworkViewID gameobjectID)
 	{
-		this.prefab = GameObject.Find (gameobjectID).gameObject;
+		this.prefab = NetworkView.Find (gameobjectID).gameObject;
 	}
 	public bool checkVillagePrefab()
 	{
