@@ -598,8 +598,7 @@ public class InGameGUI : MonoBehaviour {
 		} else if (t.checkRoad ()) {
 			this.displayError ("This tile already has a road");
 		} else {
-			//TODO RPC this and need to delay until next turn
-			t.buildRoad ();
+			//t.buildRoad ();
 			u.setAction(UnitActionType.BuildingRoad);
 		}
 

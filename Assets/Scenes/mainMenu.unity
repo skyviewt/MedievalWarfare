@@ -4022,7 +4022,6 @@ GameObject:
   - 114: {fileID: 358982965}
   - 114: {fileID: 358982967}
   - 148: {fileID: 358982968}
-  - 114: {fileID: 358982969}
   - 114: {fileID: 358982970}
   m_Layer: 5
   m_Name: preserveGM
@@ -4096,19 +4095,6 @@ NetworkView:
   m_ViewID:
     m_ID: 1
     m_Type: 1
---- !u!114 &358982969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 358982964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 808b4daa82cf24c65ad9ce380f79c77f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  myVillages: []
-  ipAddress: 
 --- !u!114 &358982970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17105,7 +17091,7 @@ MonoBehaviour:
   HostText: {fileID: 237507285}
   JoinText: {fileID: 393523479}
   StatsText: {fileID: 960499426}
-  QuitText: {fileID: 2035894124}
+  LogoutText: {fileID: 0}
   LaunchText: {fileID: 1064016234}
   ErrorLobbyMsg: {fileID: 1624195093}
   statsTableTexts:
