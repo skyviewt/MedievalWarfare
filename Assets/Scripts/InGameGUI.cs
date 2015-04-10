@@ -575,7 +575,7 @@ public class InGameGUI : MonoBehaviour {
 			Tile selection = _Tile.GetComponent<Tile> ();
 			if (!v.getControlledRegion().Contains (selection)){
 				this.displayError ("You must build inside your controlled region");
-			} else if (selection.getStructure ()!=null){
+			} else if (selection.checkTower ()!=false){
 				this.displayError ("There is already a tower there");
 			} else if (selection.getOccupyingUnit()!=null){
 				this.displayError ("We arent building homes! A unit is standing there");

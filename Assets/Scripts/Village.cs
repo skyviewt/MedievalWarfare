@@ -118,7 +118,12 @@ public class Village : MonoBehaviour {
 		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
 		controlledRegion.Add (t);
 	}
-
+	[RPC]
+	void removeTileNet(NetworkViewID tileID)
+	{
+		Tile t = NetworkView.Find (tileID).GetComponent<Tile>();
+		controlledRegion.Remove (t);
+	}
 	[RPC]
 	//set the location of the village by getting the Tile component of the GrassTile Prefab with that tileID 
 	void setLocatedAtNet(NetworkViewID tileID){
@@ -174,6 +179,11 @@ public class Village : MonoBehaviour {
 	void setWageNet(int wage)
 	{
 		this.wage = wage;
+	}
+	[RPC]
+	void transformVillageNet()
+	{
+		this.gameObject.transform.Translate (0, 1, 0);
 	}
 	//setters and getters
 	public void setGold(int goldValue)
@@ -234,7 +244,11 @@ public class Village : MonoBehaviour {
 	{
 		return this.getControlledUnits().Count;
 	}
-
+	[RPC]
+	void setLocationNet(NetworkViewID tileID)
+	{
+		this.locatedAt = NetworkView.Find (tileID).gameObject.GetComponent<Tile> ();
+	}
 	public void setLocation(Tile t)
 	{
 		locatedAt = t;
@@ -310,7 +324,14 @@ public class Village : MonoBehaviour {
 			}
 		}
 	}
-
+	public int getHealth()
+	{
+		return this.health;
+	}
+	public int getWage()
+	{
+		return this.wage;
+	}
 	public int getTotalWages()
 	{
 		int totalWage = 0;
@@ -372,9 +393,9 @@ public class Village : MonoBehaviour {
 	}
 
 	[RPC] // i think this is where the bug was.
-	void setControlledByNet(NetworkViewID gm, int playerIndex){
-		GameManager gameM = NetworkView.Find(gm).gameObject.GetComponent<GameManager>();
-		controlledBy = gameM.players[playerIndex];
+	void setControlledByNet(int playerIndex){
+		GameManager GM = GameObject.Find ("preserveGM").GetComponent<GameManager> ();
+		this.controlledBy = GM.players[playerIndex];
 	}
 	[RPC]
 	void switchPrefabNet(int type)
@@ -409,22 +430,4 @@ public class Village : MonoBehaviour {
 			this.transform.FindChild("Castle").gameObject.SetActive (true);
 		}
 	}
-
-	public void takeDamage(){
-		--health;
-		if (health <= 0) {
-			gold = 0;
-			wood = 0;
-			this.transform.FindChild("Hovel").gameObject.SetActive (true);
-			this.transform.FindChild("Town").gameObject.SetActive (false);
-			this.transform.FindChild("Fort").gameObject.SetActive (false);
-			this.transform.FindChild("Castle").gameObject.SetActive (false);
-
-			Tile respawnLocation = vm.getTileForRespawn(controlledRegion);
-			respawnLocation.replace (null);
-			this.transform.position = new Vector3(respawnLocation.point.x, 0.1f, respawnLocation.point.y);
-			locatedAt = respawnLocation;
-		}
-	}
-	
 }

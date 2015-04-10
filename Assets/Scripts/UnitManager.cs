@@ -7,6 +7,7 @@ using System.Linq;
 public class UnitManager : MonoBehaviour {
 	
 	public GameObject meadowPrefab;
+	public GameObject tombPrefab;
 	public GameObject curEffect;
 	public GameObject attackEffect1;
 	public GameObject attackEffect2;
@@ -14,7 +15,7 @@ public class UnitManager : MonoBehaviour {
 	public TileManager tileManager;
 	public InGameGUI gameGUI;
 	public readonly int TEN = 10;
-	
+
 	// Use this for initialization
 	
 	void Start () {
@@ -114,9 +115,9 @@ public class UnitManager : MonoBehaviour {
 						}
 					}
 					// destroy towers
-					if (dest.getStructure()!=null && srcUnitType>UnitType.INFANTRY){
+					if (dest.checkTower() == true && srcUnitType>UnitType.INFANTRY){
 						//dest.setStructure(null);
-						dest.gameObject.networkView.RPC ("removeStructureNet",RPCMode.AllBuffered);
+						dest.gameObject.networkView.RPC ("setStructureNet",RPCMode.AllBuffered,false);
 						//dest.replace (null);
 						dest.gameObject.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
 					}
@@ -212,7 +213,7 @@ public class UnitManager : MonoBehaviour {
 			if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && (u.getUnitType() == UnitType.KNIGHT || u.getUnitType() == UnitType.CANNON)){
 				gameGUI.displayError (@"Knights are too fancy to do manual labour. ¯\(°_o)/¯");
 				return false;
-			} else if (t.getStructure ()!=null){
+			} else if (t.checkTower ()){
 				gameGUI.displayError (@"The tower doesn't want you to stand ontop of it. ¯\(°_o)/¯");
 				return false;
 			} else if (t.getOccupyingUnit () != null) {
@@ -232,8 +233,8 @@ public class UnitManager : MonoBehaviour {
 			} else if((t.getLandType () == LandType.Trees || t.getLandType () == LandType.Tombstone) && u.getUnitType() == UnitType.KNIGHT){
 				gameGUI.displayError (@"Knights are too fancy to do manual labour. ¯\(°_o)/¯");
 				return false;
-			} else if (t.getStructure ()!=null && u.getUnitType()!= UnitType.KNIGHT){
-				gameGUI.displayError (@"Only a knight can take a tower. ¯\(°_o)/¯");
+			} else if (t.checkTower () == true && (u.getUnitType()!= UnitType.KNIGHT || u.getUnitType () != UnitType.SOLDIER)){
+				gameGUI.displayError (@"Only a soldiers and knights can destroy an enemy tower. ¯\(°_o)/¯");
 				return false;
 			} else if (t.getOccupyingUnit()!=null && u.getUnitType()<=t.getOccupyingUnit().getUnitType()){
 				if (t.getOccupyingUnit().getUnitType()==UnitType.CANNON && u.getUnitType()<=UnitType.SOLDIER){
@@ -313,25 +314,31 @@ public class UnitManager : MonoBehaviour {
 			gameGUI.displayError (@"Dont shoot yourself!!");
 			return;
 		} else { // finally, give em hell!
-			Structure s = t.getStructure();
+			bool hasTower = t.checkTower ();
 			Unit u = t.getOccupyingUnit();
 			Village v = t.getVillage ();
 			Tile l = v.getLocatedAt();
-			if (s!=null){
-				t.replace (null);
-				t.setStructure(null);
+			if (hasTower == true){
+//				t.replace (null);
+				t.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+				t.networkView.RPC ("setStructureNet",RPCMode.AllBuffered,false);
 			}
 			if (u!=null){
-				v.removeUnit(u);
-				t.setOccupyingUnit(null);
-				t.replace (null);
-				t.setLandType(LandType.Tombstone);
-				GameObject tombPrefab = villageManager.tombPrefab;
-				t.prefab = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
-				Destroy (u.gameObject);
+//				v.removeUnit(u);
+				v.networkView.RPC ("removeUnitNet",RPCMode.AllBuffered,u.networkView.viewID);
+//				t.setOccupyingUnit(null);
+				t.networkView.RPC ("removeOccupyingUnitNet",RPCMode.AllBuffered);
+//				t.replace (null);
+//				t.networkView.RPC ("destroyPrefab",RPCMode.AllBuffered);
+//				t.setLandType(LandType.Tombstone);
+				t.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Tombstone);
+				GameObject tomb = Network.Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation,0) as GameObject;
+				t.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,tomb.networkView.viewID);
+//				Destroy (u.gameObject);
+				gameObject.networkView.RPC ("destroyUnitNet",RPCMode.AllBuffered,u.networkView.viewID);
 			}
 			if (t==l){
-				v.takeDamage ();
+				villageManager.takeCannonDamage(v);
 			}
 		
 		}

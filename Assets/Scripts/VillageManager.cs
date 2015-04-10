@@ -129,17 +129,18 @@ public class VillageManager : MonoBehaviour {
 		//determine amount to steal
 		int wood = plunderedVillage.getWood ();
 		int gold = plunderedVillage.getGold ();
+
 		// remove from enemy village
-		plunderedVillage.addGold(-gold);
-		plunderedVillage.addWood(-wood);
+		plunderedVillage.gameObject.networkView.RPC ("addGoldNet",RPCMode.AllBuffered,-gold);
+		plunderedVillage.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,-wood);
+
 		// add to yours
-		pluderingVillage.addWood(wood);
-		pluderingVillage.addGold(gold);
+		pluderingVillage.gameObject.networkView.RPC ("addGoldNet",RPCMode.AllBuffered,gold);
+		pluderingVillage.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,wood);
 
 		//Destroy (dest.prefab); // destroy the village, create a meadow
-		dest.prefab = Instantiate (meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation) as GameObject;
-		dest.replace (meadowPrefab);
-
+		GameObject meadow = Network.Instantiate(meadowPrefab, new Vector3 (dest.point.x, 0, dest.point.y), meadowPrefab.transform.rotation,0) as GameObject;
+		dest.gameObject.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadowPrefab.networkView.viewID);
 		// respawn enemy hovel happens during the split
 	}
 
@@ -150,9 +151,12 @@ public class VillageManager : MonoBehaviour {
 	public void takeoverTile(Village invader, Tile dest)
 	{
 		Village invadedVillage = dest.getVillage ();
-		dest.setVillage (invader);
-		invader.addTile(dest);
-		invadedVillage.removeTile(dest);
+//		dest.setVillage (invader);
+		dest.gameObject.networkView.RPC ("setVillageNet", RPCMode.AllBuffered, invader.gameObject.networkView.viewID);
+//		invader.addTile(dest);
+		invader.gameObject.networkView.RPC ("addTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
+//		invadedVillage.removeTile(dest);
+		invadedVillage.gameObject.networkView.RPC ("removeTileNet", RPCMode.AllBuffered, dest.gameObject.networkView.viewID);
 		splitRegion(dest, invadedVillage);
 	}
 
@@ -161,7 +165,7 @@ public class VillageManager : MonoBehaviour {
 		List<Tile> validTiles = new List<Tile>();
 		int randomTileIndex;
 		foreach (Tile t in region) {
-			if (t.getStructure()!=null){
+			if (t.checkTower () == false){
 				validTiles.Add (t);
 			}
 		}
@@ -173,9 +177,7 @@ public class VillageManager : MonoBehaviour {
 			return validTiles[randomTileIndex];
 		}
 	}
-
-
-	//TODO needs networking component
+	
 	private void splitRegion(Tile splitTile, Village villageToSplit)
 	{	
 		List<List<Tile>> lstRegions = new List<List<Tile>>(); 
@@ -215,16 +217,21 @@ public class VillageManager : MonoBehaviour {
 		}*/
 
 		if (lstRegions.Count <= 0) {
-			Destroy (oldLocation.prefab);
-			oldLocation.replace (null);
-			oldLocation.setLandType (LandType.Meadow);
-			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+			//oldLocation.replace (null);
+
+//			oldLocation.setLandType (LandType.Meadow);
+			oldLocation.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Meadow);
+//			oldLocation.prefab = Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation) as GameObject;
+			GameObject meadow = Network.Instantiate (meadowPrefab, new Vector3 (oldLocation.point.x, 0, oldLocation.point.y), meadowPrefab.transform.rotation,0) as GameObject;
+			oldLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,meadow.networkView.viewID);
 
 			villageToSplit.retireAllUnits();
 			// remove village from player if not already done so
-			p.myVillages.Remove (villageToSplit);
-			Destroy (villageToSplit.gameObject);
-			print ("Village destroyed completely");
+//			p.myVillages.Remove (villageToSplit);
+			p.networkView.RPC ("removeVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID);
+//			Destroy (villageToSplit.gameObject);
+			gameObject.networkView.RPC ("destroyVillageNet",RPCMode.AllBuffered,villageToSplit.networkView.viewID);
+//			print ("Village destroyed completely");
 			return; //stop here if no region is big enough
 		}
 
@@ -232,8 +239,8 @@ public class VillageManager : MonoBehaviour {
 		int splitGold = oldGold/lstRegions.Count;
 
 		//create new villages
-		foreach(List<Tile> region in lstRegions){
-
+		foreach(List<Tile> region in lstRegions)
+		{
 			print ("creating new village");
 			Vector3 hovelLocation;
 			Tile tileLocation;
@@ -248,53 +255,68 @@ public class VillageManager : MonoBehaviour {
 
 			GameObject newTown = Network.Instantiate(hovelPrefab, hovelLocation, hovelPrefab.transform.rotation, 0) as GameObject;
 			Village v = newTown.GetComponent<Village>();
-			tileLocation.replace (newTown);
+			//tileLocation.replace (newTown);
+			tileLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,newTown.networkView.viewID);
 			v.addRegion (region); //adds T<>V and any U<>V
-			v.setLocation (tileLocation);
-			p.addVillage(v);
-			v.setControlledBy(p);
+//			v.setLocation (tileLocation);
+			v.gameObject.networkView.RPC ("setLocationNet",RPCMode.AllBuffered,tileLocation.networkView.viewID);
+//			p.addVillage(v);
+			p.gameObject.networkView.RPC ("setLocationNet",RPCMode.AllBuffered,v.networkView.viewID);
+//			v.setControlledBy(p);
+			GameManager GM = GameObject.Find ("preserveGM").GetComponent<GameManager>();
+			int playerIndex = GM.findPlayerIndex(p);
+			v.gameObject.networkView.RPC ("setControlledByNet",RPCMode.AllBuffered,playerIndex);
 
 			if (region.Contains (oldLocation)){
 				VillageType vType = villageToSplit.getMyType();
-				v.setMyType(vType);
+				//v.setMyType(vType);
+				v.gameObject.networkView.RPC ("setVillageTypeNet",RPCMode.AllBuffered,(int)vType);
 				if (vType == VillageType.Hovel) 
 				{
-					newTown.transform.FindChild("Hovel").gameObject.SetActive (true);
-					newTown.transform.FindChild("Town").gameObject.SetActive (false);
-					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
-					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Hovel").gameObject.SetActive (true);
+//					newTown.transform.FindChild("Town").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+					newTown.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)vType);
 				}
 				else if (vType == VillageType.Town) 
 				{
-					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
-					newTown.transform.FindChild("Town").gameObject.SetActive (true);
-					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
-					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Town").gameObject.SetActive (true);
+//					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+					newTown.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)vType);
+
 				}
 				else if (vType == VillageType.Fort) 
 				{					
-					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
-					newTown.transform.FindChild("Town").gameObject.SetActive (false);
-					newTown.transform.FindChild("Fort").gameObject.SetActive (true);
-					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Town").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Fort").gameObject.SetActive (true);
+//					newTown.transform.FindChild("Castle").gameObject.SetActive (false);
+					newTown.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)vType);
+
 				}
 				else if (vType == VillageType.Castle) 
 				{					
-					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
-					newTown.transform.FindChild("Town").gameObject.SetActive (false);
-					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
-					newTown.transform.FindChild("Castle").gameObject.SetActive (true);
+//					newTown.transform.FindChild("Hovel").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Town").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Fort").gameObject.SetActive (false);
+//					newTown.transform.FindChild("Castle").gameObject.SetActive (true);
+					newTown.gameObject.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)vType);
 				}
 			}
 
-			v.addGold(splitGold);
-			v.addWood(splitWood);
+			//v.addGold(splitGold);
+			v.gameObject.networkView.RPC ("addGoldNet",RPCMode.AllBuffered,splitGold);
+//			v.addWood(splitWood);
+			v.gameObject.networkView.RPC ("addWoodNet",RPCMode.AllBuffered,splitWood);
 
 		}
-		villageToSplit.gameObject.transform.Translate (0, 1, 0);
-		//villageToSplit.gameObject.renderer.material.color = Color.magenta;
-		Destroy (villageToSplit.gameObject);
-
+//		villageToSplit.gameObject.transform.Translate (0, 1, 0);
+		villageToSplit.networkView.RPC ("transformVillageNet", RPCMode.AllBuffered);
+//		Destroy (villageToSplit.gameObject);
+		gameObject.networkView.RPC ("destroyVillageNet", RPCMode.AllBuffered, villageToSplit.networkView.viewID);
 	}
 
 	// de-color, kill units, destroy structures, etc
@@ -302,18 +324,30 @@ public class VillageManager : MonoBehaviour {
 	private void Neutralize (List<Tile> region){
 		Village v = region[0].getVillage();
 		foreach (Tile t in region) {
-			t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 2); // TODO hard coded neutral color...
-			v.removeTile(t);
-			t.setVillage (null);
+			t.gameObject.networkView.RPC("setAndColor", RPCMode.AllBuffered, 0);
+//			v.removeTile(t);
+			v.gameObject.networkView.RPC ("removeTileNet",RPCMode.AllBuffered,t.gameObject.networkView.viewID);
+//			t.setVillage (null);
+			t.gameObject.networkView.RPC("neutralizeVillageNet",RPCMode.AllBuffered);
 			Unit u = t.getOccupyingUnit ();
 			if (u!=null){
-				v.removeUnit(u); // also u.setVillage(null)
-				Destroy (u.gameObject);
-				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
-				t.setLandType(LandType.Tombstone);
-				t.replace (tomb);
+//				v.removeUnit(u); // also u.setVillage(null)
+				v.gameObject.networkView.RPC ("removeUnitNet",RPCMode.AllBuffered,u.networkView.viewID);
+//				Destroy (u.gameObject);
+				unitManager.gameObject.networkView.RPC ("destroyUnitNet",RPCMode.AllBuffered,u.networkView.viewID);
+//				GameObject tomb = Instantiate (tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation) as GameObject;
+				GameObject tomb = Network.Instantiate(tombPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), tombPrefab.transform.rotation,0) as GameObject;
+//				t.setLandType(LandType.Tombstone);
+				t.gameObject.networkView.RPC ("setLandTypeNet",RPCMode.AllBuffered,(int)LandType.Tombstone);
+//				t.replace (tomb);
+				t.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,tomb.networkView.viewID);
 			}
-			t.setStructure(null); // helper method needs to be finished
+			else if(t.checkTower())
+			{
+				GameObject tower = Network.Instantiate(towerPrefab, new Vector3 (t.point.x, 0.4f, t.point.y), towerPrefab.transform.rotation,0) as GameObject;
+				t.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,tower.networkView.viewID);
+				t.networkView.RPC ("setStructureNet",RPCMode.AllBuffered,false);
+			}
 		}
 	}
 
@@ -326,19 +360,6 @@ public class VillageManager : MonoBehaviour {
 				splitBFS (n, villageToSplit, tilesToReturn);
 			}
 		}
-	}
-
-	//TODO needs networking component
-	public void removeUnitFromVillage(Village v,Unit u)
-	{
-		v.removeUnit(u);
-	}
-
-	//TODO needs networking component
-	public void removeTileFromVillage(Village v, Tile t)
-	{
-		v.removeTile (t);
-		t.setVillage (null);
 	}
 
 	public void hirePeasant(Village v,GameObject unitPrefab)
@@ -612,7 +633,7 @@ public class VillageManager : MonoBehaviour {
 			v.addWood (-12);
 		}
 	}	
-
+	//TODO NOT NETWORKED PROPERLY
 	public void buildCannon(Village v, GameObject cannonPrefab)
 	{
 		Tile tileAt = v.getLocatedAt ();
@@ -621,7 +642,7 @@ public class VillageManager : MonoBehaviour {
 		if (vGold >= 35 && vWood>=12) {
 			if(v.getMyType() >= VillageType.Fort)
 			{
-				//TODO create cannon prefab, separate from normal units, since it cant upgrade
+
 				GameObject cannon = Network.Instantiate(cannonPrefab, new Vector3(tileAt.point.x, 0.15f, tileAt.point.y), tileAt.transform.rotation, 0) as GameObject;
 				// initialize the cannon
 				cannon.networkView.RPC("initUnitNet", RPCMode.AllBuffered, (int)UnitType.CANNON, tileAt.gameObject.networkView.viewID, v.gameObject.networkView.viewID);
@@ -637,4 +658,26 @@ public class VillageManager : MonoBehaviour {
 			gameGUI.displayError(@"Cannons cost 35 gold and 12 wood");
 		}
 	}
+
+	public void takeCannonDamage (Village v)
+	{
+		v.networkView.RPC ("setHealthNet", RPCMode.AllBuffered, v.getHealth () - 1);
+		if (v.getHealth () <= 0) {
+			v.networkView.RPC ("setGoldNet",RPCMode.AllBuffered,0);
+			v.networkView.RPC ("setWoodNet",RPCMode.AllBuffered,0);
+			v.networkView.RPC ("switchPrefabNet",RPCMode.AllBuffered,(int)VillageType.Hovel);
+			Tile respawnLocation = getTileForRespawn(v.getControlledRegion());
+			respawnLocation.networkView.RPC ("replaceTilePrefabNet",RPCMode.AllBuffered,v.gameObject);
+			networkView.RPC ("moveVillagePrefabNet",RPCMode.AllBuffered,v.networkView.viewID, new Vector3(respawnLocation.point.x, 0.1f, respawnLocation.point.y));
+			v.networkView.RPC ("setLocatedAtNet",RPCMode.AllBuffered,respawnLocation.networkView.viewID);
+		}
+	}
+
+	[RPC]
+	void moveVillagePrefabNet(NetworkViewID villageID, Vector3 vector)
+	{
+		Village v = NetworkView.Find (villageID).gameObject.GetComponent<Village> ();
+		v.transform.localPosition = vector;
+	}
+			              
 }

@@ -221,7 +221,12 @@ public class GameManager : MonoBehaviour {
 			Debug.Log (p.getName ());
 		}
 	}
-	
+	public int findPlayerIndex(Player p)
+	{
+		int index = players.FindIndex (i => i.getName () == p.getName ());
+		return index;
+	}
+
 	// Update is called once per frame
 	void Update () {
 		if( isInGame && (gameGUI == null) )

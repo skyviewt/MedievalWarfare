@@ -20,7 +20,6 @@ public class Tile : MonoBehaviour
 	private List<Tile> neighbours;
 	private LandType myType;
 	private Unit occupyingUnit;
-	private Structure occupyingStructure = null;
 	private Village myVillage;
 	private int color;
 	public Shader outline;
@@ -28,9 +27,12 @@ public class Tile : MonoBehaviour
 	public GameObject prefab;
 	public GameObject myRoad;
 	public bool hasRoad;
+	public bool hasTower;
+
 
 	private bool visited;
 	public GameObject roadPrefab;
+	public GameObject towerPrefab;
 
 
 	//This function should not be used, the Tile component is now always attached to a Grass Tile
@@ -177,14 +179,11 @@ public class Tile : MonoBehaviour
 		this.myVillage = v;
 	}
 
-	public Structure getStructure()
+	public bool checkTower()
 	{
-		return this.occupyingStructure;
+		return this.hasTower;
 	}
-	public void setStructure(Structure s)
-	{
-		this.occupyingStructure = s;
-	}
+
 	public List<Tile> getNeighbours()
 	{
 		return neighbours;
@@ -329,6 +328,11 @@ public class Tile : MonoBehaviour
 	void setVillageNet(NetworkViewID villageID){
 		this.myVillage = NetworkView.Find (villageID).gameObject.GetComponent<Village>();
 	}
+	[RPC]
+	void neutralizeVillageNet()
+	{
+		this.myVillage = null;
+	}
 
 	[RPC]
 	void changeMapLayer( int mapNum )
@@ -373,13 +377,13 @@ public class Tile : MonoBehaviour
 	}
 
 	[RPC]
-	void setStructureNet(Structure s){
-		occupyingStructure = s;
-	}
-	[RPC]
-	void removeStructureNet()
-	{
-		occupyingStructure = null;
+	void setStructureNet(bool b){
+		if (b==true) {
+			this.hasTower = true;
+		} else if (b==false) {
+			Destroy (prefab);
+			this.hasTower = false;
+		}
 	}
 
 }

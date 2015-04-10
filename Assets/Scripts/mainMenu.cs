@@ -395,7 +395,6 @@ public class mainMenu : MonoBehaviour {
 		print(_ipInput.text);
 		if (_ipInput.text != "")
 		{
-	
 			GM.setIpAddress(_ipInput.text);
 			GM.setPort(System.Int32.Parse (_portInput.text));
 			NetworkConnectionError res = GM.initGame (_ipInput.text, System.Int32.Parse (_portInput.text));
@@ -576,12 +575,12 @@ public class mainMenu : MonoBehaviour {
 			TileManager tileManager =  GameObject.Find ("TileManager").GetComponent<TileManager> ();
 			networkView.RPC("DontDestroy", RPCMode.AllBuffered, tileManager.gameObject.networkView.viewID);
 
-			//setting up the colors properly
-			for(int i=0; i<GM.players.Count; i++)
-			{
-				Player p = GM.players[i];
-				p.networkView.RPC ("ColorPlayer", RPCMode.AllBuffered, p.gameObject.networkView.viewID, i+1);
-			}
+//			//setting up the colors properly
+//			for(int i=0; i<GM.players.Count; i++)
+//			{
+//				Player p = GM.players[i];
+//				p.networkView.RPC ("ColorPlayer", RPCMode.AllBuffered, p.gameObject.networkView.viewID, i+1);
+//			}
 		}
 
 		List<Player> players = GM.getPlayers();

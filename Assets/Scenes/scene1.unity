@@ -1237,6 +1237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meadowPrefab: {fileID: 0}
+  tombPrefab: {fileID: 0}
   curEffect: {fileID: 0}
   attackEffect1: {fileID: 0}
   attackEffect2: {fileID: 0}
@@ -2617,7 +2618,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef6ccdd19c114230975251dd0c342bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meadowPrefab: {fileID: 0}
+  meadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
+  tombPrefab: {fileID: 100000, guid: d864bb766c0d70c4caaf90a107a321f9, type: 3}
   curEffect: {fileID: 0}
   attackEffect1: {fileID: 100006, guid: 6aea392f353e04156a230db0fba22230, type: 2}
   attackEffect2: {fileID: 0}
@@ -5933,12 +5935,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveGame: 0
   loadGame: 0
+  numberOfSaves: 0
   saveGameID: 1
   GrassPrefab: {fileID: 161544, guid: a05b14bb6a6914215b6cb6c9cd8d797d, type: 2}
   MeadowPrefab: {fileID: 158574, guid: 7842ed6a8d4484a818b4fb6a10c187dd, type: 2}
   TreePrefab: {fileID: 126030, guid: bd74097a43dd548b0ae6323a66bb8952, type: 2}
   HovelPrefab: {fileID: 164132, guid: 32744c9f3c5c23d49834ce1d47d4f310, type: 2}
   offset: 3
+  saveName: 
+  saveID: 0
   tileList: []
   villageList: []
   playerList: []

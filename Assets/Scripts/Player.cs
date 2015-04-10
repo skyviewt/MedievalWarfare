@@ -53,6 +53,7 @@ public class Player : MonoBehaviour{
 		password = pPass;
 		color = pColor;
 	}
+
 	[RPC]
 	void addVillageNet(NetworkViewID villageID){
 		Village vil = NetworkView.Find(villageID).gameObject.GetComponent<Village>();
