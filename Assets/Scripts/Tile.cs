@@ -233,6 +233,11 @@ public class Tile : MonoBehaviour
 //		Destroy (NetworkView.Find (tileid).gameObject);
 //	}
 
+//	[RPC]
+//	void DontDestroyTile(NetworkViewID tileID){
+//		DontDestroyOnLoad(NetworkView.Find (tileID).gameObject);
+//	}
+
 	[RPC]
 	void setPrefab (NetworkViewID prefID ){
 		prefab = NetworkView.Find (prefID).gameObject;
@@ -244,11 +249,6 @@ public class Tile : MonoBehaviour
 		Tile t = NetworkView.Find (tileID).gameObject.GetComponent<Tile>();
 		Destroy (t.prefab);
 		t.prefab = null;
-	}
-
-	[RPC]
-	void DontDestroyTile(NetworkViewID tileID){
-		DontDestroyOnLoad(NetworkView.Find (tileID).gameObject);
 	}
 
 	[RPC]

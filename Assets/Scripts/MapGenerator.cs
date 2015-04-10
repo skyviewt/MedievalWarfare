@@ -359,6 +359,7 @@ public class MapGenerator : MonoBehaviour {
 			{
 				t.gameObject.networkView.RPC("destroyPrefab", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 			}
+			//tileManager.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 			t.gameObject.networkView.RPC("destroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
 
@@ -371,13 +372,14 @@ public class MapGenerator : MonoBehaviour {
 
 				t.gameObject.networkView.RPC("DontDestroyPrefab", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 			}
-			t.gameObject.networkView.RPC("DontDestroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			tileManager.gameObject.networkView.RPC("DontDestroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
+			//t.gameObject.networkView.RPC("DontDestroyTile", RPCMode.AllBuffered, t.gameObject.networkView.viewID);
 		}
-		gameObject.networkView.RPC("DontDestroyManagers", RPCMode.AllBuffered, gameObject.networkView.viewID);
+		gameObject.networkView.RPC("DontDestroyPreserveGM", RPCMode.AllBuffered, gameObject.networkView.viewID);
 	}
 
 	[RPC]
-	void DontDestroyManagers(NetworkViewID mID){
+	void DontDestroyPreserveGM(NetworkViewID mID){
 		DontDestroyOnLoad(NetworkView.Find (mID).gameObject);
 	}
 
