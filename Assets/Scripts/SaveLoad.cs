@@ -15,7 +15,9 @@ public class SaveLoad : MonoBehaviour {
 	public GameObject MeadowPrefab;
 	public GameObject TreePrefab;
 	public GameObject HovelPrefab;
+	public GameObject UnitPrefab;
 	public float offset = 3.0f;
+
 	
 	//names of the saved files:
 
@@ -239,6 +241,8 @@ public class SaveLoad : MonoBehaviour {
 		string unitID = "uID";
 		string uActionType = "uActType";
 		string uType = "uType";
+		string uLocationx = "uLocationx";
+		string uLocationy = "uLocationy";
 
 		//Get villages by the order of players
 		Debug.Log ("Saving villages!!");
@@ -256,10 +260,10 @@ public class SaveLoad : MonoBehaviour {
 			//getting the villages
 			List<Village> villageList = t.getVillages();
 			//save the number of villages
-			PlayerPrefs.SetInt(id+name+pID+vNum, villageList.Count);
+			PlayerPrefs.SetInt(id+name+pID+playerNb+vNum, villageList.Count);
 
 			//Printing the number of villages:
-			Debug.LogError("SavePV: " + villageList.Count);
+			Debug.LogError("SavePV: VillageCount" + villageList.Count);
 
 			//saving each village of their respective player
 			int villageNb = 1;
@@ -287,9 +291,15 @@ public class SaveLoad : MonoBehaviour {
 				foreach(Unit u in unitList){
 					//unitType
 					UnitType uTp  = u.getUnitType();
-					PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+unitID+unitNB, (int)uTp);
+					PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+unitID+unitNB+uType, (int)uTp);
 
-
+					//actionType:
+					UnitActionType uAT = u.getAction();
+					PlayerPrefs.SetInt(id+name+pID+playerNb+vID+villageNb+unitID+unitNB+uActionType, (int)uAT);
+					//tileLocation:
+					Tile utile = u.getLocation();
+					PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+unitID+unitNB+uLocationx, utile.point.x);
+					PlayerPrefs.SetFloat(id+name+pID+playerNb+vID+villageNb+unitID+unitNB+uLocationy, utile.point.y);
 				}
 
 
@@ -372,6 +382,14 @@ public class SaveLoad : MonoBehaviour {
 		string vHealth = "vHealth";
 		string vActType= "vActionType";
 
+		//UNITS:
+		string numberOfUnits = "uNum";
+		string unitID = "uID";
+		string uActionType = "uActType";
+		string uType = "uType";
+		string uLocationx = "uLocationx";
+		string uLocationy = "uLocationy";
+
 		//total number of players:
 		int nbOfPlayer = PlayerPrefs.GetInt (id+name+pNum);
 		Debug.LogError ("LoadPV, NUMBEROFPLAYERS:" + nbOfPlayer);
@@ -403,8 +421,8 @@ public class SaveLoad : MonoBehaviour {
 
 
 			//Villages:
-			int nbOfVillages = PlayerPrefs.GetInt(id+name+pID+vNum);
-			Debug.Log(nbOfVillages);
+			int nbOfVillages = PlayerPrefs.GetInt(id+name+pID+playerID+vNum);
+			Debug.LogError("LoadVillage: Nb of villages: " + nbOfVillages);
 			for (int vIndex = 1; vIndex <= nbOfVillages; vIndex++){
 				//hovel Location:
 				float x = PlayerPrefs.GetFloat(id+name+pID+playerID+vID+vIndex+locationx);
@@ -456,7 +474,21 @@ public class SaveLoad : MonoBehaviour {
 				}
 
 				//UNITS!!!
+				int nbOfUnits = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+numberOfUnits);
 
+				for (int unitNb=1;unitNb<=nbOfUnits; unitNb++){
+					//Tile first
+					float uLocx = PlayerPrefs.GetFloat(id+name+pID+playerID+vID+vIndex+unitID+unitNb+uLocationx);
+					float uLocy = PlayerPrefs.GetFloat(id+name+pID+playerID+vID+vIndex+unitID+unitNb+uLocationy);
+					Tile uT = getVillageTile(uLocx, uLocy);
+
+					Vector3 unitLocation = new Vector3(uLocx, 0.15f+offset, uLocy);
+					GameObject newUnit = Network.Instantiate(UnitPrefab, unitLocation, UnitPrefab.transform.rotation, 0) as GameObject;
+
+					int unitType = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+unitID+unitNb+uType);
+
+					int unitActType = PlayerPrefs.GetInt(id+name+pID+playerID+vID+vIndex+unitID+unitNb+uActionType);
+				}
 			}
 		}
 	}
